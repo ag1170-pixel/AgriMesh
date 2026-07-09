@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>AgriMesh</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1b7a3d" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>🌱 <span data-t="appTitle">AgriMesh</span></h1>
+    <button id="lang" class="ghost">हिंदी</button>
+  </header>
+
+  <main>
+    <!-- 1. Upload -->
+    <section id="uploadCard" class="card">
+      <p class="hint" data-t="uploadHint">Upload a leaf photo to detect crop disease</p>
+      <label id="drop" class="drop">
+        <input type="file" id="file" accept="image/*" capture="environment" hidden />
+        <span data-t="uploadTitle">📷 Tap to upload / drag a photo</span>
+      </label>
+      <img id="preview" alt="" hidden />
+      <div id="modelStatus" class="status">Loading AI model…</div>
+      <button id="analyze" class="primary" disabled data-t="analyze">Analyze</button>
+    </section>
+
+    <!-- 2. Result -->
+    <section id="resultCard" class="card" hidden>
+      <div id="result"></div>
+      <div id="locBox" hidden>
+        <label data-t="selectVillage">Location</label>
+        <select id="village"></select>
+        <button id="findRoute" class="primary" data-t="sendReport">Send Report &amp; Find Route</button>
+      </div>
+    </section>
+
+    <!-- 3. Route -->
+    <section id="routeCard" class="card" hidden>
+      <div id="map"></div>
+      <div id="routeInfo"></div>
+    </section>
+
+    <p class="admin"><a href="admin.html">Admin →</a></p>
+  </main>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- TF.js loaded lazily only if a real model exists (see app.js) -->
+  <script src="translations.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

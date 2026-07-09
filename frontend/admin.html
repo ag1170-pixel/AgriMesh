@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AgriMesh Admin</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header><h1>🛠️ AgriMesh Admin</h1><a href="index.html" class="ghost" style="text-decoration:none">← App</a></header>
+  <main>
+    <section id="loginCard" class="card">
+      <label>Password</label>
+      <input id="pw" type="password" placeholder="admin123" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:8px 0 12px" />
+      <button id="loginBtn" class="primary">Login</button>
+      <p id="loginErr" class="hint" style="color:#c0392b"></p>
+    </section>
+
+    <div id="panel" hidden>
+      <section class="card">
+        <h3>Inventory <small class="hint">(edit stock → watch routing change)</small></h3>
+        <div id="inv"></div>
+      </section>
+      <section class="card">
+        <h3>Simulate SMS <small class="hint">(TextBee fallback)</small></h3>
+        <input id="simPayload" value="D1O ttnfu8r" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:8px 0" />
+        <button id="simBtn" class="primary">Run</button>
+        <pre id="simOut" class="sms" style="white-space:pre-wrap"></pre>
+      </section>
+      <section class="card">
+        <h3>Reports</h3>
+        <table id="reports"><thead><tr><th>Time</th><th>Disease</th><th>From</th><th>Center</th><th>km</th></tr></thead><tbody></tbody></table>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const $ = (s) => document.querySelector(s);
+    let token = "";
+    const H = () => ({ authorization: "Bearer " + token, "content-type": "application/json" });
+
+    $("#loginBtn").onclick = async () => {
+      const r = await fetch("/api/admin/login", { method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({ password: $("#pw").value }) }).then((r) => r.json());
+      if (!r.ok) return ($("#loginErr").textContent = "Wrong password");
+      token = r.token; $("#loginCard").hidden = true; $("#panel").hidden = false; refresh();
+    };
+
+    async function refresh() {
+      const inv = await fetch("/api/admin/inventory", { headers: H() }).then((r) => r.json());
+      $("#inv").innerHTML = Object.entries(inv.inventory).map(([c, stock]) =>
+        Object.entries(stock).map(([code, kg]) => `
+          <div class="row-edit" style="margin:6px 0">
+            <b style="width:90px">${c.replace("_", " ")}</b>
+            <span style="flex:1">${inv.labels[code] || code}</span>
+            <input type="number" min="0" value="${kg}" data-c="${c}" data-code="${code}" />
+            <span>kg</span>
+          </div>`).join("")).join("");
+      $("#inv").querySelectorAll("input").forEach((i) => i.onchange = async () => {
+        await fetch("/api/admin/inventory", { method: "PUT", headers: H(),
+          body: JSON.stringify({ centerId: i.dataset.c, code: i.dataset.code, stockKg: i.value }) });
+      });
+      const rep = await fetch("/api/admin/reports", { headers: H() }).then((r) => r.json());
+      $("#reports tbody").innerHTML = rep.reports.map((x) =>
+        `<tr><td>${x.ts.slice(11, 19)}</td><td>${x.label}</td><td>${x.farmer}</td><td>${x.center.replace("_", " ")}</td><td>${x.distanceKm}</td></tr>`).join("");
+    }
+
+    $("#simBtn").onclick = async () => {
+      const r = await fetch("/api/admin/simulate", { method: "POST", headers: H(),
+        body: JSON.stringify({ payload: $("#simPayload").value }) }).then((r) => r.json());
+      $("#simOut").textContent = JSON.stringify(r, null, 2);
+      refresh();
+    };
+  </script>
+</body>
+</html>

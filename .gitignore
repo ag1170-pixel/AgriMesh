@@ -1,0 +1,28 @@
+# Dataset — 55k images, ~1GB+. Never commit (link it in README instead).
+archive (1)/
+archive*.zip
+*.png
+!frontend/**/*.png
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Trained model artifacts (regenerated from Colab; too big / binary)
+model/saved_model.keras
+model/web_model/
+model/*.h5
+frontend/models/model.json
+frontend/models/*.bin
+
+# Brainstorming source doc + scratch
+DeepSeek Conversation.docx
+~$*.docx
+doc_text.txt
+*.mermaid
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

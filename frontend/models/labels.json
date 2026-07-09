@@ -1,0 +1,858 @@
+[
+ {
+  "code": "D00",
+  "canonical": "apple__black_rot",
+  "crop": "apple",
+  "condition": "black_rot",
+  "label": "Apple - Black Rot",
+  "healthy": false
+ },
+ {
+  "code": "D01",
+  "canonical": "apple__healthy",
+  "crop": "apple",
+  "condition": "healthy",
+  "label": "Apple - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D02",
+  "canonical": "apple__rotten",
+  "crop": "apple",
+  "condition": "rotten",
+  "label": "Apple - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D03",
+  "canonical": "apple__rust",
+  "crop": "apple",
+  "condition": "rust",
+  "label": "Apple - Rust",
+  "healthy": false
+ },
+ {
+  "code": "D04",
+  "canonical": "apple__scab",
+  "crop": "apple",
+  "condition": "scab",
+  "label": "Apple - Scab",
+  "healthy": false
+ },
+ {
+  "code": "D05",
+  "canonical": "banana__healthy",
+  "crop": "banana",
+  "condition": "healthy",
+  "label": "Banana - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D06",
+  "canonical": "banana__rotten",
+  "crop": "banana",
+  "condition": "rotten",
+  "label": "Banana - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D07",
+  "canonical": "bellpepper__healthy",
+  "crop": "bellpepper",
+  "condition": "healthy",
+  "label": "Bellpepper - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D08",
+  "canonical": "bellpepper__rotten",
+  "crop": "bellpepper",
+  "condition": "rotten",
+  "label": "Bellpepper - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D09",
+  "canonical": "carrot__healthy",
+  "crop": "carrot",
+  "condition": "healthy",
+  "label": "Carrot - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D0A",
+  "canonical": "carrot__rotten",
+  "crop": "carrot",
+  "condition": "rotten",
+  "label": "Carrot - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D0B",
+  "canonical": "cassava__bacterial_blight",
+  "crop": "cassava",
+  "condition": "bacterial_blight",
+  "label": "Cassava - Bacterial Blight",
+  "healthy": false
+ },
+ {
+  "code": "D0C",
+  "canonical": "cassava__brown_streak_disease",
+  "crop": "cassava",
+  "condition": "brown_streak_disease",
+  "label": "Cassava - Brown Streak Disease",
+  "healthy": false
+ },
+ {
+  "code": "D0D",
+  "canonical": "cassava__green_mottle",
+  "crop": "cassava",
+  "condition": "green_mottle",
+  "label": "Cassava - Green Mottle",
+  "healthy": false
+ },
+ {
+  "code": "D0E",
+  "canonical": "cassava__healthy",
+  "crop": "cassava",
+  "condition": "healthy",
+  "label": "Cassava - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D0F",
+  "canonical": "cassava__mosaic_disease",
+  "crop": "cassava",
+  "condition": "mosaic_disease",
+  "label": "Cassava - Mosaic Disease",
+  "healthy": false
+ },
+ {
+  "code": "D0G",
+  "canonical": "cherry__healthy",
+  "crop": "cherry",
+  "condition": "healthy",
+  "label": "Cherry - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D0H",
+  "canonical": "cherry__powdery_mildew",
+  "crop": "cherry",
+  "condition": "powdery_mildew",
+  "label": "Cherry - Powdery Mildew",
+  "healthy": false
+ },
+ {
+  "code": "D0I",
+  "canonical": "chili__healthy",
+  "crop": "chili",
+  "condition": "healthy",
+  "label": "Chili - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D0J",
+  "canonical": "chili__leaf_curl",
+  "crop": "chili",
+  "condition": "leaf_curl",
+  "label": "Chili - Leaf Curl",
+  "healthy": false
+ },
+ {
+  "code": "D0K",
+  "canonical": "chili__leaf_spot",
+  "crop": "chili",
+  "condition": "leaf_spot",
+  "label": "Chili - Leaf Spot",
+  "healthy": false
+ },
+ {
+  "code": "D0L",
+  "canonical": "chili__whitefly",
+  "crop": "chili",
+  "condition": "whitefly",
+  "label": "Chili - Whitefly",
+  "healthy": false
+ },
+ {
+  "code": "D0M",
+  "canonical": "chili__yellowish",
+  "crop": "chili",
+  "condition": "yellowish",
+  "label": "Chili - Yellowish",
+  "healthy": false
+ },
+ {
+  "code": "D0N",
+  "canonical": "coffee__cercospora_leaf_spot",
+  "crop": "coffee",
+  "condition": "cercospora_leaf_spot",
+  "label": "Coffee - Cercospora Leaf Spot",
+  "healthy": false
+ },
+ {
+  "code": "D0O",
+  "canonical": "coffee__healthy",
+  "crop": "coffee",
+  "condition": "healthy",
+  "label": "Coffee - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D0P",
+  "canonical": "coffee__red_spider_mite",
+  "crop": "coffee",
+  "condition": "red_spider_mite",
+  "label": "Coffee - Red Spider Mite",
+  "healthy": false
+ },
+ {
+  "code": "D0Q",
+  "canonical": "coffee__rust",
+  "crop": "coffee",
+  "condition": "rust",
+  "label": "Coffee - Rust",
+  "healthy": false
+ },
+ {
+  "code": "D0R",
+  "canonical": "corn__common_rust",
+  "crop": "corn",
+  "condition": "common_rust",
+  "label": "Corn - Common Rust",
+  "healthy": false
+ },
+ {
+  "code": "D0S",
+  "canonical": "corn__gray_leaf_spot",
+  "crop": "corn",
+  "condition": "gray_leaf_spot",
+  "label": "Corn - Gray Leaf Spot",
+  "healthy": false
+ },
+ {
+  "code": "D0T",
+  "canonical": "corn__healthy",
+  "crop": "corn",
+  "condition": "healthy",
+  "label": "Corn - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D0U",
+  "canonical": "corn__northern_leaf_blight",
+  "crop": "corn",
+  "condition": "northern_leaf_blight",
+  "label": "Corn - Northern Leaf Blight",
+  "healthy": false
+ },
+ {
+  "code": "D0V",
+  "canonical": "cucumber__diseased",
+  "crop": "cucumber",
+  "condition": "diseased",
+  "label": "Cucumber - Diseased",
+  "healthy": false
+ },
+ {
+  "code": "D0W",
+  "canonical": "cucumber__healthy",
+  "crop": "cucumber",
+  "condition": "healthy",
+  "label": "Cucumber - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D0X",
+  "canonical": "cucumber__rotten",
+  "crop": "cucumber",
+  "condition": "rotten",
+  "label": "Cucumber - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D0Y",
+  "canonical": "grape__black_measles",
+  "crop": "grape",
+  "condition": "black_measles",
+  "label": "Grape - Black Measles",
+  "healthy": false
+ },
+ {
+  "code": "D0Z",
+  "canonical": "grape__black_rot",
+  "crop": "grape",
+  "condition": "black_rot",
+  "label": "Grape - Black Rot",
+  "healthy": false
+ },
+ {
+  "code": "D10",
+  "canonical": "grape__healthy",
+  "crop": "grape",
+  "condition": "healthy",
+  "label": "Grape - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D11",
+  "canonical": "grape__leaf_blight_isariopsis_leaf_spot",
+  "crop": "grape",
+  "condition": "leaf_blight_isariopsis_leaf_spot",
+  "label": "Grape - Leaf Blight Isariopsis Leaf Spot",
+  "healthy": false
+ },
+ {
+  "code": "D12",
+  "canonical": "grape__rotten",
+  "crop": "grape",
+  "condition": "rotten",
+  "label": "Grape - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D13",
+  "canonical": "guava__diseased",
+  "crop": "guava",
+  "condition": "diseased",
+  "label": "Guava - Diseased",
+  "healthy": false
+ },
+ {
+  "code": "D14",
+  "canonical": "guava__healthy",
+  "crop": "guava",
+  "condition": "healthy",
+  "label": "Guava - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D15",
+  "canonical": "guava__rotten",
+  "crop": "guava",
+  "condition": "rotten",
+  "label": "Guava - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D16",
+  "canonical": "jamun__diseased",
+  "crop": "jamun",
+  "condition": "diseased",
+  "label": "Jamun - Diseased",
+  "healthy": false
+ },
+ {
+  "code": "D17",
+  "canonical": "jamun__healthy",
+  "crop": "jamun",
+  "condition": "healthy",
+  "label": "Jamun - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D18",
+  "canonical": "jujube__healthy",
+  "crop": "jujube",
+  "condition": "healthy",
+  "label": "Jujube - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D19",
+  "canonical": "jujube__rotten",
+  "crop": "jujube",
+  "condition": "rotten",
+  "label": "Jujube - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D1A",
+  "canonical": "lemon__diseased",
+  "crop": "lemon",
+  "condition": "diseased",
+  "label": "Lemon - Diseased",
+  "healthy": false
+ },
+ {
+  "code": "D1B",
+  "canonical": "lemon__healthy",
+  "crop": "lemon",
+  "condition": "healthy",
+  "label": "Lemon - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D1C",
+  "canonical": "mango__diseased",
+  "crop": "mango",
+  "condition": "diseased",
+  "label": "Mango - Diseased",
+  "healthy": false
+ },
+ {
+  "code": "D1D",
+  "canonical": "mango__healthy",
+  "crop": "mango",
+  "condition": "healthy",
+  "label": "Mango - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D1E",
+  "canonical": "mango__rotten",
+  "crop": "mango",
+  "condition": "rotten",
+  "label": "Mango - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D1F",
+  "canonical": "orange__healthy",
+  "crop": "orange",
+  "condition": "healthy",
+  "label": "Orange - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D1G",
+  "canonical": "orange__rotten",
+  "crop": "orange",
+  "condition": "rotten",
+  "label": "Orange - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D1H",
+  "canonical": "peach__bacterial_spot",
+  "crop": "peach",
+  "condition": "bacterial_spot",
+  "label": "Peach - Bacterial Spot",
+  "healthy": false
+ },
+ {
+  "code": "D1I",
+  "canonical": "peach__healthy",
+  "crop": "peach",
+  "condition": "healthy",
+  "label": "Peach - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D1J",
+  "canonical": "pepper__bell_bacterial_spot",
+  "crop": "pepper",
+  "condition": "bell_bacterial_spot",
+  "label": "Pepper - Bell Bacterial Spot",
+  "healthy": false
+ },
+ {
+  "code": "D1K",
+  "canonical": "pepper__bell_healthy",
+  "crop": "pepper",
+  "condition": "bell_healthy",
+  "label": "Pepper - Bell Healthy",
+  "healthy": false
+ },
+ {
+  "code": "D1L",
+  "canonical": "pomegranate__diseased",
+  "crop": "pomegranate",
+  "condition": "diseased",
+  "label": "Pomegranate - Diseased",
+  "healthy": false
+ },
+ {
+  "code": "D1M",
+  "canonical": "pomegranate__healthy",
+  "crop": "pomegranate",
+  "condition": "healthy",
+  "label": "Pomegranate - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D1N",
+  "canonical": "pomegranate__rotten",
+  "crop": "pomegranate",
+  "condition": "rotten",
+  "label": "Pomegranate - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D1O",
+  "canonical": "potato__early_blight",
+  "crop": "potato",
+  "condition": "early_blight",
+  "label": "Potato - Early Blight",
+  "healthy": false
+ },
+ {
+  "code": "D1P",
+  "canonical": "potato__healthy",
+  "crop": "potato",
+  "condition": "healthy",
+  "label": "Potato - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D1Q",
+  "canonical": "potato__late_blight",
+  "crop": "potato",
+  "condition": "late_blight",
+  "label": "Potato - Late Blight",
+  "healthy": false
+ },
+ {
+  "code": "D1R",
+  "canonical": "potato__rotten",
+  "crop": "potato",
+  "condition": "rotten",
+  "label": "Potato - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D1S",
+  "canonical": "rice__brown_spot",
+  "crop": "rice",
+  "condition": "brown_spot",
+  "label": "Rice - Brown Spot",
+  "healthy": false
+ },
+ {
+  "code": "D1T",
+  "canonical": "rice__healthy",
+  "crop": "rice",
+  "condition": "healthy",
+  "label": "Rice - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D1U",
+  "canonical": "rice__hispa",
+  "crop": "rice",
+  "condition": "hispa",
+  "label": "Rice - Hispa",
+  "healthy": false
+ },
+ {
+  "code": "D1V",
+  "canonical": "rice__leaf_blast",
+  "crop": "rice",
+  "condition": "leaf_blast",
+  "label": "Rice - Leaf Blast",
+  "healthy": false
+ },
+ {
+  "code": "D1W",
+  "canonical": "rice__neck_blast",
+  "crop": "rice",
+  "condition": "neck_blast",
+  "label": "Rice - Neck Blast",
+  "healthy": false
+ },
+ {
+  "code": "D1X",
+  "canonical": "soybean__bacterial_blight",
+  "crop": "soybean",
+  "condition": "bacterial_blight",
+  "label": "Soybean - Bacterial Blight",
+  "healthy": false
+ },
+ {
+  "code": "D1Y",
+  "canonical": "soybean__caterpillar",
+  "crop": "soybean",
+  "condition": "caterpillar",
+  "label": "Soybean - Caterpillar",
+  "healthy": false
+ },
+ {
+  "code": "D1Z",
+  "canonical": "soybean__diabrotica_speciosa",
+  "crop": "soybean",
+  "condition": "diabrotica_speciosa",
+  "label": "Soybean - Diabrotica Speciosa",
+  "healthy": false
+ },
+ {
+  "code": "D20",
+  "canonical": "soybean__downy_mildew",
+  "crop": "soybean",
+  "condition": "downy_mildew",
+  "label": "Soybean - Downy Mildew",
+  "healthy": false
+ },
+ {
+  "code": "D21",
+  "canonical": "soybean__healthy",
+  "crop": "soybean",
+  "condition": "healthy",
+  "label": "Soybean - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D22",
+  "canonical": "soybean__mosaic_virus",
+  "crop": "soybean",
+  "condition": "mosaic_virus",
+  "label": "Soybean - Mosaic Virus",
+  "healthy": false
+ },
+ {
+  "code": "D23",
+  "canonical": "soybean__powdery_mildew",
+  "crop": "soybean",
+  "condition": "powdery_mildew",
+  "label": "Soybean - Powdery Mildew",
+  "healthy": false
+ },
+ {
+  "code": "D24",
+  "canonical": "soybean__rust",
+  "crop": "soybean",
+  "condition": "rust",
+  "label": "Soybean - Rust",
+  "healthy": false
+ },
+ {
+  "code": "D25",
+  "canonical": "soybean__southern_blight",
+  "crop": "soybean",
+  "condition": "southern_blight",
+  "label": "Soybean - Southern Blight",
+  "healthy": false
+ },
+ {
+  "code": "D26",
+  "canonical": "strawberry__healthy",
+  "crop": "strawberry",
+  "condition": "healthy",
+  "label": "Strawberry - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D27",
+  "canonical": "strawberry__leaf_scorch",
+  "crop": "strawberry",
+  "condition": "leaf_scorch",
+  "label": "Strawberry - Leaf Scorch",
+  "healthy": false
+ },
+ {
+  "code": "D28",
+  "canonical": "strawberry__rotten",
+  "crop": "strawberry",
+  "condition": "rotten",
+  "label": "Strawberry - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D29",
+  "canonical": "sugarcane__bacterial_blight",
+  "crop": "sugarcane",
+  "condition": "bacterial_blight",
+  "label": "Sugarcane - Bacterial Blight",
+  "healthy": false
+ },
+ {
+  "code": "D2A",
+  "canonical": "sugarcane__healthy",
+  "crop": "sugarcane",
+  "condition": "healthy",
+  "label": "Sugarcane - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D2B",
+  "canonical": "sugarcane__red_rot",
+  "crop": "sugarcane",
+  "condition": "red_rot",
+  "label": "Sugarcane - Red Rot",
+  "healthy": false
+ },
+ {
+  "code": "D2C",
+  "canonical": "sugarcane__red_stripe",
+  "crop": "sugarcane",
+  "condition": "red_stripe",
+  "label": "Sugarcane - Red Stripe",
+  "healthy": false
+ },
+ {
+  "code": "D2D",
+  "canonical": "sugarcane__rust",
+  "crop": "sugarcane",
+  "condition": "rust",
+  "label": "Sugarcane - Rust",
+  "healthy": false
+ },
+ {
+  "code": "D2E",
+  "canonical": "tea__algal_leaf",
+  "crop": "tea",
+  "condition": "algal_leaf",
+  "label": "Tea - Algal Leaf",
+  "healthy": false
+ },
+ {
+  "code": "D2F",
+  "canonical": "tea__anthracnose",
+  "crop": "tea",
+  "condition": "anthracnose",
+  "label": "Tea - Anthracnose",
+  "healthy": false
+ },
+ {
+  "code": "D2G",
+  "canonical": "tea__bird_eye_spot",
+  "crop": "tea",
+  "condition": "bird_eye_spot",
+  "label": "Tea - Bird Eye Spot",
+  "healthy": false
+ },
+ {
+  "code": "D2H",
+  "canonical": "tea__brown_blight",
+  "crop": "tea",
+  "condition": "brown_blight",
+  "label": "Tea - Brown Blight",
+  "healthy": false
+ },
+ {
+  "code": "D2I",
+  "canonical": "tea__healthy",
+  "crop": "tea",
+  "condition": "healthy",
+  "label": "Tea - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D2J",
+  "canonical": "tea__red_leaf_spot",
+  "crop": "tea",
+  "condition": "red_leaf_spot",
+  "label": "Tea - Red Leaf Spot",
+  "healthy": false
+ },
+ {
+  "code": "D2K",
+  "canonical": "tomato__bacterial_spot",
+  "crop": "tomato",
+  "condition": "bacterial_spot",
+  "label": "Tomato - Bacterial Spot",
+  "healthy": false
+ },
+ {
+  "code": "D2L",
+  "canonical": "tomato__early_blight",
+  "crop": "tomato",
+  "condition": "early_blight",
+  "label": "Tomato - Early Blight",
+  "healthy": false
+ },
+ {
+  "code": "D2M",
+  "canonical": "tomato__healthy",
+  "crop": "tomato",
+  "condition": "healthy",
+  "label": "Tomato - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D2N",
+  "canonical": "tomato__late_blight",
+  "crop": "tomato",
+  "condition": "late_blight",
+  "label": "Tomato - Late Blight",
+  "healthy": false
+ },
+ {
+  "code": "D2O",
+  "canonical": "tomato__leaf_mold",
+  "crop": "tomato",
+  "condition": "leaf_mold",
+  "label": "Tomato - Leaf Mold",
+  "healthy": false
+ },
+ {
+  "code": "D2P",
+  "canonical": "tomato__mosaic_virus",
+  "crop": "tomato",
+  "condition": "mosaic_virus",
+  "label": "Tomato - Mosaic Virus",
+  "healthy": false
+ },
+ {
+  "code": "D2Q",
+  "canonical": "tomato__rotten",
+  "crop": "tomato",
+  "condition": "rotten",
+  "label": "Tomato - Rotten",
+  "healthy": false
+ },
+ {
+  "code": "D2R",
+  "canonical": "tomato__septoria_leaf_spot",
+  "crop": "tomato",
+  "condition": "septoria_leaf_spot",
+  "label": "Tomato - Septoria Leaf Spot",
+  "healthy": false
+ },
+ {
+  "code": "D2S",
+  "canonical": "tomato__spider_mites",
+  "crop": "tomato",
+  "condition": "spider_mites",
+  "label": "Tomato - Spider Mites",
+  "healthy": false
+ },
+ {
+  "code": "D2T",
+  "canonical": "tomato__target_spot",
+  "crop": "tomato",
+  "condition": "target_spot",
+  "label": "Tomato - Target Spot",
+  "healthy": false
+ },
+ {
+  "code": "D2U",
+  "canonical": "tomato__yellow_leaf_curl_virus",
+  "crop": "tomato",
+  "condition": "yellow_leaf_curl_virus",
+  "label": "Tomato - Yellow Leaf Curl Virus",
+  "healthy": false
+ },
+ {
+  "code": "D2V",
+  "canonical": "wheat__brown_rust",
+  "crop": "wheat",
+  "condition": "brown_rust",
+  "label": "Wheat - Brown Rust",
+  "healthy": false
+ },
+ {
+  "code": "D2W",
+  "canonical": "wheat__healthy",
+  "crop": "wheat",
+  "condition": "healthy",
+  "label": "Wheat - Healthy",
+  "healthy": true
+ },
+ {
+  "code": "D2X",
+  "canonical": "wheat__septoria",
+  "crop": "wheat",
+  "condition": "septoria",
+  "label": "Wheat - Septoria",
+  "healthy": false
+ },
+ {
+  "code": "D2Y",
+  "canonical": "wheat__yellow_rust",
+  "crop": "wheat",
+  "condition": "yellow_rust",
+  "label": "Wheat - Yellow Rust",
+  "healthy": false
+ }
+]
