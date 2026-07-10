@@ -31,7 +31,9 @@ async function loadModel() {
     const head = await fetch("models/model.json", { method: "HEAD" });
     if (head.ok) {
       await import("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js");
-      model = await tf.loadLayersModel("models/model.json");
+      // accept either format the converter produces: LayersModel or GraphModel
+      model = await tf.loadLayersModel("models/model.json")
+        .catch(() => tf.loadGraphModel("models/model.json"));
       $("#modelStatus").textContent = "AI model ready ✓";
     } else throw 0;
   } catch {
