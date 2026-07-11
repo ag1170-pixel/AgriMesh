@@ -25,5 +25,12 @@ assert(!none.ok && none.error === "NO_STOCK");
 // garbage payload rejected, not routed
 assert.throws(() => parsePayload("hello world"), /INVALID_PAYLOAD/);
 
-console.log("all pass");
-console.log("sample:", JSON.stringify(route("D1Q ttnfu8r", "+919000000001"), null, 2));
+// SMS adapter: with no gateway env vars, must degrade to a safe logged mock,
+// never throw, never crash the request path.
+(async () => {
+  const { sendSMS } = require("./sms");
+  const s = await sendSMS("+919000000001", "R:1Q C:A D:2.5");
+  assert(s.ok && s.provider === "mock", "no gateway -> mock send");
+  console.log("all pass");
+  console.log("sample:", JSON.stringify(route("D1Q ttnfu8r", "+919000000001"), null, 2));
+})();

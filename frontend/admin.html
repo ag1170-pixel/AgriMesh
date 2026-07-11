@@ -24,6 +24,7 @@
       <section class="card">
         <h3>Simulate SMS <small class="hint">(TextBee fallback)</small></h3>
         <input id="simPayload" value="D1O ttnfu8r" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:8px 0" />
+        <input id="simFrom" value="+919812345678" placeholder="Farmer phone (reply goes here)" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:0 0 8px" />
         <button id="simBtn" class="primary">Run</button>
         <pre id="simOut" class="sms" style="white-space:pre-wrap"></pre>
       </section>
@@ -67,7 +68,7 @@
 
     $("#simBtn").onclick = async () => {
       const r = await fetch("/api/admin/simulate", { method: "POST", headers: H(),
-        body: JSON.stringify({ payload: $("#simPayload").value }) }).then((r) => r.json());
+        body: JSON.stringify({ payload: $("#simPayload").value, from: $("#simFrom").value }) }).then((r) => r.json());
       $("#simOut").textContent = JSON.stringify(r, null, 2);
       refresh();
     };

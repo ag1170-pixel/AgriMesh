@@ -8,6 +8,10 @@ archive*.zip
 node_modules/
 npm-debug.log*
 
+# Secrets — never commit real SMS/gateway keys (only .env.example is tracked)
+.env
+backend/.env
+
 # Trained model artifacts NOT meant to ship (raw Keras checkpoints, huge)
 model/saved_model.keras
 model/web_model/

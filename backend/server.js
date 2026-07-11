@@ -6,6 +6,7 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 const { route } = require("./core");
+const { sendSMS } = require("./sms");
 const { INVENTORY, NODES } = require("./graph");
 
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,10 @@ const labels = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "model", "l
 const LABEL = Object.fromEntries(labels.map((l) => [l.code, l.label]));
 
 const reports = []; // { code, label, farmer, start, center, distanceKm, ts }
+const logReport = (r) => reports.unshift({
+  code: r.code, label: LABEL[r.code] || r.code, farmer: r.farmer, start: r.start,
+  center: r.center, distanceKm: r.distanceKm, ts: new Date().toISOString(),
+});
 
 const app = express();
 app.use(cors());
@@ -30,16 +35,33 @@ const admin = (req, res, next) =>
 
 app.get("/api/health", (_req, res) => res.json({ ok: true, reports: reports.length }));
 
-// main farmer endpoint: parse payload -> route -> log
-app.post("/api/route", (req, res) => {
+// main farmer endpoint (web app): parse payload -> route -> log.
+// Optional `phone` also fires the reply SMS (mock unless a gateway is configured).
+app.post("/api/route", async (req, res) => {
   if ((req.query.key || req.body.key) !== API_KEY)
     return res.status(401).json({ ok: false, error: "BAD_KEY" });
   try {
     const r = route(req.body.payload, req.body.from || "web-user");
-    if (r.ok) reports.unshift({ code: r.code, label: LABEL[r.code] || r.code,
-      farmer: r.farmer, start: r.start, center: r.center, distanceKm: r.distanceKm,
-      ts: new Date().toISOString() });
-    res.json({ ...r, label: LABEL[r.code] || r.code });
+    if (r.ok) logReport(r);
+    const sms = r.ok && req.body.phone ? await sendSMS(req.body.phone, r.reply) : undefined;
+    res.json({ ...r, label: LABEL[r.code] || r.code, sms });
+  } catch (e) {
+    res.status(400).json({ ok: false, error: e.message });
+  }
+});
+
+// Inbound SMS webhook — a real gateway (TextBee) POSTs here when a farmer texts in,
+// OR the admin "Simulate incoming SMS" button posts here. Same path either way:
+// parse -> route -> log -> send the reply back over SMS to the sender.
+app.post("/api/sms/inbound", async (req, res) => {
+  if ((req.query.key || req.body.key) !== API_KEY)
+    return res.status(401).json({ ok: false, error: "BAD_KEY" });
+  const from = req.body.from || "unknown";
+  try {
+    const r = route(req.body.message ?? req.body.payload, from);
+    if (r.ok) logReport(r);
+    const sms = r.ok ? await sendSMS(from, r.reply) : { ok: false, skipped: "NO_ROUTE" };
+    res.json({ ...r, label: LABEL[r.code] || r.code, sms });
   } catch (e) {
     res.status(400).json({ ok: false, error: e.message });
   }
@@ -63,11 +85,15 @@ app.put("/api/admin/inventory", admin, (req, res) => {
   res.json({ ok: true, inventory: INVENTORY });
 });
 
-// TextBee fallback: run the exact same pipeline without a physical SMS
-app.post("/api/admin/simulate", admin, (req, res) => {
+// TextBee fallback: run the exact same pipeline without a physical inbound SMS.
+// If a `from` phone is given, it also fires the reply (mock unless a gateway is set),
+// so the panel demonstrates the full round-trip — the reliable, phone-free demo path.
+app.post("/api/admin/simulate", admin, async (req, res) => {
   try {
     const r = route(req.body.payload, req.body.from || "sim");
-    res.json({ ...r, label: LABEL[r.code] || r.code });
+    if (r.ok) logReport(r);
+    const sms = r.ok && req.body.from ? await sendSMS(req.body.from, r.reply) : undefined;
+    res.json({ ...r, label: LABEL[r.code] || r.code, sms });
   } catch (e) {
     res.status(400).json({ ok: false, error: e.message });
   }
