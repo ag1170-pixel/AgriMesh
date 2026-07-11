@@ -51,14 +51,15 @@ async function classify(imgEl, file) {
     const tf = window.tf;
     const x = tf.tidy(() => tf.browser.fromPixels(imgEl).resizeBilinear([224, 224]).toFloat().expandDims());
     const probs = await model.predict(x).data(); x.dispose();
-    let bi = 0; for (let i = 1; i < probs.length; i++) if (probs[i] > probs[bi]) bi = i;
-    return { label: labels[bi], conf: probs[bi] };
+    const top3 = [...probs.keys()].sort((a, b) => probs[b] - probs[a]).slice(0, 3)
+      .map((i) => ({ label: labels[i], conf: probs[i] }));
+    return { label: top3[0].label, conf: top3[0].conf, top3 };
   }
   // mock: deterministic by file size so the same photo always gives the same result
   const h = (file.size + file.name.length) % DEMO_CODES.length;
   const code = DEMO_CODES[h];
   const label = labels.find((l) => l.code === code) || labels[0];
-  return { label, conf: 0.9 + ((file.size % 9) / 100) };
+  return { label, conf: 0.9 + ((file.size % 9) / 100), top3: [{ label, conf: 0.9 }] };
 }
 
 // ---- image pick ----
@@ -78,13 +79,16 @@ drop.addEventListener("drop", (e) => { e.preventDefault(); e.dataTransfer.files[
 // ---- analyze ----
 $("#analyze").addEventListener("click", async () => {
   $("#analyze").disabled = true; $("#analyze").textContent = t("analyzing");
-  const { label, conf } = await classify(current.img, current.file);
+  const { label, conf, top3 } = await classify(current.img, current.file);
   $("#analyze").textContent = t("analyze");
   const rc = $("#resultCard"); rc.hidden = false;
   const pct = Math.round(conf * 100);
 
   if (conf < CONF_MIN) {
-    $("#result").innerHTML = `<div class="uncertain">⚠️ ${t("uncertain")}<br><small>${label.label} · ${pct}%</small></div>`;
+    // Uncertain — but still useful: show the top candidates for the officer to confirm.
+    const cands = top3.map((c) => `${c.label.label} (${Math.round(c.conf * 100)}%)`).join(" · ");
+    const lead = lang === "hi" ? "संभावित" : "Possible";
+    $("#result").innerHTML = `<div class="uncertain">⚠️ ${t("uncertain")}<br><small>${lead}: ${cands}</small></div>`;
     $("#locBox").hidden = true; return;
   }
   const healthy = label.healthy || label.condition === "rotten";
