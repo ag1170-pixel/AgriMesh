@@ -8,12 +8,12 @@ archive*.zip
 node_modules/
 npm-debug.log*
 
-# Trained model artifacts (regenerated from Colab; too big / binary)
+# Trained model artifacts NOT meant to ship (raw Keras checkpoints, huge)
 model/saved_model.keras
 model/web_model/
 model/*.h5
-frontend/models/model.json
-frontend/models/*.bin
+# NOTE: frontend/models/model.json + *.bin ARE committed on purpose — that's
+# the actual ~9MB deployed TF.js model the app loads. Don't ignore it.
 
 # Brainstorming source doc + scratch
 DeepSeek Conversation.docx
