@@ -3,6 +3,9 @@
 const $ = (s) => document.querySelector(s);
 let lang = "en", labels = [], model = null, current = null, mapObj = null, nodes = {};
 const DEMO_CODES = ["D1Q", "D1O", "D2N"]; // Potato Late/Early Blight, Tomato Late Blight — seeded in inventory
+// Below this confidence we escalate to "consult officer" instead of naming a disease.
+// 0.85 (not 0.80) because rice sub-classes confuse at ~0.83; better to defer than misadvise.
+const CONF_MIN = 0.85;
 
 // ---- geohash encode (matches backend/core.js decoder) ----
 const B32 = "0123456789bcdefghjkmnpqrstuvwxyz";
@@ -80,7 +83,7 @@ $("#analyze").addEventListener("click", async () => {
   const rc = $("#resultCard"); rc.hidden = false;
   const pct = Math.round(conf * 100);
 
-  if (conf < 0.8) {
+  if (conf < CONF_MIN) {
     $("#result").innerHTML = `<div class="uncertain">⚠️ ${t("uncertain")}<br><small>${label.label} · ${pct}%</small></div>`;
     $("#locBox").hidden = true; return;
   }
