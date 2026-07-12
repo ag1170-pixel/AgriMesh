@@ -4,8 +4,10 @@ Offline-first crop-disease detection → pesticide routing over SMS. The phone's
 AI reads the leaf; only an ~11-byte decision crosses the network (works on 2G).
 The image never travels — so the "can't fit a photo in an SMS" wall never applies.
 
-> **New here / taking over the project?** Read **[HANDOFF.md](HANDOFF.md)** — it has
-> the full status (done / left), architecture, how to deploy, and how to retrain.
+> **New here / taking over the project?**
+> - **[EXPLAIN.md](EXPLAIN.md)** — how it works & why, in plain English (start here).
+> - **[HANDOFF.md](HANDOFF.md)** — full status (done / left), architecture, deploy, retrain.
+> - **[AgriMesh_Pitch.pptx](AgriMesh_Pitch.pptx)** — the judge pitch deck.
 
 ## Run the demo (1 command)
 
