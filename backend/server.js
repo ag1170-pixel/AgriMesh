@@ -112,4 +112,10 @@ app.get("/api/nodes", (_req, res) => res.json(NODES)); // map needs coords
 // serve the static frontend from one origin (no CORS headaches in demo)
 app.use(express.static(path.join(__dirname, "..", "frontend")));
 
-app.listen(PORT, () => console.log(`AgriMesh on http://localhost:${PORT}`));
+// Run a real server locally (npm start); on Vercel the app is imported as a
+// serverless function instead. ponytail: in-memory state persists within a warm
+// instance — fine for a demo; add MongoDB (HANDOFF §P3) for true persistence.
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`AgriMesh on http://localhost:${PORT}`));
+}
+module.exports = app;
