@@ -62,6 +62,63 @@ async function classify(imgEl, file) {
   return { label, conf: 0.9 + ((file.size % 9) / 100), top3: [{ label, conf: 0.9 }] };
 }
 
+// ---- leaf-damage estimate: color analysis on canvas, runs offline, no model ----
+// This is the "high-pass / edge" image processing the pitch promised — used for
+// SEVERITY, not classification. Green = healthy leaf, brown/yellow = lesion.
+// ponytail: color-threshold heuristic; the HSV bands are the calibration knob.
+function rgb2hsv(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  let h = 0;
+  if (d) { h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; if (h < 0) h += 360; }
+  return [h, mx ? d / mx : 0, mx];
+}
+function estimateDamage(img) {
+  const N = 200, c = document.createElement("canvas"); c.width = c.height = N;
+  c.getContext("2d").drawImage(img, 0, 0, N, N);
+  const px = c.getContext("2d").getImageData(0, 0, N, N).data;
+  let green = 0, diseased = 0;
+  for (let i = 0; i < px.length; i += 4) {
+    const [h, s] = rgb2hsv(px[i], px[i + 1], px[i + 2]);
+    if (s < 0.15) continue;                    // gray/white background — skip
+    if (h >= 55 && h <= 175) green++;          // healthy green tissue
+    else if (s > 0.18) diseased++;             // saturated non-green = lesion (brown/yellow/red)
+  }
+  const leaf = green + diseased;
+  // Need a real green leaf to anchor the estimate. Skips fruit / non-leaf frames
+  // (e.g. a healthy apple is ~all fruit, no green) so we never invent a % there.
+  if (green < N * N * 0.12 || leaf < N * N * 0.04) return null;
+  const pct = Math.round((100 * diseased) / leaf);
+  return { pct, ...severity(pct) };
+}
+// severity band -> "how much to cut" advice (EN/HI)
+function severity(p) {
+  if (p < 10) return { color: "#22c55e",
+    band: { en: "Mild", hi: "मामूली" },
+    action: { en: "No cutting needed. Remove any spotted leaves and monitor for 3–4 days.",
+              hi: "काटने की ज़रूरत नहीं। धब्बेदार पत्तियाँ हटाएँ, 3–4 दिन निगरानी करें।" } };
+  if (p < 35) return { color: "#eab308",
+    band: { en: "Moderate", hi: "मध्यम" },
+    action: { en: "Prune the affected leaves now and spray the recommended pesticide.",
+              hi: "प्रभावित पत्तियाँ अभी काटें और अनुशंसित दवा छिड़कें।" } };
+  if (p < 60) return { color: "#f97316",
+    band: { en: "Severe", hi: "गंभीर" },
+    action: { en: "Cut back all affected leaves and treat immediately to stop spread.",
+              hi: "सभी प्रभावित पत्तियाँ काटें और फैलाव रोकने हेतु तुरंत उपचार करें।" } };
+  return { color: "#ef4444",
+    band: { en: "Critical", hi: "अत्यधिक गंभीर" },
+    action: { en: "Remove badly affected plants to save the rest; consult an officer.",
+              hi: "बाकी फ़सल बचाने हेतु बुरी तरह प्रभावित पौधे हटाएँ; अधिकारी से मिलें।" } };
+}
+function damageHTML(d) {
+  const title = lang === "hi" ? "पत्ती क्षति" : "Leaf damage";
+  return `<div class="dmg" style="margin-top:10px">
+    <div class="conf">${title}: <b>${d.pct}%</b> · <b style="color:${d.color}">${d.band[lang] || d.band.en}</b></div>
+    <div class="bar"><i style="width:${d.pct}%;background:${d.color}"></i></div>
+    <p style="margin:6px 0 0;font-size:.92rem">✂️ ${d.action[lang] || d.action.en}</p>
+  </div>`;
+}
+
 // ---- image pick ----
 function showImage(file) {
   const url = URL.createObjectURL(file);
@@ -97,7 +154,11 @@ $("#analyze").addEventListener("click", async () => {
       <div><h2>${label.label}</h2><div class="conf">${t("confidence") || "Confidence"}: ${pct}%</div></div></div>
     <div class="bar"><i style="width:${pct}%"></i></div>`;
   if (healthy) { $("#result").innerHTML += `<p>${t("healthy")}</p>`; $("#locBox").hidden = true; }
-  else { $("#locBox").hidden = false; current.label = label; }
+  else {
+    $("#locBox").hidden = false; current.label = label;
+    const dmg = estimateDamage(current.img);        // how much of the leaf is affected + cut advice
+    if (dmg) $("#result").innerHTML += damageHTML(dmg);
+  }
   rc.scrollIntoView({ behavior: "smooth" });
 });
 
