@@ -174,7 +174,9 @@ $("#findRoute").addEventListener("click", async () => {
   const card = $("#routeCard"); card.hidden = false;
   if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain">${t("noStock")}</div>`; drawMap(v, null, []); return; }
   const hindi = expandReply(res);
+  const pest = res.pesticide ? (res.pesticide[lang] || res.pesticide.en) : "";
   $("#routeInfo").innerHTML = `
+    <p class="pest">💊 <b>${lang === "hi" ? "दवा" : "Pesticide"}:</b> ${pest}</p>
     <div class="route-line">${res.path.map((p) => `<span class="n">${p.replace(/_/g, " ")}</span>`).join(" → ")}</div>
     <p><b>${t("nearest")}:</b> ${res.center.replace("_", " ")} · <b>${t("distance")}:</b> ${res.distanceKm} km · <b>${t("stock")}:</b> ${res.stockKg}kg</p>
     <div class="sms"><b>SMS →</b> ${res.reply}<br><small>${hindi}</small></div>`;
@@ -185,9 +187,10 @@ $("#findRoute").addEventListener("click", async () => {
 // short code reply -> full local text (this is why the SMS stays 1 segment)
 function expandReply(res) {
   const dis = res.label, ctr = res.center.replace("Center_", "");
+  const pest = res.pesticide ? (res.pesticide[lang] || res.pesticide.en) : (lang === "hi" ? "दवा" : "pesticide");
   return lang === "hi"
-    ? `${dis} की पुष्टि। दवा केंद्र ${ctr} पर उपलब्ध (${res.distanceKm} किमी)।`
-    : `${dis} confirmed. Pesticide available at Center ${ctr} (${res.distanceKm} km).`;
+    ? `${dis} की पुष्टि। ${pest} केंद्र ${ctr} पर उपलब्ध (${res.distanceKm} किमी)।`
+    : `${dis} confirmed. ${pest} at Center ${ctr} (${res.distanceKm} km).`;
 }
 
 // ---- map ----
