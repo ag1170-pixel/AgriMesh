@@ -200,12 +200,33 @@ function drawMap(startName, centerName, pathNames) {
   const pts = pathNames.map((p) => [nodes[p].lat, nodes[p].lng]);
   const s = nodes[startName];
   L.marker([s.lat, s.lng]).addTo(mapObj).bindPopup("🧑‍🌾 " + startName);
-  if (centerName) {
-    const c = nodes[centerName];
-    L.marker([c.lat, c.lng]).addTo(mapObj).bindPopup("🏪 " + centerName.replace("_", " "));
-    L.polyline(pts, { color: "#1b7a3d", weight: 5 }).addTo(mapObj);
-    mapObj.fitBounds(pts, { padding: [30, 30] });
-  } else mapObj.setView([s.lat, s.lng], 13);
+  if (!centerName) return mapObj.setView([s.lat, s.lng], 13);
+  const c = nodes[centerName];
+  L.marker([c.lat, c.lng]).addTo(mapObj).bindPopup("🏪 " + centerName.replace("_", " "));
+  // Provisional straight line (instant, and the offline fallback). Snapped to real
+  // roads by OSRM if online — the polyline then follows streets, not a diagonal.
+  let line = L.polyline(pts, { color: "#1b7a3d", weight: 4, opacity: 0.45, dashArray: "6 6" }).addTo(mapObj);
+  mapObj.fitBounds(pts, { padding: [30, 30] });
+  followRoads(pathNames).then((road) => {
+    if (!road) return;                       // offline / OSRM down -> keep the straight line
+    mapObj.removeLayer(line);
+    line = L.polyline(road, { color: "#1b7a3d", weight: 5 }).addTo(mapObj);
+    mapObj.fitBounds(road, { padding: [30, 30] });
+  });
+}
+
+// Snap the node waypoints to real roads via OSRM, return road geometry as [lat,lng][].
+// Returns null on any failure so the caller keeps the straight-line fallback.
+async function followRoads(pathNames) {
+  try {
+    const coords = pathNames.map((p) => `${nodes[p].lng},${nodes[p].lat}`).join(";");
+    const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
+    const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 4000);
+    const r = await fetch(url, { signal: ctrl.signal }); clearTimeout(timer);
+    const j = await r.json();
+    if (j.code !== "Ok") return null;
+    return j.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+  } catch { return null; }
 }
 
 // ---- lang toggle ----
