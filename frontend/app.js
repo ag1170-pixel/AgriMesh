@@ -53,7 +53,9 @@ async function classify(imgEl, file) {
   if (model && model !== "mock") {
     const tf = window.tf;
     const x = tf.tidy(() => tf.browser.fromPixels(imgEl).resizeBilinear([224, 224]).toFloat().expandDims());
-    const probs = await model.predict(x).data(); x.dispose();
+    const logits = model.predict(x);
+    const probs = await logits.data();
+    tf.dispose([x, logits]);      // dispose BOTH — the output tensor leaked GPU memory each run
     const top3 = [...probs.keys()].sort((a, b) => probs[b] - probs[a]).slice(0, 3)
       .map((i) => ({ label: labels[i], conf: probs[i] }));
     return { label: top3[0].label, conf: top3[0].conf, top3 };
@@ -123,14 +125,18 @@ function damageHTML(d) {
 }
 
 // ---- image pick ----
+let lastUrl = null;
 function showImage(file) {
-  const url = URL.createObjectURL(file);
-  const img = $("#preview"); img.src = url; img.hidden = false;
+  if (lastUrl) URL.revokeObjectURL(lastUrl);      // free the previous blob
+  const url = URL.createObjectURL(file); lastUrl = url;
+  const img = $("#preview"); img.hidden = false;
   img.onload = () => ($("#analyze").disabled = false);
+  img.src = url;
   current = { file, img };
   $("#resultCard").hidden = true; $("#routeCard").hidden = true;
 }
-$("#file").addEventListener("change", (e) => e.target.files[0] && showImage(e.target.files[0]));
+// reset value after each pick so re-selecting the SAME file still fires change
+$("#file").addEventListener("change", (e) => { const f = e.target.files[0]; if (f) showImage(f); e.target.value = ""; });
 const drop = $("#drop");
 ["dragover", "dragenter"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
 ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove("over")));
