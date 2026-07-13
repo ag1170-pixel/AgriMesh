@@ -6,7 +6,7 @@
       "src": "backend/server.js",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["frontend/**", "model/labels.json", "backend/pesticides.csv"]
+        "includeFiles": ["frontend/**", "model/**", "backend/*.csv"]
       }
     }
   ],
