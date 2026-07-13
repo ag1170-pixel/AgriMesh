@@ -27,21 +27,24 @@ function applyLang() {
   document.documentElement.lang = lang;
 }
 
-// ---- model load: real if present, else deterministic mock ----
+// ---- model load: local files if present, else the CDN mirror, else mock ----
+// The CDN (jsDelivr, tracking the committed model on GitHub) lets a lightweight
+// serverless deploy — one that ships no 9 MB binary — still run the REAL model.
+const CDN_MODELS = "https://cdn.jsdelivr.net/gh/ag1170-pixel/AgriMesh@main/frontend/models";
 async function loadModel() {
-  labels = await fetch("models/labels.json").then((r) => r.json());
+  let base = "models";
+  try { const h = await fetch("models/model.json", { method: "HEAD" }); if (!h.ok) base = CDN_MODELS; }
+  catch { base = CDN_MODELS; }
+  labels = await fetch(base + "/labels.json").then((r) => r.json());
   try {
-    const head = await fetch("models/model.json", { method: "HEAD" });
-    if (head.ok) {
-      await import("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js");
-      // accept either format the converter produces: LayersModel or GraphModel
-      model = await tf.loadLayersModel("models/model.json")
-        .catch(() => tf.loadGraphModel("models/model.json"));
-      $("#modelStatus").textContent = "AI model ready ✓";
-    } else throw 0;
+    await import("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js");
+    // accept either format the converter produces: LayersModel or GraphModel
+    model = await tf.loadLayersModel(base + "/model.json")
+      .catch(() => tf.loadGraphModel(base + "/model.json"));
+    $("#modelStatus").textContent = "AI model ready ✓";
   } catch {
     model = "mock";
-    $("#modelStatus").textContent = "Demo model ready ✓ (drop real model.json to go live)";
+    $("#modelStatus").textContent = "Demo model ready ✓";
   }
   $("#analyze").disabled = true; // enabled after an image is chosen
 }
