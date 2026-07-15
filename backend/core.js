@@ -109,16 +109,31 @@ function route(raw, senderPhone = "unknown") {
     return {
       ok: false, error: "OUT_OF_SERVICE_AREA", code,
       nearestVillage: start, nearestVillageKm: +snapKm.toFixed(1),
+      lat, lng, // precise reading, so the map can still plot "you are here" honestly
     };
   }
 
   const r = nearestStockedCenter(start, code);
-  if (!r) return { ok: false, error: "NO_STOCK", code, start };
+  if (!r) return { ok: false, error: "NO_STOCK", code, start, lat, lng };
+
+  // The Dijkstra path only covers node-to-node distance across the fixed road
+  // graph (start village -> ... -> shop). It does NOT include the gap between
+  // the farmer's ACTUAL coordinate and that start village -- for a manually
+  // picked village that gap is ~0 (the payload IS that village's coordinate),
+  // but for a real GPS reading it can be a genuine last-mile distance. Folding
+  // it in gives a total that reflects the real starting point, not just the
+  // internal graph segment; the shop-end coordinate was already exact.
+  const lastMileKm = +km({ lat, lng }, NODES[start]).toFixed(1);
+  const totalKm = +(lastMileKm + r.distanceKm).toFixed(1);
+
   return {
-    ok: true, code, farmer: senderPhone, start,
+    ok: true, code, farmer: senderPhone, start, lat, lng,
     ...r,
+    graphKm: r.distanceKm,     // node-to-node segment only, for transparency
+    lastMileKm,                // true-location -> nearest road-network node
+    distanceKm: totalKm,       // precise coordinate -> exact shop coordinate, end to end
     // short code reply -> 1 GSM-7 SMS (Hindi expansion happens client/poster side)
-    reply: `R:${code.slice(1)} C:${r.center.replace("Center_", "")} D:${r.distanceKm}`,
+    reply: `R:${code.slice(1)} C:${r.center.replace("Center_", "")} D:${totalKm}`,
   };
 }
 

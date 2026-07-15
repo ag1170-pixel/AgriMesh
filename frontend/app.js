@@ -287,26 +287,34 @@ $("#findRoute").addEventListener("click", async () => {
 
   const card = $("#routeCard"); reveal(card);
   $("#smsStatus").textContent = ""; $("#smsStatus").className = "sms-status";
+  // The precise coordinate actually sent (real GPS if located, else the exact
+  // stored coordinate of the picked village) — used to plot "you are here" at
+  // the true point rather than at whichever graph node it snapped to.
+  const preciseYou = (res.lat != null && res.lng != null) ? { lat: res.lat, lng: res.lng } : n;
   if (!res.ok && res.error === "OUT_OF_SERVICE_AREA") {
     // Honest failure: real GPS was too far from this pilot district's road
-    // graph to route meaningfully — say so instead of faking a route.
+    // graph to route meaningfully — say so instead of faking a route, but
+    // still show the true location so it's clear WHY it's out of range.
     $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("outOfArea"))}</div>`;
-    drawMap(res.nearestVillage || $("#village").value, null, []);
+    drawMap(res.nearestVillage || $("#village").value, null, [], preciseYou);
     return;
   }
   const startNode = res.start || $("#village").value;   // backend's nearest-node snap of the GPS
-  if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("noStock"))}</div>`; drawMap(startNode, null, []); return; }
+  if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("noStock"))}</div>`; drawMap(startNode, null, [], preciseYou); return; }
   const hindi = expandReply(res);
   const pest = res.pesticide ? (res.pesticide[lang] || res.pesticide.en) : "";
   const sent = !res.sms ? "" : res.sms.provider === "mock"
     ? "Demo mode — add TextBee keys to send a real SMS"
     : `Sent to ${esc(phone)}`;
+  // distanceKm is now precise-coordinate -> exact shop coordinate, end to end
+  // (last-mile from your real point to the road network + the road-network
+  // distance to the shop) rather than just the internal graph segment.
   $("#routeInfo").innerHTML = `
     <p class="pest"><b>${lang === "hi" ? "दवा" : "Pesticide"}:</b> ${esc(pest)}</p>
     <div class="route-line">${res.path.map((p) => `<span class="n">${esc(p.replace(/_/g, " "))}</span>`).join(" &rarr; ")}</div>
     <p><b>${esc(t("nearest"))}:</b> ${esc(res.center.replace("_", " "))} &middot; <b>${esc(t("distance"))}:</b> ${res.distanceKm} km &middot; <b>${esc(t("stock"))}:</b> ${res.stockKg}kg</p>
     <div class="sms reveal"><b>SMS &rarr;</b> ${esc(res.reply)}<br><small>${esc(hindi)}</small>${sent ? `<br><small style="color:#8ef0a6">${esc(sent)}</small>` : ""}</div>`;
-  drawMap(startNode, res.center, res.path);
+  drawMap(startNode, res.center, res.path, preciseYou);
   card.scrollIntoView({ behavior: "smooth" });
 });
 
@@ -320,24 +328,44 @@ function expandReply(res) {
 }
 
 // ---- map ----
-function drawMap(startName, centerName, pathNames) {
+// `precise` is the ACTUAL coordinate sent (real device GPS, or the exact
+// stored point of a manually picked village) — plotted as "you are here" in
+// place of the snapped graph node, so the pin always reflects where you truly
+// are, not an approximation. `startName` is still used to anchor the
+// road-network portion of the route, since Dijkstra only knows fixed nodes.
+function drawMap(startName, centerName, pathNames, precise) {
   if (!mapObj) { mapObj = L.map("map"); L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 17, attribution: "&copy; OSM" }).addTo(mapObj); }
   mapObj.eachLayer((l) => l instanceof L.Marker || l instanceof L.Polyline ? mapObj.removeLayer(l) : 0);
   const pts = pathNames.map((p) => [nodes[p].lat, nodes[p].lng]);
-  const s = nodes[startName];
-  L.marker([s.lat, s.lng]).addTo(mapObj).bindPopup(esc(startName) + " (you)");
-  if (!centerName) return mapObj.setView([s.lat, s.lng], 13);
+  const node = nodes[startName];
+  const you = precise || node; // fall back to the node if no precise reading was passed
+  const allBounds = [[you.lat, you.lng]];
+
+  L.marker([you.lat, you.lng]).addTo(mapObj).bindPopup(lang === "hi" ? "आपका सटीक स्थान" : "Your precise location");
+
+  // If the precise point differs meaningfully from the snapped node, show the
+  // "last mile" honestly as a distinct short segment rather than silently
+  // treating the node as if it were where you actually are standing.
+  const lastMile = precise && (Math.abs(precise.lat - node.lat) > 0.0005 || Math.abs(precise.lng - node.lng) > 0.0005);
+  if (lastMile) {
+    L.polyline([[you.lat, you.lng], [node.lat, node.lng]], { color: "#6b7a63", weight: 3, opacity: 0.7, dashArray: "2 8" }).addTo(mapObj);
+    L.circleMarker([node.lat, node.lng], { radius: 4, color: "#6b7a63", fillOpacity: 1 })
+      .addTo(mapObj).bindPopup((lang === "hi" ? "निकटतम सड़क बिंदु: " : "Nearest road-network point: ") + esc(startName));
+  }
+
+  if (!centerName) return mapObj.setView([you.lat, you.lng], 13);
   const c = nodes[centerName];
-  L.marker([c.lat, c.lng]).addTo(mapObj).bindPopup(esc(centerName.replace("_", " ")) + " (supply center)");
+  allBounds.push([c.lat, c.lng]);
+  L.marker([c.lat, c.lng]).addTo(mapObj).bindPopup(esc(centerName.replace("_", " ")) + (lang === "hi" ? " (आपूर्ति केंद्र, सटीक)" : " (supply center, exact coordinate)"));
   // Provisional straight line (instant, and the offline fallback). Snapped to real
   // roads by OSRM if online — the polyline then follows streets, not a diagonal.
   let line = L.polyline(pts, { color: "#1b7a3d", weight: 4, opacity: 0.45, dashArray: "6 6" }).addTo(mapObj);
-  mapObj.fitBounds(pts, { padding: [30, 30] });
+  mapObj.fitBounds([...allBounds, ...pts], { padding: [30, 30] });
   followRoads(pathNames).then((road) => {
     if (!road) return;                       // offline / OSRM down -> keep the straight line
     mapObj.removeLayer(line);
     line = L.polyline(road, { color: "#1b7a3d", weight: 5 }).addTo(mapObj);
-    mapObj.fitBounds(road, { padding: [30, 30] });
+    mapObj.fitBounds([...allBounds, ...road], { padding: [30, 30] });
   });
 }
 
