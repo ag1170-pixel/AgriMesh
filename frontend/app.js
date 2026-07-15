@@ -220,41 +220,57 @@ drop.addEventListener("drop", (e) => { e.preventDefault(); e.dataTransfer.files[
 
 // ---- analyze ----
 $("#analyze").addEventListener("click", async () => {
-  $("#analyze").disabled = true; $("#analyze").textContent = t("analyzing");
-  const { label, conf, top3 } = await classify(current.img, current.file);
-  $("#analyze").textContent = t("analyze");
-  const rc = $("#resultCard"); reveal(rc);
-  $("#details").innerHTML = ""; $("#locBox").hidden = true; lastDetailCode = null;
-  const pct1 = (conf * 100).toFixed(1);
-  const margin = conf - (top3[1]?.conf || 0);
+  const btn = $("#analyze");
+  btn.disabled = true; btn.textContent = t("analyzing");
+  try {
+    const { label, conf, top3 } = await classify(current.img, current.file);
+    const rc = $("#resultCard"); reveal(rc);
+    $("#details").innerHTML = ""; $("#locBox").hidden = true; lastDetailCode = null;
+    const pct1 = (conf * 100).toFixed(1);
+    const margin = conf - (top3[1]?.conf || 0);
 
-  // 1. Invalid capture: an explicit "background" class (once the model has one), or a
-  //    near-random top-1 with no clear winner = probably not a leaf. The heuristic is
-  //    the approximation until the background class ships (see model/build_notebook.py).
-  if (label.condition === "background" || conf < 0.40 || (conf < 0.55 && margin < 0.12)) {
-    $("#result").innerHTML = `<div class="uncertain reveal">${esc(t("noLeaf"))}</div>`;
-    return;
+    // 1. Invalid capture: an explicit "background" class (once the model has one), or a
+    //    near-random top-1 with no clear winner = probably not a leaf. The heuristic is
+    //    the approximation until the background class ships (see model/build_notebook.py).
+    if (label.condition === "background" || conf < 0.40 || (conf < 0.55 && margin < 0.12)) {
+      $("#result").innerHTML = `<div class="uncertain reveal">${esc(t("noLeaf"))}</div>`;
+      return;
+    }
+    // 2. Plausible but not sure: ranked candidates for the officer to confirm.
+    if (conf < CONF_MIN) {
+      const cands = top3.map((c) => `${esc(c.label.label)} (${(c.conf * 100).toFixed(1)}%)`).join(" &middot; ");
+      $("#result").innerHTML = `<div class="uncertain reveal">${esc(t("uncertain"))}<br><small>${lang === "hi" ? "संभावित" : "Possible"}: ${cands}</small></div>`;
+      return;
+    }
+    // 3. Confident diagnosis — name + exact confidence + symptoms/management details.
+    const healthy = label.healthy || label.condition === "rotten";
+    $("#result").innerHTML = `
+      <div class="diag reveal"><span class="status-dot ${healthy ? "is-healthy" : "is-disease"}"></span>
+        <div><h2>${esc(label.label)}</h2><div class="conf"><b>${pct1}%</b> ${lang === "hi" ? "विश्वास" : "confident"}</div></div></div>
+      <div class="bar"><i style="width:${pct1}%"></i></div>`;
+    showDetails(label.code);
+    if (healthy) { $("#result").innerHTML += `<p>${esc(t("healthy"))}</p>`; }
+    else {
+      $("#locBox").hidden = false; current.label = label;
+      const dmg = estimateDamage(current.img);        // how much of the leaf is affected + cut advice
+      if (dmg) $("#result").innerHTML += damageHTML(dmg);
+    }
+    rc.scrollIntoView({ behavior: "smooth" });
+  } catch (err) {
+    // Never leave the button stuck on "Analyzing…" — surface the failure and
+    // let the farmer retry immediately instead of being silently blocked.
+    console.error("[analyze] classification failed:", err);
+    reveal($("#resultCard"));
+    $("#result").innerHTML = `<div class="uncertain reveal">${
+      lang === "hi"
+        ? "विश्लेषण विफल हुआ। कृपया दोबारा कोशिश करें या कोई और फोटो चुनें।"
+        : "Analysis failed. Please try again, or pick a different photo."
+    }</div>`;
+  } finally {
+    // Always restore the button — regardless of success, a handled "uncertain"
+    // result, or an outright error — so the UI can never get permanently stuck.
+    btn.disabled = false; btn.textContent = t("analyze");
   }
-  // 2. Plausible but not sure: ranked candidates for the officer to confirm.
-  if (conf < CONF_MIN) {
-    const cands = top3.map((c) => `${esc(c.label.label)} (${(c.conf * 100).toFixed(1)}%)`).join(" &middot; ");
-    $("#result").innerHTML = `<div class="uncertain reveal">${esc(t("uncertain"))}<br><small>${lang === "hi" ? "संभावित" : "Possible"}: ${cands}</small></div>`;
-    return;
-  }
-  // 3. Confident diagnosis — name + exact confidence + symptoms/management details.
-  const healthy = label.healthy || label.condition === "rotten";
-  $("#result").innerHTML = `
-    <div class="diag reveal"><span class="status-dot ${healthy ? "is-healthy" : "is-disease"}"></span>
-      <div><h2>${esc(label.label)}</h2><div class="conf"><b>${pct1}%</b> ${lang === "hi" ? "विश्वास" : "confident"}</div></div></div>
-    <div class="bar"><i style="width:${pct1}%"></i></div>`;
-  showDetails(label.code);
-  if (healthy) { $("#result").innerHTML += `<p>${esc(t("healthy"))}</p>`; }
-  else {
-    $("#locBox").hidden = false; current.label = label;
-    const dmg = estimateDamage(current.img);        // how much of the leaf is affected + cut advice
-    if (dmg) $("#result").innerHTML += damageHTML(dmg);
-  }
-  rc.scrollIntoView({ behavior: "smooth" });
 });
 
 // symptoms + management panel (shared by the result card and the library page)
