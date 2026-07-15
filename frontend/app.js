@@ -201,17 +201,52 @@ document.querySelectorAll(".demo").forEach((b) => b.addEventListener("click", as
 }));
 
 // real GPS: find the farmer's actual location; backend snaps it to the nearest node
-let gpsCoords = null;
+let gpsCoords = null, gpsAccuracyM = null;
+function updateGpsStatus() {
+  const st = $("#gpsStatus");
+  const acc = gpsAccuracyM != null ? ` &middot; ${lang === "hi" ? "सटीकता" : "accuracy"} ~${Math.round(gpsAccuracyM)}m` : "";
+  st.innerHTML = `${gpsCoords.lat.toFixed(5)}, ${gpsCoords.lng.toFixed(5)}${acc} ${lang === "hi" ? "(आपका स्थान — नक्शे पर पिन को खींचकर ठीक करें)" : "(your location — drag the pin on the map below to correct it)"}`;
+}
 $("#gps").addEventListener("click", () => {
   const st = $("#gpsStatus");
   if (!navigator.geolocation) return void (st.textContent = "GPS not available on this device.");
   st.textContent = lang === "hi" ? "स्थान खोज रहे हैं…" : "Locating…";
   navigator.geolocation.getCurrentPosition(
-    (pos) => { gpsCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      st.textContent = `${gpsCoords.lat.toFixed(4)}, ${gpsCoords.lng.toFixed(4)} ${lang === "hi" ? "(आपका स्थान)" : "(your location)"}`; },
+    (pos) => {
+      gpsCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      gpsAccuracyM = pos.coords.accuracy; // meters — browsers without a real GPS chip (most
+      // desktops/laptops) fall back to WiFi/IP-based positioning, which can be off by a lot,
+      // especially where that database is sparse. Showing this honestly, rather than pretending
+      // GPS-grade precision, is the difference between a trustworthy reading and a silent guess.
+      updateGpsStatus();
+      previewLocation(); // let the farmer SEE and correct the pin before routing off of it
+    },
     () => { st.textContent = lang === "hi" ? "स्थान नहीं मिला — नीचे गाँव चुनें।" : "Couldn't get location — pick a village below."; },
-    { enableHighAccuracy: true, timeout: 8000 }
+    { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 } // maximumAge:0 forces a FRESH
+    // reading every time instead of letting the browser silently reuse a stale cached fix —
+    // a stale fix from an earlier location is a real, common cause of "the app has the wrong
+    // location" that has nothing to do with app logic.
   );
+});
+
+// Show the captured point immediately (map + accuracy circle), before any routing happens,
+// and let the farmer drag the pin to the correct spot if the auto-detected one is off.
+function previewLocation() {
+  const card = $("#routeCard"); reveal(card);
+  $("#routeInfo").innerHTML = "";
+  drawMap(null, null, [], gpsCoords, gpsAccuracyM, true);
+}
+
+// Manually picking a village is a deliberate override of GPS — e.g. GPS put you
+// outside the pilot area, or picked up the wrong location. Without this, a
+// stale gpsCoords from an earlier "Get my location" click would silently keep
+// winning (`gpsCoords || village`) no matter what the farmer selects here,
+// making the dropdown look completely broken.
+$("#village").addEventListener("change", () => {
+  gpsCoords = null;
+  gpsAccuracyM = null;
+  const st = $("#gpsStatus");
+  if (st) st.textContent = "";
 });
 const drop = $("#drop");
 ["dragover", "dragenter"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
@@ -303,6 +338,11 @@ $("#findRoute").addEventListener("click", async () => {
 
   const card = $("#routeCard"); reveal(card);
   $("#smsStatus").textContent = ""; $("#smsStatus").className = "sms-status";
+  // Only offer "Send SMS" when there's an actual route to send — otherwise the
+  // button just looks broken (visible + clickable, but every send silently
+  // fails the same out-of-area/no-stock check the original request just hit).
+  $("#smsBox").hidden = !res.ok;
+  if (!res.ok) lastPayload = null;
   // The precise coordinate actually sent (real GPS if located, else the exact
   // stored coordinate of the picked village) — used to plot "you are here" at
   // the true point rather than at whichever graph node it snapped to.
@@ -310,13 +350,16 @@ $("#findRoute").addEventListener("click", async () => {
   if (!res.ok && res.error === "OUT_OF_SERVICE_AREA") {
     // Honest failure: real GPS was too far from this pilot district's road
     // graph to route meaningfully — say so instead of faking a route, but
-    // still show the true location so it's clear WHY it's out of range.
-    $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("outOfArea"))}</div>`;
-    drawMap(res.nearestVillage || $("#village").value, null, [], preciseYou);
+    // still show the true location so it's clear WHY it's out of range. This
+    // demo's road/inventory data covers exactly one fictional pilot district —
+    // no real GPS location outside it (anywhere else in India included) will
+    // ever route, regardless of how accurate that GPS reading is.
+    $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("outOfArea"))}${res.nearestVillageKm ? `<br><small>${lang === "hi" ? "पायलट क्षेत्र से दूरी" : "Distance from the pilot area"}: ~${res.nearestVillageKm} km</small>` : ""}</div>`;
+    drawMap(res.nearestVillage || $("#village").value, null, [], preciseYou, gpsCoords === n ? gpsAccuracyM : null, !!gpsCoords);
     return;
   }
   const startNode = res.start || $("#village").value;   // backend's nearest-node snap of the GPS
-  if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("noStock"))}</div>`; drawMap(startNode, null, [], preciseYou); return; }
+  if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("noStock"))}</div>`; drawMap(startNode, null, [], preciseYou, gpsCoords === n ? gpsAccuracyM : null); return; }
   const hindi = expandReply(res);
   const pest = res.pesticide ? (res.pesticide[lang] || res.pesticide.en) : "";
   const sent = !res.sms ? "" : res.sms.provider === "mock"
@@ -330,7 +373,7 @@ $("#findRoute").addEventListener("click", async () => {
     <div class="route-line">${res.path.map((p) => `<span class="n">${esc(p.replace(/_/g, " "))}</span>`).join(" &rarr; ")}</div>
     <p><b>${esc(t("nearest"))}:</b> ${esc(res.center.replace("_", " "))} &middot; <b>${esc(t("distance"))}:</b> ${res.distanceKm} km &middot; <b>${esc(t("stock"))}:</b> ${res.stockKg}kg</p>
     <div class="sms reveal"><b>SMS &rarr;</b> ${esc(res.reply)}<br><small>${esc(hindi)}</small>${sent ? `<br><small style="color:#8ef0a6">${esc(sent)}</small>` : ""}</div>`;
-  drawMap(startNode, res.center, res.path, preciseYou);
+  drawMap(startNode, res.center, res.path, preciseYou, gpsCoords === n ? gpsAccuracyM : null);
   card.scrollIntoView({ behavior: "smooth" });
 });
 
@@ -344,20 +387,47 @@ function expandReply(res) {
 }
 
 // ---- map ----
-// `precise` is the ACTUAL coordinate sent (real device GPS, or the exact
-// stored point of a manually picked village) — plotted as "you are here" in
-// place of the snapped graph node, so the pin always reflects where you truly
-// are, not an approximation. `startName` is still used to anchor the
-// road-network portion of the route, since Dijkstra only knows fixed nodes.
-function drawMap(startName, centerName, pathNames, precise) {
+// `precise` is the ACTUAL coordinate (real device GPS, or the exact stored
+// point of a manually picked village) — plotted as "you are here" in place of
+// the snapped graph node, so the pin always reflects where you truly are, not
+// an approximation. `startName` anchors the road-network portion of the route
+// (Dijkstra only knows fixed nodes) and may be null for a location-only
+// preview, before any route has been computed. `accuracyM` (meters) draws an
+// honest uncertainty circle instead of implying GPS-grade precision that
+// desktop/WiFi-based positioning often can't actually deliver. `draggable`
+// lets the farmer manually correct the pin if the auto-detected fix is off —
+// standard practice in any serious location-based app, not just a nicety.
+function drawMap(startName, centerName, pathNames, precise, accuracyM, draggable) {
   if (!mapObj) { mapObj = L.map("map"); L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 17, attribution: "&copy; OSM" }).addTo(mapObj); }
-  mapObj.eachLayer((l) => l instanceof L.Marker || l instanceof L.Polyline ? mapObj.removeLayer(l) : 0);
+  mapObj.eachLayer((l) => (l instanceof L.Marker || l instanceof L.Polyline || l instanceof L.Circle || l instanceof L.CircleMarker) ? mapObj.removeLayer(l) : 0);
   const pts = pathNames.map((p) => [nodes[p].lat, nodes[p].lng]);
-  const node = nodes[startName];
-  const you = precise || node; // fall back to the node if no precise reading was passed
+  const node = startName ? nodes[startName] : null;
+  const you = precise || node; // fall back to the node only if no precise reading exists at all
   const allBounds = [[you.lat, you.lng]];
 
-  L.marker([you.lat, you.lng]).addTo(mapObj).bindPopup(lang === "hi" ? "आपका सटीक स्थान" : "Your precise location");
+  const youMarker = L.marker([you.lat, you.lng], { draggable: !!draggable })
+    .addTo(mapObj).bindPopup(lang === "hi" ? "आपका सटीक स्थान" : "Your precise location");
+
+  // Honest uncertainty circle instead of a falsely-precise pin. A WiFi/IP-based
+  // fix can easily be off by hundreds of meters to a few km — showing that
+  // range is what a trustworthy map does; hiding it is what creates the "the
+  // app got my location wrong" surprise.
+  if (accuracyM) {
+    L.circle([you.lat, you.lng], { radius: accuracyM, color: "#2E86AB", weight: 1, fillOpacity: 0.08 }).addTo(mapObj);
+  }
+
+  if (draggable) {
+    youMarker.on("dragend", (e) => {
+      const { lat, lng } = e.target.getLatLng();
+      gpsCoords = { lat, lng };
+      gpsAccuracyM = null; // a manual correction is more trustworthy than the device's own estimate
+      updateGpsStatus();
+      drawMap(startName, centerName, pathNames, gpsCoords, null, true);
+    });
+  }
+
+  // Preview-only call (no route requested yet) — just show the point, nothing to route to.
+  if (!node) return mapObj.setView([you.lat, you.lng], 13);
 
   // If the precise point differs meaningfully from the snapped node, show the
   // "last mile" honestly as a distinct short segment rather than silently
