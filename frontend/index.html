@@ -3,15 +3,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>AgriMesh</title>
+  <title>AgriMesh — Crop Disease Detection</title>
+  <meta name="description" content="Offline-first crop disease detection with AI. Diagnose leaf diseases, find nearby pesticide centers, get SMS routing — all from your phone." />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1b7a3d" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' blob: data: https:; connect-src 'self' https://cdn.jsdelivr.net https://router.project-osrm.org" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1>🌱 <span data-t="appTitle">AgriMesh</span></h1>
+    <div class="header-brand">
+      <img src="logo.png" alt="AgriMesh Logo" class="header-logo" />
+      <h1><span data-t="appTitle">AgriMesh</span></h1>
+    </div>
     <button id="lang" class="ghost">हिंदी</button>
   </header>
 
@@ -20,17 +25,17 @@
     <section id="uploadCard" class="card">
       <p class="hint" data-t="uploadHint">Upload a leaf photo to detect crop disease</p>
       <div id="drop" class="drop">
-        <span data-t="uploadTitle">📷 Drag a leaf photo here, or:</span>
+        <span data-t="uploadTitle">Drag a leaf photo here, or:</span>
         <div class="uploadbtns">
-          <label class="upbtn"><input type="file" class="filein" accept="image/*" capture="environment" hidden /><span data-t="takePhoto">📷 Take Photo</span></label>
-          <label class="upbtn"><input type="file" class="filein" accept="image/*" hidden /><span data-t="chooseGallery">🖼️ Choose from Gallery</span></label>
+          <label class="upbtn"><input type="file" class="filein" accept="image/*" capture="environment" hidden /><span data-t="takePhoto">Take Photo</span></label>
+          <label class="upbtn upbtn-secondary"><input type="file" class="filein" accept="image/*" hidden /><span data-t="chooseGallery">Choose from Gallery</span></label>
         </div>
       </div>
       <div class="demorow">
         <span class="demolabel" data-t="tryDemo">Or try a sample:</span>
-        <button class="demo" data-img="corn_rust">🌽 Corn Rust</button>
-        <button class="demo" data-img="grape_blackrot">🍇 Grape Black Rot</button>
-        <button class="demo" data-img="potato_early">🥔 Potato Blight</button>
+        <button class="demo" data-img="corn_rust">Corn Rust</button>
+        <button class="demo" data-img="grape_blackrot">Grape Black Rot</button>
+        <button class="demo" data-img="potato_early">Potato Blight</button>
       </div>
       <img id="preview" alt="" hidden />
       <div id="modelStatus" class="status">Loading AI model…</div>
@@ -42,11 +47,14 @@
       <div id="result"></div>
       <div id="details"></div>
       <div id="locBox" hidden>
-        <label data-t="selectVillage">Your location</label>
-        <button id="gps" class="gpsbtn" data-t="useGps">📍 Use my location</button>
+        <div class="loc-header">
+          <label data-t="selectVillage">Your location</label>
+        </div>
+        <button id="gps" class="gpsbtn" data-t="useGps">Use my location</button>
         <div id="gpsStatus" class="status"></div>
+        <div id="nearbyCenters" hidden></div>
         <select id="village"></select>
-        <input id="phone" type="tel" placeholder="📱 Your phone (optional — get the SMS)" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:8px 0" />
+        <input id="phone" type="tel" placeholder="Your phone (optional — receive SMS)" autocomplete="tel" inputmode="numeric" pattern="[0-9]*" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:8px 0" />
         <button id="findRoute" class="primary" data-t="sendReport">Send Report &amp; Find Route</button>
       </div>
     </section>
@@ -57,11 +65,14 @@
       <div id="routeInfo"></div>
     </section>
 
-    <p class="admin"><a href="library.html" data-t="libraryLink">📖 Disease library</a> · <a href="admin.html">Admin →</a></p>
+    <nav class="admin">
+      <a href="library.html" data-t="libraryLink">Disease Library</a>
+      <span class="admin-sep">·</span>
+      <a href="admin.html">Admin</a>
+    </nav>
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <!-- TF.js loaded lazily only if a real model exists (see app.js) -->
   <script src="translations.js"></script>
   <script src="app.js"></script>
 </body>

@@ -7,7 +7,13 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header><h1>🛠️ AgriMesh Admin</h1><a href="index.html" class="ghost" style="text-decoration:none">← App</a></header>
+  <header>
+    <div class="header-brand">
+      <img src="logo.png" alt="AgriMesh Logo" class="header-logo" />
+      <h1>AgriMesh Admin</h1>
+    </div>
+    <a href="index.html" class="ghost" style="text-decoration:none">&larr; App</a>
+  </header>
   <main>
     <section id="loginCard" class="card">
       <label>Password</label>
@@ -18,7 +24,7 @@
 
     <div id="panel" hidden>
       <section class="card">
-        <h3>Inventory <small class="hint">(edit stock → watch routing change)</small></h3>
+        <h3>Inventory <small class="hint">(edit stock &rarr; watch routing change)</small></h3>
         <div id="inv"></div>
       </section>
       <section class="card">
@@ -34,14 +40,14 @@
       </section>
 
       <section class="card">
-        <h3>🎛️ Damage Analysis Tuning <small class="hint">(leaf-damage color thresholds)</small></h3>
-        <p class="hint" style="margin:0 0 10px">Adjust the hue/saturation thresholds used by the leaf-damage estimate. Changes are reflected in the "Copy tuned URL" link — share it with field staff for calibrated diagnostics.</p>
+        <h3>Damage Analysis Tuning <small class="hint">(leaf-damage color thresholds)</small></h3>
+        <p class="hint" style="margin:0 0 10px">Adjust the hue/saturation thresholds used by the leaf-damage estimate. Changes are reflected in the "Copy tuned URL" link &mdash; share it with field staff for calibrated diagnostics.</p>
         <div class="slider-group">
-          <label>Green hue low <span id="vGreenLo">55</span>°</label>
+          <label>Green hue low <span id="vGreenLo">55</span>&deg;</label>
           <input type="range" id="sGreenLo" min="30" max="100" value="55" />
         </div>
         <div class="slider-group">
-          <label>Green hue high <span id="vGreenHi">175</span>°</label>
+          <label>Green hue high <span id="vGreenHi">175</span>&deg;</label>
           <input type="range" id="sGreenHi" min="120" max="200" value="175" />
         </div>
         <div class="slider-group">
@@ -56,7 +62,7 @@
           <label>Min leaf coverage <span id="vMinLeaf">0.12</span></label>
           <input type="range" id="sMinLeaf" min="5" max="30" value="12" />
         </div>
-        <button id="copyUrl" class="primary" style="margin-top:10px">📋 Copy tuned URL</button>
+        <button id="copyUrl" class="primary" style="margin-top:10px">Copy tuned URL</button>
         <p id="copyStatus" class="hint" style="margin:6px 0 0"></p>
       </section>
     </div>

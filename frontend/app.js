@@ -2,6 +2,8 @@
 // TensorFlow.js model is dropped in /models/model.json it uses that instead.
 const $ = (s) => document.querySelector(s);
 let lang = "en", labels = [], model = null, current = null, mapObj = null, nodes = {};
+// location state — GPS coords are held in-memory only, never logged or persisted client-side.
+let gpsCoords = null, gpsSnappedVillage = null;
 const DEMO_CODES = ["D1Q", "D1O", "D2N"]; // Potato Late/Early Blight, Tomato Late Blight — seeded in inventory
 // Below this confidence we escalate to "consult officer" (top-3 shown) instead of naming
 // one disease. 0.70 balances usability on real/field photos against misadvising. Clean
@@ -141,10 +143,10 @@ function severity(p) {
 }
 function damageHTML(d) {
   const title = lang === "hi" ? "पत्ती क्षति" : "Leaf damage";
-  return `<div class="dmg" style="margin-top:10px">
-    <div class="conf">${title}: <b>${d.pct}%</b> · <b style="color:${d.color}">${d.band[lang] || d.band.en}</b></div>
+  return `<div class="dmg">
+    <div class="conf">${title}: <b>${d.pct}%</b> &middot; <b style="color:${d.color}">${d.band[lang] || d.band.en}</b></div>
     <div class="bar"><i style="width:${d.pct}%;background:${d.color}"></i></div>
-    <p style="margin:6px 0 0;font-size:.92rem">✂️ ${d.action[lang] || d.action.en}</p>
+    <p style="margin:6px 0 0;font-size:.9rem">${d.action[lang] || d.action.en}</p>
   </div>`;
 }
 
@@ -170,19 +172,87 @@ document.querySelectorAll(".demo").forEach((b) => b.addEventListener("click", as
   showImage(new File([blob], b.dataset.img + ".jpg", { type: "image/jpeg" }));
 }));
 
-// real GPS: find the farmer's actual location; backend snaps it to the nearest node
-let gpsCoords = null;
-$("#gps").addEventListener("click", () => {
+// ---- GPS + location helpers ----
+// haversine distance (km) for client-side nearest-node matching
+function haversineKm(a, b) {
+  const R = 6371, toR = (d) => (d * Math.PI) / 180;
+  const dLat = toR(b.lat - a.lat), dLng = toR(b.lng - a.lng);
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(toR(a.lat)) * Math.cos(toR(b.lat)) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+}
+// snap GPS to nearest graph node (village) — same algorithm as backend core.js
+function snapToVillage(coords) {
+  let best = null, bd = Infinity;
+  for (const [name, n] of Object.entries(nodes)) {
+    const d = haversineKm(coords, n);
+    if (d < bd) { bd = d; best = name; }
+  }
+  return { village: best, distKm: +bd.toFixed(1) };
+}
+// sort village dropdown by distance from a point (closest first)
+function sortVillagesByDistance(coords) {
+  const sel = $("#village");
+  const villages = Object.entries(nodes).filter(([, n]) => !n.center)
+    .map(([name, n]) => ({ name, dist: haversineKm(coords, n) }))
+    .sort((a, b) => a.dist - b.dist);
+  sel.innerHTML = villages.map((v) =>
+    `<option value="${v.name}">${v.name.replace(/_/g, " ")} (${v.dist.toFixed(1)} km)</option>`).join("");
+}
+// build nearby-center preview after GPS or village selection
+function showNearbyCenters(coords, diseaseCode) {
+  const centers = Object.entries(nodes).filter(([, n]) => n.center)
+    .map(([name, n]) => ({ name, dist: haversineKm(coords, n) }))
+    .sort((a, b) => a.dist - b.dist);
+  const html = centers.map((c) => {
+    const label = c.name.replace(/_/g, " ");
+    return `<div class="center-chip"><span class="center-name">🏪 ${label}</span><span class="center-dist">${c.dist.toFixed(1)} km</span></div>`;
+  }).join("");
+  $("#nearbyCenters").innerHTML = `<p class="hint" style="margin:0 0 6px;font-size:.85rem">${t("nearbyCenters")}</p>${html}`;
+  $("#nearbyCenters").hidden = false;
+}
+
+// request GPS — called automatically after a positive diagnosis and on manual click.
+// Location is held in memory only — never written to localStorage, cookies, or sent
+// anywhere except the route API (as a geohash, not raw coords).
+function requestGPS() {
   const st = $("#gpsStatus");
-  if (!navigator.geolocation) return void (st.textContent = "GPS not available on this device.");
-  st.textContent = lang === "hi" ? "स्थान खोज रहे हैं…" : "Locating…";
+  if (!navigator.geolocation) {
+    st.textContent = t("gpsUnavailable");
+    st.className = "status gps-fail";
+    return;
+  }
+  st.textContent = t("gpsLocating");
+  st.className = "status gps-pulse";
   navigator.geolocation.getCurrentPosition(
-    (pos) => { gpsCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      st.textContent = `📍 ${gpsCoords.lat.toFixed(4)}, ${gpsCoords.lng.toFixed(4)} ${lang === "hi" ? "(आपका स्थान)" : "(your location)"}`; },
-    () => { st.textContent = lang === "hi" ? "स्थान नहीं मिला — नीचे गाँव चुनें।" : "Couldn't get location — pick a village below."; },
-    { enableHighAccuracy: true, timeout: 8000 }
+    (pos) => {
+      gpsCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      const { village, distKm } = snapToVillage(gpsCoords);
+      gpsSnappedVillage = village;
+      // show the nearest village name — NEVER raw lat/lng (privacy: farmer sees
+      // their village, not coordinates that could be scraped from a screenshot).
+      st.textContent = `${village.replace(/_/g, " ")} ${t("gpsNear")} (${distKm} km)`;
+      st.className = "status gps-ok";
+      // auto-select the nearest village and sort the dropdown
+      sortVillagesByDistance(gpsCoords);
+      $("#village").value = village;
+      // show nearby centers preview
+      if (current?.label) showNearbyCenters(gpsCoords, current.label.code);
+    },
+    (err) => {
+      st.className = "status gps-fail";
+      if (err.code === 1) st.textContent = t("gpsDenied");
+      else st.textContent = t("gpsFailed");
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
   );
+}
+$("#gps").addEventListener("click", requestGPS);
+// when village dropdown changes (manual pick), update the nearby centers
+$("#village").addEventListener("change", () => {
+  const v = $("#village").value;
+  if (v && nodes[v] && current?.label) showNearbyCenters(nodes[v], current.label.code);
 });
+
 const drop = $("#drop");
 ["dragover", "dragenter"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
 ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove("over")));
@@ -202,27 +272,40 @@ $("#analyze").addEventListener("click", async () => {
   //    near-random top-1 with no clear winner = probably not a leaf. The heuristic is
   //    the approximation until the background class ships (see model/build_notebook.py).
   if (label.condition === "background" || conf < 0.40 || (conf < 0.55 && margin < 0.12)) {
-    $("#result").innerHTML = `<div class="uncertain">📷 ${t("noLeaf")}</div>`;
+    $("#result").innerHTML = `<div class="uncertain">${t("noLeaf")}</div>`;
     return;
   }
   // 2. Plausible but not sure: ranked candidates for the officer to confirm.
   if (conf < CONF_MIN) {
-    const cands = top3.map((c) => `${c.label.label} (${(c.conf * 100).toFixed(1)}%)`).join(" · ");
-    $("#result").innerHTML = `<div class="uncertain">⚠️ ${t("uncertain")}<br><small>${lang === "hi" ? "संभावित" : "Possible"}: ${cands}</small></div>`;
+    const cands = top3.map((c) => `${c.label.label} (${(c.conf * 100).toFixed(1)}%)`).join(" &middot; ");
+    $("#result").innerHTML = `<div class="uncertain">${t("uncertain")}<br><small>${lang === "hi" ? "संभावित" : "Possible"}: ${cands}</small></div>`;
     return;
   }
   // 3. Confident diagnosis — name + exact confidence + symptoms/management details.
   const healthy = label.healthy || label.condition === "rotten";
   $("#result").innerHTML = `
-    <div class="diag"><span class="emoji">${healthy ? "✅" : "🦠"}</span>
+    <div class="diag"><span class="status-icon ${healthy ? 'healthy' : 'diseased'}">${healthy ? '✓' : '!'}</span>
       <div><h2>${label.label}</h2><div class="conf"><b>${pct1}%</b> ${lang === "hi" ? "विश्वास" : "confident"}</div></div></div>
     <div class="bar"><i style="width:${pct1}%"></i></div>`;
   showDetails(label.code);
   if (healthy) { $("#result").innerHTML += `<p>${t("healthy")}</p>`; }
   else {
     $("#locBox").hidden = false; current.label = label;
+    $("#nearbyCenters").hidden = true;
     const dmg = estimateDamage(current.img);        // how much of the leaf is affected + cut advice
     if (dmg) $("#result").innerHTML += damageHTML(dmg);
+    // auto-request GPS after a positive diagnosis — no manual click needed.
+    // the browser will show its own permission dialog if not yet granted.
+    if (!gpsCoords) requestGPS();
+    else {
+      // GPS already obtained — auto-populate village + centers
+      const { village } = snapToVillage(gpsCoords);
+      $("#gpsStatus").textContent = `${village.replace(/_/g, " ")} ${t("gpsNear")}`;
+      $("#gpsStatus").className = "status gps-ok";
+      sortVillagesByDistance(gpsCoords);
+      $("#village").value = village;
+      showNearbyCenters(gpsCoords, label.code);
+    }
   }
   rc.scrollIntoView({ behavior: "smooth" });
 });
@@ -237,22 +320,33 @@ async function showDetails(code) {
     const mgmt = (lang === "hi" ? d.management_hi : d.management_en) || [];
     $("#details").innerHTML = `
       <div class="detail">
-        <h3>🔬 ${t("symptoms")}</h3><p>${sym}</p>
-        <h3>💡 ${t("management")}</h3>
+        <h3>${t("symptoms")}</h3><p>${sym}</p>
+        <h3>${t("management")}</h3>
         <ul>${mgmt.map((m) => `<li>${m}</li>`).join("")}</ul>
       </div>`;
   } catch { /* offline / not found — silently skip the details panel */ }
 }
 
 // ---- find route ----
+// sanitize phone: strip non-digits, enforce 10-13 digit length (Indian mobiles = 10).
+// If invalid, silently drop it — SMS won't send but routing still works.
+function sanitizePhone(raw) {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length < 10 || digits.length > 13) return "";
+  return digits.startsWith("91") ? "+" + digits : "+91" + digits;
+}
 $("#findRoute").addEventListener("click", async () => {
-  const n = gpsCoords || nodes[$("#village").value];   // real GPS if located, else the chosen village
+  const villageNode = $("#village").value;
+  const n = gpsCoords || nodes[villageNode];   // real GPS if located, else the chosen village
+  if (!n) return;
   const payload = `${current.label.code} ${geohash(n.lat, n.lng)}`;
-  const phone = $("#phone").value.trim();
+  const phone = sanitizePhone($("#phone").value);
+  $("#findRoute").disabled = true; $("#findRoute").textContent = t("routeFinding");
   const res = await fetch("/api/route", {
     method: "POST", headers: { "content-type": "application/json" },
     body: JSON.stringify({ payload, from: "web", phone: phone || undefined, key: "agrimesh-demo-2026" }),
   }).then((r) => r.json());
+  $("#findRoute").disabled = false; $("#findRoute").textContent = t("sendReport");
 
   const card = $("#routeCard"); card.hidden = false;
   const startNode = res.start || $("#village").value;   // backend's nearest-node snap of the GPS
@@ -260,13 +354,13 @@ $("#findRoute").addEventListener("click", async () => {
   const hindi = expandReply(res);
   const pest = res.pesticide ? (res.pesticide[lang] || res.pesticide.en) : "";
   const sent = !res.sms ? "" : res.sms.provider === "mock"
-    ? "📲 demo mode — add TextBee keys to send a real SMS"
-    : `📲 Sent to ${phone} ✓`;
+    ? "Demo mode — add TextBee keys to send a real SMS"
+    : `Sent to ${phone} successfully`;
   $("#routeInfo").innerHTML = `
-    <p class="pest">💊 <b>${lang === "hi" ? "दवा" : "Pesticide"}:</b> ${pest}</p>
-    <div class="route-line">${res.path.map((p) => `<span class="n">${p.replace(/_/g, " ")}</span>`).join(" → ")}</div>
-    <p><b>${t("nearest")}:</b> ${res.center.replace("_", " ")} · <b>${t("distance")}:</b> ${res.distanceKm} km · <b>${t("stock")}:</b> ${res.stockKg}kg</p>
-    <div class="sms"><b>SMS →</b> ${res.reply}<br><small>${hindi}</small>${sent ? `<br><small style="color:#8ef0a6">${sent}</small>` : ""}</div>`;
+    <p class="pest"><b>${lang === "hi" ? "दवा" : "Pesticide"}:</b> ${pest}</p>
+    <div class="route-line">${res.path.map((p) => `<span class="n">${p.replace(/_/g, " ")}</span>`).join(" &rarr; ")}</div>
+    <p><b>${t("nearest")}:</b> ${res.center.replace("_", " ")} &middot; <b>${t("distance")}:</b> ${res.distanceKm} km &middot; <b>${t("stock")}:</b> ${res.stockKg}kg</p>
+    <div class="sms"><b>SMS &rarr;</b> ${res.reply}<br><small>${hindi}</small>${sent ? `<br><small style="color:#8ef0a6">${sent}</small>` : ""}</div>`;
   drawMap(startNode, res.center, res.path);
   card.scrollIntoView({ behavior: "smooth" });
 });
@@ -286,10 +380,10 @@ function drawMap(startName, centerName, pathNames) {
   mapObj.eachLayer((l) => l instanceof L.Marker || l instanceof L.Polyline ? mapObj.removeLayer(l) : 0);
   const pts = pathNames.map((p) => [nodes[p].lat, nodes[p].lng]);
   const s = nodes[startName];
-  L.marker([s.lat, s.lng]).addTo(mapObj).bindPopup("🧑‍🌾 " + startName);
+  L.marker([s.lat, s.lng]).addTo(mapObj).bindPopup("You: " + startName.replace(/_/g, " "));
   if (!centerName) return mapObj.setView([s.lat, s.lng], 13);
   const c = nodes[centerName];
-  L.marker([c.lat, c.lng]).addTo(mapObj).bindPopup("🏪 " + centerName.replace("_", " "));
+  L.marker([c.lat, c.lng]).addTo(mapObj).bindPopup("Center: " + centerName.replace(/_/g, " "));
   // Provisional straight line (instant, and the offline fallback). Snapped to real
   // roads by OSRM if online — the polyline then follows streets, not a diagonal.
   let line = L.polyline(pts, { color: "#1b7a3d", weight: 4, opacity: 0.45, dashArray: "6 6" }).addTo(mapObj);
@@ -324,7 +418,10 @@ $("#lang").addEventListener("click", () => { lang = lang === "en" ? "hi" : "en";
   applyLang();
   nodes = await fetch("/api/nodes").then((r) => r.json());
   const sel = $("#village");
-  Object.entries(nodes).filter(([, n]) => !n.center).forEach(([name]) =>
-    sel.insertAdjacentHTML("beforeend", `<option value="${name}">${name}</option>`));
+  // default sort: alphabetical. Once GPS is acquired, re-sorted by distance.
+  Object.entries(nodes).filter(([, n]) => !n.center)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .forEach(([name]) =>
+      sel.insertAdjacentHTML("beforeend", `<option value="${name}">${name.replace(/_/g, " ")}</option>`));
   await loadModel();
 })();

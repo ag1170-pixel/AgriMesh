@@ -7,21 +7,25 @@
   <meta name="description" content="Browse all 107 crop diseases: symptoms, management, and treatment info. AgriMesh offline-first crop-disease encyclopedia." />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1b7a3d" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; connect-src 'self' https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <h1>📖 <span data-t="libraryTitle">Disease Library</span></h1>
+    <div class="header-brand">
+      <img src="logo.png" alt="AgriMesh Logo" class="header-logo" />
+      <h1><span data-t="libraryTitle">Disease Library</span></h1>
+    </div>
     <div style="display:flex;gap:8px;align-items:center">
       <button id="lang" class="ghost">हिंदी</button>
-      <a href="index.html" class="ghost" style="text-decoration:none;font-size:.85rem">← App</a>
+      <a href="index.html" class="ghost" style="text-decoration:none;font-size:.85rem">&larr; App</a>
     </div>
   </header>
 
   <main>
     <section class="card">
-      <input id="search" type="search" placeholder="🔍 Search diseases, crops, symptoms…"
-             style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;margin-bottom:12px" />
+      <input id="search" type="search" placeholder="Search diseases, crops, symptoms…"
+             style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius);font:inherit;margin-bottom:12px" />
       <div id="filterRow" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
       <p id="count" class="hint"></p>
     </section>
@@ -36,10 +40,10 @@
 
     // translations for this page
     const LT = {
-      en: { libraryTitle: "Disease Library", searchPh: "🔍 Search diseases, crops, symptoms…",
+      en: { libraryTitle: "Disease Library", searchPh: "Search diseases, crops, symptoms…",
             showing: "Showing", of: "of", diseases: "diseases", all: "All",
             symptoms: "Symptoms", management: "Management", noMatch: "No diseases match your search." },
-      hi: { libraryTitle: "रोग सूची", searchPh: "🔍 रोग, फसल, लक्षण खोजें…",
+      hi: { libraryTitle: "रोग सूची", searchPh: "रोग, फसल, लक्षण खोजें…",
             showing: "दिखाए जा रहे", of: "में से", diseases: "रोग", all: "सभी",
             symptoms: "लक्षण", management: "प्रबंधन", noMatch: "कोई रोग आपकी खोज से मेल नहीं खाता।" },
     };
@@ -97,13 +101,13 @@
         return `
           <details class="card lib-entry">
             <summary>
-              <span class="lib-emoji">${healthy ? "✅" : "🦠"}</span>
+              <span class="lib-icon ${healthy ? 'healthy' : 'diseased'}">${healthy ? '✓' : '!'}</span>
               <span class="lib-name">${name}</span>
               <span class="lib-code">${code}</span>
             </summary>
             <div class="detail">
-              <h3>🔬 ${t("symptoms")}</h3><p>${sym || "—"}</p>
-              <h3>💡 ${t("management")}</h3>
+              <h3>${t("symptoms")}</h3><p>${sym || "—"}</p>
+              <h3>${t("management")}</h3>
               <ul>${mgmtList.map((m) => `<li>${m}</li>`).join("")}</ul>
             </div>
           </details>`;
