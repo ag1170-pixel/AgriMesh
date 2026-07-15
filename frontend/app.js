@@ -88,7 +88,13 @@ async function loadModel() {
     statusEl.textContent = "Demo model ready";
   }
   statusEl.classList.remove("loading");
-  $("#analyze").disabled = true; // enabled after an image is chosen
+  // NOTE: do NOT touch #analyze.disabled here. It already starts disabled in
+  // the HTML and is enabled by showImage()'s img.onload once a photo is
+  // picked. Model loading is a slow network fetch (TF.js + weights from a
+  // CDN) that can easily finish AFTER the user has already picked a sample
+  // image — re-disabling the button here would silently undo that enable
+  // and leave Analyze looking permanently greyed out, which is exactly what
+  // was happening for the demo samples.
 }
 
 async function classify(imgEl, file) {
