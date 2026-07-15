@@ -210,9 +210,10 @@ $("#analyze").addEventListener("click", async () => {
 $("#findRoute").addEventListener("click", async () => {
   const n = gpsCoords || nodes[$("#village").value];   // real GPS if located, else the chosen village
   const payload = `${current.label.code} ${geohash(n.lat, n.lng)}`;
+  const phone = $("#phone").value.trim();
   const res = await fetch("/api/route", {
     method: "POST", headers: { "content-type": "application/json" },
-    body: JSON.stringify({ payload, from: "web", key: "agrimesh-demo-2026" }),
+    body: JSON.stringify({ payload, from: "web", phone: phone || undefined, key: "agrimesh-demo-2026" }),
   }).then((r) => r.json());
 
   const card = $("#routeCard"); card.hidden = false;
@@ -220,11 +221,14 @@ $("#findRoute").addEventListener("click", async () => {
   if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain">${t("noStock")}</div>`; drawMap(startNode, null, []); return; }
   const hindi = expandReply(res);
   const pest = res.pesticide ? (res.pesticide[lang] || res.pesticide.en) : "";
+  const sent = !res.sms ? "" : res.sms.provider === "mock"
+    ? "📲 demo mode — add TextBee keys to send a real SMS"
+    : `📲 Sent to ${phone} ✓`;
   $("#routeInfo").innerHTML = `
     <p class="pest">💊 <b>${lang === "hi" ? "दवा" : "Pesticide"}:</b> ${pest}</p>
     <div class="route-line">${res.path.map((p) => `<span class="n">${p.replace(/_/g, " ")}</span>`).join(" → ")}</div>
     <p><b>${t("nearest")}:</b> ${res.center.replace("_", " ")} · <b>${t("distance")}:</b> ${res.distanceKm} km · <b>${t("stock")}:</b> ${res.stockKg}kg</p>
-    <div class="sms"><b>SMS →</b> ${res.reply}<br><small>${hindi}</small></div>`;
+    <div class="sms"><b>SMS →</b> ${res.reply}<br><small>${hindi}</small>${sent ? `<br><small style="color:#8ef0a6">${sent}</small>` : ""}</div>`;
   drawMap(startNode, res.center, res.path);
   card.scrollIntoView({ behavior: "smooth" });
 });
