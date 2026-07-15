@@ -8,6 +8,15 @@ const DEMO_CODES = ["D1Q", "D1O", "D2N"]; // Potato Late/Early Blight, Tomato La
 // single-leaf shots score 90-100%; genuinely ambiguous ones (e.g. potato vs tomato late
 // blight — same pathogen) stay below and defer.
 const CONF_MIN = 0.70;
+// Leaf-damage color thresholds — tunable via URL query params (admin sliders build the
+// link). The farmer flow ships no params, so it always uses these sane defaults.
+const Q = new URLSearchParams(location.search);
+const DMG = {
+  greenLo: +(Q.get("greenLo") ?? 55), greenHi: +(Q.get("greenHi") ?? 175),
+  bgSat: +(Q.get("bgSat") ?? 0.15), lesionSat: +(Q.get("lesionSat") ?? 0.18),
+  minLeaf: +(Q.get("minLeaf") ?? 0.12),
+};
+let lastDetailCode = null;
 
 // ---- geohash encode (matches backend/core.js decoder) ----
 const B32 = "0123456789bcdefghjkmnpqrstuvwxyz";
@@ -100,14 +109,14 @@ function estimateDamage(img) {
   let green = 0, diseased = 0;
   for (let i = 0; i < px.length; i += 4) {
     const [h, s] = rgb2hsv(px[i], px[i + 1], px[i + 2]);
-    if (s < 0.15) continue;                    // gray/white background — skip
-    if (h >= 55 && h <= 175) green++;          // healthy green tissue
-    else if (s > 0.18) diseased++;             // saturated non-green = lesion (brown/yellow/red)
+    if (s < DMG.bgSat) continue;                       // gray/white background — skip
+    if (h >= DMG.greenLo && h <= DMG.greenHi) green++; // healthy green tissue
+    else if (s > DMG.lesionSat) diseased++;            // saturated non-green = lesion
   }
   const leaf = green + diseased;
   // Need a real green leaf to anchor the estimate. Skips fruit / non-leaf frames
   // (e.g. a healthy apple is ~all fruit, no green) so we never invent a % there.
-  if (green < N * N * 0.12 || leaf < N * N * 0.04) return null;
+  if (green < N * N * DMG.minLeaf || leaf < N * N * 0.04) return null;
   const pct = Math.round((100 * diseased) / leaf);
   return { pct, ...severity(pct) };
 }
@@ -150,8 +159,10 @@ function showImage(file) {
   current = { file, img };
   $("#resultCard").hidden = true; $("#routeCard").hidden = true;
 }
-// reset value after each pick so re-selecting the SAME file still fires change
-$("#file").addEventListener("change", (e) => { const f = e.target.files[0]; if (f) showImage(f); e.target.value = ""; });
+// both inputs (Take Photo / Choose from Gallery) feed the same handler.
+// reset value after each pick so re-selecting the SAME file still fires change.
+document.querySelectorAll(".filein").forEach((inp) =>
+  inp.addEventListener("change", (e) => { const f = e.target.files[0]; if (f) showImage(f); e.target.value = ""; }));
 
 // demo sample buttons — guaranteed clean, high-confidence images for the live demo
 document.querySelectorAll(".demo").forEach((b) => b.addEventListener("click", async () => {
@@ -183,21 +194,31 @@ $("#analyze").addEventListener("click", async () => {
   const { label, conf, top3 } = await classify(current.img, current.file);
   $("#analyze").textContent = t("analyze");
   const rc = $("#resultCard"); rc.hidden = false;
-  const pct = Math.round(conf * 100);
+  $("#details").innerHTML = ""; $("#locBox").hidden = true; lastDetailCode = null;
+  const pct1 = (conf * 100).toFixed(1);
+  const margin = conf - (top3[1]?.conf || 0);
 
-  if (conf < CONF_MIN) {
-    // Uncertain — but still useful: show the top candidates for the officer to confirm.
-    const cands = top3.map((c) => `${c.label.label} (${Math.round(c.conf * 100)}%)`).join(" · ");
-    const lead = lang === "hi" ? "संभावित" : "Possible";
-    $("#result").innerHTML = `<div class="uncertain">⚠️ ${t("uncertain")}<br><small>${lead}: ${cands}</small></div>`;
-    $("#locBox").hidden = true; return;
+  // 1. Invalid capture: an explicit "background" class (once the model has one), or a
+  //    near-random top-1 with no clear winner = probably not a leaf. The heuristic is
+  //    the approximation until the background class ships (see model/build_notebook.py).
+  if (label.condition === "background" || conf < 0.40 || (conf < 0.55 && margin < 0.12)) {
+    $("#result").innerHTML = `<div class="uncertain">📷 ${t("noLeaf")}</div>`;
+    return;
   }
+  // 2. Plausible but not sure: ranked candidates for the officer to confirm.
+  if (conf < CONF_MIN) {
+    const cands = top3.map((c) => `${c.label.label} (${(c.conf * 100).toFixed(1)}%)`).join(" · ");
+    $("#result").innerHTML = `<div class="uncertain">⚠️ ${t("uncertain")}<br><small>${lang === "hi" ? "संभावित" : "Possible"}: ${cands}</small></div>`;
+    return;
+  }
+  // 3. Confident diagnosis — name + exact confidence + symptoms/management details.
   const healthy = label.healthy || label.condition === "rotten";
   $("#result").innerHTML = `
     <div class="diag"><span class="emoji">${healthy ? "✅" : "🦠"}</span>
-      <div><h2>${label.label}</h2><div class="conf">${t("confidence") || "Confidence"}: ${pct}%</div></div></div>
-    <div class="bar"><i style="width:${pct}%"></i></div>`;
-  if (healthy) { $("#result").innerHTML += `<p>${t("healthy")}</p>`; $("#locBox").hidden = true; }
+      <div><h2>${label.label}</h2><div class="conf"><b>${pct1}%</b> ${lang === "hi" ? "विश्वास" : "confident"}</div></div></div>
+    <div class="bar"><i style="width:${pct1}%"></i></div>`;
+  showDetails(label.code);
+  if (healthy) { $("#result").innerHTML += `<p>${t("healthy")}</p>`; }
   else {
     $("#locBox").hidden = false; current.label = label;
     const dmg = estimateDamage(current.img);        // how much of the leaf is affected + cut advice
@@ -205,6 +226,23 @@ $("#analyze").addEventListener("click", async () => {
   }
   rc.scrollIntoView({ behavior: "smooth" });
 });
+
+// symptoms + management panel (shared by the result card and the library page)
+async function showDetails(code) {
+  lastDetailCode = code;
+  try {
+    const d = await fetch(`/api/disease/${code}`).then((r) => r.json());
+    if (!d.ok) return;
+    const sym = lang === "hi" ? d.symptoms_hi : d.symptoms_en;
+    const mgmt = (lang === "hi" ? d.management_hi : d.management_en) || [];
+    $("#details").innerHTML = `
+      <div class="detail">
+        <h3>🔬 ${t("symptoms")}</h3><p>${sym}</p>
+        <h3>💡 ${t("management")}</h3>
+        <ul>${mgmt.map((m) => `<li>${m}</li>`).join("")}</ul>
+      </div>`;
+  } catch { /* offline / not found — silently skip the details panel */ }
+}
 
 // ---- find route ----
 $("#findRoute").addEventListener("click", async () => {
@@ -279,7 +317,7 @@ async function followRoads(pathNames) {
 }
 
 // ---- lang toggle ----
-$("#lang").addEventListener("click", () => { lang = lang === "en" ? "hi" : "en"; applyLang(); });
+$("#lang").addEventListener("click", () => { lang = lang === "en" ? "hi" : "en"; applyLang(); if (lastDetailCode) showDetails(lastDetailCode); });
 
 // ---- boot ----
 (async () => {

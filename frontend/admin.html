@@ -32,6 +32,33 @@
         <h3>Reports</h3>
         <table id="reports"><thead><tr><th>Time</th><th>Disease</th><th>From</th><th>Center</th><th>km</th></tr></thead><tbody></tbody></table>
       </section>
+
+      <section class="card">
+        <h3>🎛️ Damage Analysis Tuning <small class="hint">(leaf-damage color thresholds)</small></h3>
+        <p class="hint" style="margin:0 0 10px">Adjust the hue/saturation thresholds used by the leaf-damage estimate. Changes are reflected in the "Copy tuned URL" link — share it with field staff for calibrated diagnostics.</p>
+        <div class="slider-group">
+          <label>Green hue low <span id="vGreenLo">55</span>°</label>
+          <input type="range" id="sGreenLo" min="30" max="100" value="55" />
+        </div>
+        <div class="slider-group">
+          <label>Green hue high <span id="vGreenHi">175</span>°</label>
+          <input type="range" id="sGreenHi" min="120" max="200" value="175" />
+        </div>
+        <div class="slider-group">
+          <label>Background saturation cutoff <span id="vBgSat">0.15</span></label>
+          <input type="range" id="sBgSat" min="5" max="40" value="15" />
+        </div>
+        <div class="slider-group">
+          <label>Lesion saturation min <span id="vLesionSat">0.18</span></label>
+          <input type="range" id="sLesionSat" min="5" max="50" value="18" />
+        </div>
+        <div class="slider-group">
+          <label>Min leaf coverage <span id="vMinLeaf">0.12</span></label>
+          <input type="range" id="sMinLeaf" min="5" max="30" value="12" />
+        </div>
+        <button id="copyUrl" class="primary" style="margin-top:10px">📋 Copy tuned URL</button>
+        <p id="copyStatus" class="hint" style="margin:6px 0 0"></p>
+      </section>
     </div>
   </main>
 
@@ -72,6 +99,34 @@
       $("#simOut").textContent = JSON.stringify(r, null, 2);
       refresh();
     };
+
+    // ---- damage-tuning sliders (feature 5) ----
+    const sliders = [
+      { id: "sGreenLo",   display: "vGreenLo",   param: "greenLo",   fmt: (v) => v + "°" },
+      { id: "sGreenHi",   display: "vGreenHi",   param: "greenHi",   fmt: (v) => v + "°" },
+      { id: "sBgSat",     display: "vBgSat",     param: "bgSat",     fmt: (v) => (v / 100).toFixed(2) },
+      { id: "sLesionSat", display: "vLesionSat", param: "lesionSat", fmt: (v) => (v / 100).toFixed(2) },
+      { id: "sMinLeaf",   display: "vMinLeaf",   param: "minLeaf",   fmt: (v) => (v / 100).toFixed(2) },
+    ];
+    sliders.forEach(({ id, display, fmt }) => {
+      const el = $(`#${id}`);
+      el.addEventListener("input", () => ($(`#${display}`).textContent = fmt(+el.value)));
+    });
+    $("#copyUrl").onclick = () => {
+      const params = new URLSearchParams();
+      sliders.forEach(({ id, param }) => {
+        const v = +$(`#${id}`).value;
+        // bgSat, lesionSat, minLeaf are 0-1 floats, stored as /100 in sliders
+        const val = ["bgSat","lesionSat","minLeaf"].includes(param) ? (v / 100).toFixed(2) : v;
+        params.set(param, val);
+      });
+      const url = `${location.origin}/index.html?${params}`;
+      navigator.clipboard.writeText(url).then(
+        () => ($("#copyStatus").textContent = "✅ Copied: " + url),
+        () => ($("#copyStatus").textContent = url)   // fallback: show the URL to copy manually
+      );
+    };
   </script>
 </body>
 </html>
+

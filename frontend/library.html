@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>AgriMesh — Disease Library</title>
+  <meta name="description" content="Browse all 107 crop diseases: symptoms, management, and treatment info. AgriMesh offline-first crop-disease encyclopedia." />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1b7a3d" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>📖 <span data-t="libraryTitle">Disease Library</span></h1>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="lang" class="ghost">हिंदी</button>
+      <a href="index.html" class="ghost" style="text-decoration:none;font-size:.85rem">← App</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <input id="search" type="search" placeholder="🔍 Search diseases, crops, symptoms…"
+             style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;margin-bottom:12px" />
+      <div id="filterRow" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
+      <p id="count" class="hint"></p>
+    </section>
+
+    <div id="list"></div>
+  </main>
+
+  <script src="translations.js"></script>
+  <script>
+    const $ = (s) => document.querySelector(s);
+    let lang = "en", diseases = {}, activeFilter = null;
+
+    // translations for this page
+    const LT = {
+      en: { libraryTitle: "Disease Library", searchPh: "🔍 Search diseases, crops, symptoms…",
+            showing: "Showing", of: "of", diseases: "diseases", all: "All",
+            symptoms: "Symptoms", management: "Management", noMatch: "No diseases match your search." },
+      hi: { libraryTitle: "रोग सूची", searchPh: "🔍 रोग, फसल, लक्षण खोजें…",
+            showing: "दिखाए जा रहे", of: "में से", diseases: "रोग", all: "सभी",
+            symptoms: "लक्षण", management: "प्रबंधन", noMatch: "कोई रोग आपकी खोज से मेल नहीं खाता।" },
+    };
+    function t(k) { return LT[lang]?.[k] ?? window.T?.[lang]?.[k] ?? k; }
+
+    function applyLang() {
+      document.querySelectorAll("[data-t]").forEach((el) => {
+        const v = t(el.dataset.t); if (v !== el.dataset.t) el.textContent = v;
+      });
+      $("#lang").textContent = lang === "en" ? "हिंदी" : "English";
+      $("#search").placeholder = t("searchPh");
+      document.documentElement.lang = lang;
+      render();
+    }
+
+    // extract unique crops for filter chips
+    function buildFilters() {
+      const crops = [...new Set(Object.values(diseases).map((d) => d.crop || d.name_en.split(" ")[0]))].sort();
+      const row = $("#filterRow");
+      row.innerHTML = `<button class="chip active" data-crop="">${t("all")}</button>` +
+        crops.map((c) => `<button class="chip" data-crop="${c}">${c}</button>`).join("");
+      row.querySelectorAll(".chip").forEach((b) => b.addEventListener("click", () => {
+        row.querySelectorAll(".chip").forEach((x) => x.classList.remove("active"));
+        b.classList.add("active");
+        activeFilter = b.dataset.crop || null;
+        render();
+      }));
+    }
+
+    function render() {
+      const q = $("#search").value.toLowerCase().trim();
+      const entries = Object.entries(diseases).filter(([code, d]) => {
+        if (activeFilter) {
+          const crop = (d.crop || d.name_en.split(" ")[0]).toLowerCase();
+          if (crop !== activeFilter.toLowerCase()) return false;
+        }
+        if (!q) return true;
+        const hay = `${d.name_en} ${d.name_hi} ${d.symptoms_en} ${d.symptoms_hi} ${code}`.toLowerCase();
+        return hay.includes(q);
+      });
+
+      $("#count").textContent = `${t("showing")} ${entries.length} ${t("of")} ${Object.keys(diseases).length} ${t("diseases")}`;
+
+      if (!entries.length) {
+        $("#list").innerHTML = `<div class="card" style="text-align:center;color:var(--muted);padding:32px">${t("noMatch")}</div>`;
+        return;
+      }
+
+      $("#list").innerHTML = entries.map(([code, d]) => {
+        const name = lang === "hi" ? (d.name_hi || d.name_en) : d.name_en;
+        const sym = lang === "hi" ? (d.symptoms_hi || d.symptoms_en) : d.symptoms_en;
+        const mgmt = lang === "hi" ? (d.management_hi || d.management_en) : d.management_en;
+        const mgmtList = Array.isArray(mgmt) ? mgmt : [mgmt];
+        const healthy = d.name_en.toLowerCase().includes("healthy");
+        return `
+          <details class="card lib-entry">
+            <summary>
+              <span class="lib-emoji">${healthy ? "✅" : "🦠"}</span>
+              <span class="lib-name">${name}</span>
+              <span class="lib-code">${code}</span>
+            </summary>
+            <div class="detail">
+              <h3>🔬 ${t("symptoms")}</h3><p>${sym || "—"}</p>
+              <h3>💡 ${t("management")}</h3>
+              <ul>${mgmtList.map((m) => `<li>${m}</li>`).join("")}</ul>
+            </div>
+          </details>`;
+      }).join("");
+    }
+
+    $("#search").addEventListener("input", render);
+    $("#lang").addEventListener("click", () => { lang = lang === "en" ? "hi" : "en"; applyLang(); });
+
+    // boot
+    (async () => {
+      applyLang();
+      try {
+        const res = await fetch("/api/diseases").then((r) => r.json());
+        diseases = res.diseases || res;
+      } catch {
+        $("#list").innerHTML = `<div class="card" style="text-align:center;color:var(--warn);padding:32px">Could not load disease data. Make sure the backend is running.</div>`;
+        return;
+      }
+      buildFilters();
+      render();
+    })();
+  </script>
+</body>
+</html>

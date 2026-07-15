@@ -1,0 +1,2249 @@
+{
+ "D00": {
+  "name_en": "Apple - Black Rot",
+  "name_hi": "Apple - Black Rot",
+  "crop": "apple",
+  "condition": "black_rot",
+  "healthy": false,
+  "symptoms_en": "Dark firm rot on leaves/fruit/stem; tissue shrivels and may show tiny black dots.",
+  "symptoms_hi": "पत्ती/फल/तने पर गहरा कठोर सड़न; ऊतक सिकुड़ता व छोटे काले बिंदु दिख सकते हैं।",
+  "management_en": [
+   "Spray copper fungicide.",
+   "Prune and destroy infected parts.",
+   "Improve drainage and airflow."
+  ],
+  "management_hi": [
+   "ताम्र फफूंदनाशक छिड़कें।",
+   "संक्रमित भाग काटकर नष्ट करें।",
+   "जल निकास व हवा बेहतर करें।"
+  ],
+  "pesticide_en": "Copper Fungicide",
+  "pesticide_hi": "ताम्र फफूंदनाशक"
+ },
+ "D01": {
+  "name_en": "Apple - Healthy",
+  "name_hi": "Apple - Healthy",
+  "crop": "apple",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D02": {
+  "name_en": "Apple - Rotten",
+  "name_hi": "Apple - Rotten",
+  "crop": "apple",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D03": {
+  "name_en": "Apple - Rust",
+  "name_hi": "Apple - Rust",
+  "crop": "apple",
+  "condition": "rust",
+  "healthy": false,
+  "symptoms_en": "Reddish-brown to orange powdery pustules on the leaf surface that rub off onto fingers.",
+  "symptoms_hi": "पत्ती की सतह पर लाल-भूरे से नारंगी चूर्णी दाने जो उँगली पर लग जाते हैं।",
+  "management_en": [
+   "Spray propiconazole.",
+   "Remove and destroy infected leaves.",
+   "Avoid overhead watering; grow resistant varieties."
+  ],
+  "management_hi": [
+   "प्रोपिकोनाज़ोल छिड़कें।",
+   "संक्रमित पत्तियाँ हटाकर नष्ट करें।",
+   "ऊपर से सिंचाई न करें; प्रतिरोधी किस्में लगाएँ।"
+  ],
+  "pesticide_en": "Propiconazole",
+  "pesticide_hi": "प्रोपिकोनाज़ोल"
+ },
+ "D04": {
+  "name_en": "Apple - Scab",
+  "name_hi": "Apple - Scab",
+  "crop": "apple",
+  "condition": "scab",
+  "healthy": false,
+  "symptoms_en": "Olive-green to brown corky, scab-like lesions on leaves and fruit.",
+  "symptoms_hi": "पत्तियों व फल पर जैतूनी-हरे से भूरे कॉर्क जैसे खुरदरे घाव।",
+  "management_en": [
+   "Spray captan at bud/early leaf stage.",
+   "Rake and destroy fallen leaves.",
+   "Prune for airflow; use resistant varieties."
+  ],
+  "management_hi": [
+   "कली/शुरुआती पत्ती अवस्था पर कैप्टान छिड़कें।",
+   "गिरी पत्तियाँ बटोरकर नष्ट करें।",
+   "हवा हेतु छँटाई करें; प्रतिरोधी किस्में लें।"
+  ],
+  "pesticide_en": "Captan",
+  "pesticide_hi": "कैप्टान"
+ },
+ "D05": {
+  "name_en": "Banana - Healthy",
+  "name_hi": "Banana - Healthy",
+  "crop": "banana",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D06": {
+  "name_en": "Banana - Rotten",
+  "name_hi": "Banana - Rotten",
+  "crop": "banana",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D07": {
+  "name_en": "Bellpepper - Healthy",
+  "name_hi": "Bellpepper - Healthy",
+  "crop": "bellpepper",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D08": {
+  "name_en": "Bellpepper - Rotten",
+  "name_hi": "Bellpepper - Rotten",
+  "crop": "bellpepper",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D09": {
+  "name_en": "Carrot - Healthy",
+  "name_hi": "Carrot - Healthy",
+  "crop": "carrot",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D0A": {
+  "name_en": "Carrot - Rotten",
+  "name_hi": "Carrot - Rotten",
+  "crop": "carrot",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D0B": {
+  "name_en": "Cassava - Bacterial Blight",
+  "name_hi": "Cassava - Bacterial Blight",
+  "crop": "cassava",
+  "condition": "bacterial_blight",
+  "healthy": false,
+  "symptoms_en": "Small water-soaked spots that turn brown with yellow halos; may ooze in humid weather.",
+  "symptoms_hi": "छोटे जल-भीगे धब्बे जो भूरे व पीले घेरे वाले हो जाते हैं; नमी में रिस सकते हैं।",
+  "management_en": [
+   "Spray copper + streptomycin.",
+   "Remove infected debris; avoid overhead irrigation.",
+   "Rotate crops and use clean seed."
+  ],
+  "management_hi": [
+   "कॉपर + स्ट्रेप्टोमाइसिन छिड़कें।",
+   "संक्रमित अवशेष हटाएँ; ऊपर से सिंचाई न करें।",
+   "फसल चक्र अपनाएँ व स्वच्छ बीज लें।"
+  ],
+  "pesticide_en": "Copper + Streptomycin",
+  "pesticide_hi": "कॉपर + स्ट्रेप्टोमाइसिन"
+ },
+ "D0C": {
+  "name_en": "Cassava - Brown Streak Disease",
+  "name_hi": "Cassava - Brown Streak Disease",
+  "crop": "cassava",
+  "condition": "brown_streak_disease",
+  "healthy": false,
+  "symptoms_en": "Mottled, curled, yellow-streaked or distorted leaves; stunted growth. Spread by insects (whitefly/aphids).",
+  "symptoms_hi": "चितकबरी, मुड़ी, पीली धारीदार या विकृत पत्तियाँ; बौना विकास। कीटों (सफेद मक्खी/माहू) से फैलता है।",
+  "management_en": [
+   "No chemical cure — remove and destroy infected plants.",
+   "Control the insect vector (whitefly/aphid).",
+   "Use virus-free seed and resistant varieties."
+  ],
+  "management_hi": [
+   "कोई रासायनिक इलाज नहीं — संक्रमित पौधे हटाकर नष्ट करें।",
+   "वाहक कीट (सफेद मक्खी/माहू) नियंत्रित करें।",
+   "वायरस-मुक्त बीज व प्रतिरोधी किस्में उपयोग करें।"
+  ],
+  "pesticide_en": "No cure — remove plants & control insect vector",
+  "pesticide_hi": "कोई इलाज नहीं — पौधे हटाएँ व वाहक कीट नियंत्रित करें"
+ },
+ "D0D": {
+  "name_en": "Cassava - Green Mottle",
+  "name_hi": "Cassava - Green Mottle",
+  "crop": "cassava",
+  "condition": "green_mottle",
+  "healthy": false,
+  "symptoms_en": "Mottled, curled, yellow-streaked or distorted leaves; stunted growth. Spread by insects (whitefly/aphids).",
+  "symptoms_hi": "चितकबरी, मुड़ी, पीली धारीदार या विकृत पत्तियाँ; बौना विकास। कीटों (सफेद मक्खी/माहू) से फैलता है।",
+  "management_en": [
+   "No chemical cure — remove and destroy infected plants.",
+   "Control the insect vector (whitefly/aphid).",
+   "Use virus-free seed and resistant varieties."
+  ],
+  "management_hi": [
+   "कोई रासायनिक इलाज नहीं — संक्रमित पौधे हटाकर नष्ट करें।",
+   "वाहक कीट (सफेद मक्खी/माहू) नियंत्रित करें।",
+   "वायरस-मुक्त बीज व प्रतिरोधी किस्में उपयोग करें।"
+  ],
+  "pesticide_en": "No cure — remove plants & control insect vector",
+  "pesticide_hi": "कोई इलाज नहीं — पौधे हटाएँ व वाहक कीट नियंत्रित करें"
+ },
+ "D0E": {
+  "name_en": "Cassava - Healthy",
+  "name_hi": "Cassava - Healthy",
+  "crop": "cassava",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D0F": {
+  "name_en": "Cassava - Mosaic Disease",
+  "name_hi": "Cassava - Mosaic Disease",
+  "crop": "cassava",
+  "condition": "mosaic_disease",
+  "healthy": false,
+  "symptoms_en": "Mottled, curled, yellow-streaked or distorted leaves; stunted growth. Spread by insects (whitefly/aphids).",
+  "symptoms_hi": "चितकबरी, मुड़ी, पीली धारीदार या विकृत पत्तियाँ; बौना विकास। कीटों (सफेद मक्खी/माहू) से फैलता है।",
+  "management_en": [
+   "No chemical cure — remove and destroy infected plants.",
+   "Control the insect vector (whitefly/aphid).",
+   "Use virus-free seed and resistant varieties."
+  ],
+  "management_hi": [
+   "कोई रासायनिक इलाज नहीं — संक्रमित पौधे हटाकर नष्ट करें।",
+   "वाहक कीट (सफेद मक्खी/माहू) नियंत्रित करें।",
+   "वायरस-मुक्त बीज व प्रतिरोधी किस्में उपयोग करें।"
+  ],
+  "pesticide_en": "No cure — remove plants & control insect vector",
+  "pesticide_hi": "कोई इलाज नहीं — पौधे हटाएँ व वाहक कीट नियंत्रित करें"
+ },
+ "D0G": {
+  "name_en": "Cherry - Healthy",
+  "name_hi": "Cherry - Healthy",
+  "crop": "cherry",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D0H": {
+  "name_en": "Cherry - Powdery Mildew",
+  "name_hi": "Cherry - Powdery Mildew",
+  "crop": "cherry",
+  "condition": "powdery_mildew",
+  "healthy": false,
+  "symptoms_en": "White to grey powdery coating on the upper leaf surface; leaves may yellow and dry.",
+  "symptoms_hi": "ऊपरी पत्ती सतह पर सफेद-धूसर चूर्णी परत; पत्तियाँ पीली होकर सूख सकती हैं।",
+  "management_en": [
+   "Dust or spray wettable sulfur.",
+   "Improve air flow; avoid dense canopy.",
+   "Remove affected leaves early."
+  ],
+  "management_hi": [
+   "वेटेबल गंधक छिड़कें या भुरकें।",
+   "हवा का प्रवाह बढ़ाएँ; घनी छतरी से बचें।",
+   "प्रभावित पत्तियाँ जल्दी हटाएँ।"
+  ],
+  "pesticide_en": "Sulfur (wettable)",
+  "pesticide_hi": "गंधक (वेटेबल)"
+ },
+ "D0I": {
+  "name_en": "Chili - Healthy",
+  "name_hi": "Chili - Healthy",
+  "crop": "chili",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D0J": {
+  "name_en": "Chili - Leaf Curl",
+  "name_hi": "Chili - Leaf Curl",
+  "crop": "chili",
+  "condition": "leaf_curl",
+  "healthy": false,
+  "symptoms_en": "Mottled, curled, yellow-streaked or distorted leaves; stunted growth. Spread by insects (whitefly/aphids).",
+  "symptoms_hi": "चितकबरी, मुड़ी, पीली धारीदार या विकृत पत्तियाँ; बौना विकास। कीटों (सफेद मक्खी/माहू) से फैलता है।",
+  "management_en": [
+   "No chemical cure — remove and destroy infected plants.",
+   "Control the insect vector (whitefly/aphid).",
+   "Use virus-free seed and resistant varieties."
+  ],
+  "management_hi": [
+   "कोई रासायनिक इलाज नहीं — संक्रमित पौधे हटाकर नष्ट करें।",
+   "वाहक कीट (सफेद मक्खी/माहू) नियंत्रित करें।",
+   "वायरस-मुक्त बीज व प्रतिरोधी किस्में उपयोग करें।"
+  ],
+  "pesticide_en": "No cure — remove plants & control insect vector",
+  "pesticide_hi": "कोई इलाज नहीं — पौधे हटाएँ व वाहक कीट नियंत्रित करें"
+ },
+ "D0K": {
+  "name_en": "Chili - Leaf Spot",
+  "name_hi": "Chili - Leaf Spot",
+  "crop": "chili",
+  "condition": "leaf_spot",
+  "healthy": false,
+  "symptoms_en": "Round brown/grey spots, often with darker margins or yellow halos, scattered across the leaf.",
+  "symptoms_hi": "पत्ती पर बिखरे गोल भूरे/धूसर धब्बे, अक्सर गहरे किनारे या पीले घेरे के साथ।",
+  "management_en": [
+   "Spray copper oxychloride.",
+   "Remove spotted leaves and debris.",
+   "Avoid wetting foliage; rotate crops."
+  ],
+  "management_hi": [
+   "कॉपर ऑक्सीक्लोराइड छिड़कें।",
+   "धब्बेदार पत्तियाँ व अवशेष हटाएँ।",
+   "पत्तियाँ भिगोने से बचें; फसल चक्र अपनाएँ।"
+  ],
+  "pesticide_en": "Copper Oxychloride",
+  "pesticide_hi": "कॉपर ऑक्सीक्लोराइड"
+ },
+ "D0L": {
+  "name_en": "Chili - Whitefly",
+  "name_hi": "Chili - Whitefly",
+  "crop": "chili",
+  "condition": "whitefly",
+  "healthy": false,
+  "symptoms_en": "Chewed/holed leaves, visible insects or larvae, and sticky honeydew or sooty patches.",
+  "symptoms_hi": "कटी/छिद्रित पत्तियाँ, दिखते कीट या लार्वा, चिपचिपा मधुरस या काली परत।",
+  "management_en": [
+   "Spray a recommended insecticide (imidacloprid).",
+   "Set yellow sticky traps.",
+   "Remove weeds that host the pest."
+  ],
+  "management_hi": [
+   "अनुशंसित कीटनाशक (इमिडाक्लोप्रिड) छिड़कें।",
+   "पीले चिपचिपे ट्रैप लगाएँ।",
+   "कीट को पनाह देने वाले खरपतवार हटाएँ।"
+  ],
+  "pesticide_en": "Imidacloprid (insecticide)",
+  "pesticide_hi": "इमिडाक्लोप्रिड (कीटनाशक)"
+ },
+ "D0M": {
+  "name_en": "Chili - Yellowish",
+  "name_hi": "Chili - Yellowish",
+  "crop": "chili",
+  "condition": "yellowish",
+  "healthy": false,
+  "symptoms_en": "Symptoms are unclear or overlap with several conditions.",
+  "symptoms_hi": "लक्षण अस्पष्ट हैं या कई रोगों से मिलते-जुलते हैं।",
+  "management_en": [
+   "Consult your local agricultural officer before treating.",
+   "Take clear close-up photos of affected leaves.",
+   "Avoid random pesticide use."
+  ],
+  "management_hi": [
+   "उपचार से पहले स्थानीय कृषि अधिकारी से परामर्श करें।",
+   "प्रभावित पत्तियों की स्पष्ट नज़दीकी फोटो लें।",
+   "बिना जाने दवा का प्रयोग न करें।"
+  ],
+  "pesticide_en": "Consult agricultural officer",
+  "pesticide_hi": "कृषि अधिकारी से परामर्श करें"
+ },
+ "D0N": {
+  "name_en": "Coffee - Cercospora Leaf Spot",
+  "name_hi": "Coffee - Cercospora Leaf Spot",
+  "crop": "coffee",
+  "condition": "cercospora_leaf_spot",
+  "healthy": false,
+  "symptoms_en": "Round brown/grey spots, often with darker margins or yellow halos, scattered across the leaf.",
+  "symptoms_hi": "पत्ती पर बिखरे गोल भूरे/धूसर धब्बे, अक्सर गहरे किनारे या पीले घेरे के साथ।",
+  "management_en": [
+   "Spray copper oxychloride.",
+   "Remove spotted leaves and debris.",
+   "Avoid wetting foliage; rotate crops."
+  ],
+  "management_hi": [
+   "कॉपर ऑक्सीक्लोराइड छिड़कें।",
+   "धब्बेदार पत्तियाँ व अवशेष हटाएँ।",
+   "पत्तियाँ भिगोने से बचें; फसल चक्र अपनाएँ।"
+  ],
+  "pesticide_en": "Copper Oxychloride",
+  "pesticide_hi": "कॉपर ऑक्सीक्लोराइड"
+ },
+ "D0O": {
+  "name_en": "Coffee - Healthy",
+  "name_hi": "Coffee - Healthy",
+  "crop": "coffee",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D0P": {
+  "name_en": "Coffee - Red Spider Mite",
+  "name_hi": "Coffee - Red Spider Mite",
+  "crop": "coffee",
+  "condition": "red_spider_mite",
+  "healthy": false,
+  "symptoms_en": "Fine yellow stippling, tiny webbing, and bronzing on the underside of leaves.",
+  "symptoms_hi": "पत्तियों की निचली सतह पर बारीक पीले बिंदु, महीन जाला व कांस्य रंगत।",
+  "management_en": [
+   "Spray a miticide (abamectin).",
+   "Wash undersides with water; raise humidity.",
+   "Remove heavily infested leaves."
+  ],
+  "management_hi": [
+   "माइटसाइड (एबामेक्टिन) छिड़कें।",
+   "निचली सतह पानी से धोएँ; नमी बढ़ाएँ।",
+   "अधिक प्रभावित पत्तियाँ हटाएँ।"
+  ],
+  "pesticide_en": "Abamectin (miticide)",
+  "pesticide_hi": "एबामेक्टिन (माइटसाइड)"
+ },
+ "D0Q": {
+  "name_en": "Coffee - Rust",
+  "name_hi": "Coffee - Rust",
+  "crop": "coffee",
+  "condition": "rust",
+  "healthy": false,
+  "symptoms_en": "Reddish-brown to orange powdery pustules on the leaf surface that rub off onto fingers.",
+  "symptoms_hi": "पत्ती की सतह पर लाल-भूरे से नारंगी चूर्णी दाने जो उँगली पर लग जाते हैं।",
+  "management_en": [
+   "Spray propiconazole.",
+   "Remove and destroy infected leaves.",
+   "Avoid overhead watering; grow resistant varieties."
+  ],
+  "management_hi": [
+   "प्रोपिकोनाज़ोल छिड़कें।",
+   "संक्रमित पत्तियाँ हटाकर नष्ट करें।",
+   "ऊपर से सिंचाई न करें; प्रतिरोधी किस्में लगाएँ।"
+  ],
+  "pesticide_en": "Propiconazole",
+  "pesticide_hi": "प्रोपिकोनाज़ोल"
+ },
+ "D0R": {
+  "name_en": "Corn - Common Rust",
+  "name_hi": "Corn - Common Rust",
+  "crop": "corn",
+  "condition": "common_rust",
+  "healthy": false,
+  "symptoms_en": "Reddish-brown to orange powdery pustules on the leaf surface that rub off onto fingers.",
+  "symptoms_hi": "पत्ती की सतह पर लाल-भूरे से नारंगी चूर्णी दाने जो उँगली पर लग जाते हैं।",
+  "management_en": [
+   "Spray propiconazole.",
+   "Remove and destroy infected leaves.",
+   "Avoid overhead watering; grow resistant varieties."
+  ],
+  "management_hi": [
+   "प्रोपिकोनाज़ोल छिड़कें।",
+   "संक्रमित पत्तियाँ हटाकर नष्ट करें।",
+   "ऊपर से सिंचाई न करें; प्रतिरोधी किस्में लगाएँ।"
+  ],
+  "pesticide_en": "Propiconazole",
+  "pesticide_hi": "प्रोपिकोनाज़ोल"
+ },
+ "D0S": {
+  "name_en": "Corn - Gray Leaf Spot",
+  "name_hi": "Corn - Gray Leaf Spot",
+  "crop": "corn",
+  "condition": "gray_leaf_spot",
+  "healthy": false,
+  "symptoms_en": "Round brown/grey spots, often with darker margins or yellow halos, scattered across the leaf.",
+  "symptoms_hi": "पत्ती पर बिखरे गोल भूरे/धूसर धब्बे, अक्सर गहरे किनारे या पीले घेरे के साथ।",
+  "management_en": [
+   "Spray copper oxychloride.",
+   "Remove spotted leaves and debris.",
+   "Avoid wetting foliage; rotate crops."
+  ],
+  "management_hi": [
+   "कॉपर ऑक्सीक्लोराइड छिड़कें।",
+   "धब्बेदार पत्तियाँ व अवशेष हटाएँ।",
+   "पत्तियाँ भिगोने से बचें; फसल चक्र अपनाएँ।"
+  ],
+  "pesticide_en": "Copper Oxychloride",
+  "pesticide_hi": "कॉपर ऑक्सीक्लोराइड"
+ },
+ "D0T": {
+  "name_en": "Corn - Healthy",
+  "name_hi": "Corn - Healthy",
+  "crop": "corn",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D0U": {
+  "name_en": "Corn - Northern Leaf Blight",
+  "name_hi": "Corn - Northern Leaf Blight",
+  "crop": "corn",
+  "condition": "northern_leaf_blight",
+  "healthy": false,
+  "symptoms_en": "Dark brown/black spreading patches on leaves, often with a pale halo; leaves collapse fast in humid weather.",
+  "symptoms_hi": "पत्तियों पर गहरे भूरे/काले फैलते धब्बे, अक्सर हल्के घेरे के साथ; नमी में पत्तियाँ तेज़ी से गिरती हैं।",
+  "management_en": [
+   "Spray mancozeb without delay.",
+   "Remove and destroy affected leaves.",
+   "Avoid evening irrigation; do not work in wet fields."
+  ],
+  "management_hi": [
+   "बिना देर मैंकोज़ेब छिड़कें।",
+   "प्रभावित पत्तियाँ हटाकर नष्ट करें।",
+   "शाम की सिंचाई न करें; गीले खेत में काम न करें।"
+  ],
+  "pesticide_en": "Mancozeb",
+  "pesticide_hi": "मैंकोज़ेब"
+ },
+ "D0V": {
+  "name_en": "Cucumber - Diseased",
+  "name_hi": "Cucumber - Diseased",
+  "crop": "cucumber",
+  "condition": "diseased",
+  "healthy": false,
+  "symptoms_en": "Symptoms are unclear or overlap with several conditions.",
+  "symptoms_hi": "लक्षण अस्पष्ट हैं या कई रोगों से मिलते-जुलते हैं।",
+  "management_en": [
+   "Consult your local agricultural officer before treating.",
+   "Take clear close-up photos of affected leaves.",
+   "Avoid random pesticide use."
+  ],
+  "management_hi": [
+   "उपचार से पहले स्थानीय कृषि अधिकारी से परामर्श करें।",
+   "प्रभावित पत्तियों की स्पष्ट नज़दीकी फोटो लें।",
+   "बिना जाने दवा का प्रयोग न करें।"
+  ],
+  "pesticide_en": "Consult agricultural officer",
+  "pesticide_hi": "कृषि अधिकारी से परामर्श करें"
+ },
+ "D0W": {
+  "name_en": "Cucumber - Healthy",
+  "name_hi": "Cucumber - Healthy",
+  "crop": "cucumber",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D0X": {
+  "name_en": "Cucumber - Rotten",
+  "name_hi": "Cucumber - Rotten",
+  "crop": "cucumber",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D0Y": {
+  "name_en": "Grape - Black Measles",
+  "name_hi": "Grape - Black Measles",
+  "crop": "grape",
+  "condition": "black_measles",
+  "healthy": false,
+  "symptoms_en": "Dark firm rot on leaves/fruit/stem; tissue shrivels and may show tiny black dots.",
+  "symptoms_hi": "पत्ती/फल/तने पर गहरा कठोर सड़न; ऊतक सिकुड़ता व छोटे काले बिंदु दिख सकते हैं।",
+  "management_en": [
+   "Spray copper fungicide.",
+   "Prune and destroy infected parts.",
+   "Improve drainage and airflow."
+  ],
+  "management_hi": [
+   "ताम्र फफूंदनाशक छिड़कें।",
+   "संक्रमित भाग काटकर नष्ट करें।",
+   "जल निकास व हवा बेहतर करें।"
+  ],
+  "pesticide_en": "Copper Fungicide",
+  "pesticide_hi": "ताम्र फफूंदनाशक"
+ },
+ "D0Z": {
+  "name_en": "Grape - Black Rot",
+  "name_hi": "Grape - Black Rot",
+  "crop": "grape",
+  "condition": "black_rot",
+  "healthy": false,
+  "symptoms_en": "Dark firm rot on leaves/fruit/stem; tissue shrivels and may show tiny black dots.",
+  "symptoms_hi": "पत्ती/फल/तने पर गहरा कठोर सड़न; ऊतक सिकुड़ता व छोटे काले बिंदु दिख सकते हैं।",
+  "management_en": [
+   "Spray copper fungicide.",
+   "Prune and destroy infected parts.",
+   "Improve drainage and airflow."
+  ],
+  "management_hi": [
+   "ताम्र फफूंदनाशक छिड़कें।",
+   "संक्रमित भाग काटकर नष्ट करें।",
+   "जल निकास व हवा बेहतर करें।"
+  ],
+  "pesticide_en": "Copper Fungicide",
+  "pesticide_hi": "ताम्र फफूंदनाशक"
+ },
+ "D10": {
+  "name_en": "Grape - Healthy",
+  "name_hi": "Grape - Healthy",
+  "crop": "grape",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D11": {
+  "name_en": "Grape - Leaf Blight Isariopsis Leaf Spot",
+  "name_hi": "Grape - Leaf Blight Isariopsis Leaf Spot",
+  "crop": "grape",
+  "condition": "leaf_blight_isariopsis_leaf_spot",
+  "healthy": false,
+  "symptoms_en": "Dark brown/black spreading patches on leaves, often with a pale halo; leaves collapse fast in humid weather.",
+  "symptoms_hi": "पत्तियों पर गहरे भूरे/काले फैलते धब्बे, अक्सर हल्के घेरे के साथ; नमी में पत्तियाँ तेज़ी से गिरती हैं।",
+  "management_en": [
+   "Spray mancozeb without delay.",
+   "Remove and destroy affected leaves.",
+   "Avoid evening irrigation; do not work in wet fields."
+  ],
+  "management_hi": [
+   "बिना देर मैंकोज़ेब छिड़कें।",
+   "प्रभावित पत्तियाँ हटाकर नष्ट करें।",
+   "शाम की सिंचाई न करें; गीले खेत में काम न करें।"
+  ],
+  "pesticide_en": "Mancozeb",
+  "pesticide_hi": "मैंकोज़ेब"
+ },
+ "D12": {
+  "name_en": "Grape - Rotten",
+  "name_hi": "Grape - Rotten",
+  "crop": "grape",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D13": {
+  "name_en": "Guava - Diseased",
+  "name_hi": "Guava - Diseased",
+  "crop": "guava",
+  "condition": "diseased",
+  "healthy": false,
+  "symptoms_en": "Symptoms are unclear or overlap with several conditions.",
+  "symptoms_hi": "लक्षण अस्पष्ट हैं या कई रोगों से मिलते-जुलते हैं।",
+  "management_en": [
+   "Consult your local agricultural officer before treating.",
+   "Take clear close-up photos of affected leaves.",
+   "Avoid random pesticide use."
+  ],
+  "management_hi": [
+   "उपचार से पहले स्थानीय कृषि अधिकारी से परामर्श करें।",
+   "प्रभावित पत्तियों की स्पष्ट नज़दीकी फोटो लें।",
+   "बिना जाने दवा का प्रयोग न करें।"
+  ],
+  "pesticide_en": "Consult agricultural officer",
+  "pesticide_hi": "कृषि अधिकारी से परामर्श करें"
+ },
+ "D14": {
+  "name_en": "Guava - Healthy",
+  "name_hi": "Guava - Healthy",
+  "crop": "guava",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D15": {
+  "name_en": "Guava - Rotten",
+  "name_hi": "Guava - Rotten",
+  "crop": "guava",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D16": {
+  "name_en": "Jamun - Diseased",
+  "name_hi": "Jamun - Diseased",
+  "crop": "jamun",
+  "condition": "diseased",
+  "healthy": false,
+  "symptoms_en": "Symptoms are unclear or overlap with several conditions.",
+  "symptoms_hi": "लक्षण अस्पष्ट हैं या कई रोगों से मिलते-जुलते हैं।",
+  "management_en": [
+   "Consult your local agricultural officer before treating.",
+   "Take clear close-up photos of affected leaves.",
+   "Avoid random pesticide use."
+  ],
+  "management_hi": [
+   "उपचार से पहले स्थानीय कृषि अधिकारी से परामर्श करें।",
+   "प्रभावित पत्तियों की स्पष्ट नज़दीकी फोटो लें।",
+   "बिना जाने दवा का प्रयोग न करें।"
+  ],
+  "pesticide_en": "Consult agricultural officer",
+  "pesticide_hi": "कृषि अधिकारी से परामर्श करें"
+ },
+ "D17": {
+  "name_en": "Jamun - Healthy",
+  "name_hi": "Jamun - Healthy",
+  "crop": "jamun",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D18": {
+  "name_en": "Jujube - Healthy",
+  "name_hi": "Jujube - Healthy",
+  "crop": "jujube",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D19": {
+  "name_en": "Jujube - Rotten",
+  "name_hi": "Jujube - Rotten",
+  "crop": "jujube",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D1A": {
+  "name_en": "Lemon - Diseased",
+  "name_hi": "Lemon - Diseased",
+  "crop": "lemon",
+  "condition": "diseased",
+  "healthy": false,
+  "symptoms_en": "Symptoms are unclear or overlap with several conditions.",
+  "symptoms_hi": "लक्षण अस्पष्ट हैं या कई रोगों से मिलते-जुलते हैं।",
+  "management_en": [
+   "Consult your local agricultural officer before treating.",
+   "Take clear close-up photos of affected leaves.",
+   "Avoid random pesticide use."
+  ],
+  "management_hi": [
+   "उपचार से पहले स्थानीय कृषि अधिकारी से परामर्श करें।",
+   "प्रभावित पत्तियों की स्पष्ट नज़दीकी फोटो लें।",
+   "बिना जाने दवा का प्रयोग न करें।"
+  ],
+  "pesticide_en": "Consult agricultural officer",
+  "pesticide_hi": "कृषि अधिकारी से परामर्श करें"
+ },
+ "D1B": {
+  "name_en": "Lemon - Healthy",
+  "name_hi": "Lemon - Healthy",
+  "crop": "lemon",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D1C": {
+  "name_en": "Mango - Diseased",
+  "name_hi": "Mango - Diseased",
+  "crop": "mango",
+  "condition": "diseased",
+  "healthy": false,
+  "symptoms_en": "Symptoms are unclear or overlap with several conditions.",
+  "symptoms_hi": "लक्षण अस्पष्ट हैं या कई रोगों से मिलते-जुलते हैं।",
+  "management_en": [
+   "Consult your local agricultural officer before treating.",
+   "Take clear close-up photos of affected leaves.",
+   "Avoid random pesticide use."
+  ],
+  "management_hi": [
+   "उपचार से पहले स्थानीय कृषि अधिकारी से परामर्श करें।",
+   "प्रभावित पत्तियों की स्पष्ट नज़दीकी फोटो लें।",
+   "बिना जाने दवा का प्रयोग न करें।"
+  ],
+  "pesticide_en": "Consult agricultural officer",
+  "pesticide_hi": "कृषि अधिकारी से परामर्श करें"
+ },
+ "D1D": {
+  "name_en": "Mango - Healthy",
+  "name_hi": "Mango - Healthy",
+  "crop": "mango",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D1E": {
+  "name_en": "Mango - Rotten",
+  "name_hi": "Mango - Rotten",
+  "crop": "mango",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D1F": {
+  "name_en": "Orange - Healthy",
+  "name_hi": "Orange - Healthy",
+  "crop": "orange",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D1G": {
+  "name_en": "Orange - Rotten",
+  "name_hi": "Orange - Rotten",
+  "crop": "orange",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D1H": {
+  "name_en": "Peach - Bacterial Spot",
+  "name_hi": "Peach - Bacterial Spot",
+  "crop": "peach",
+  "condition": "bacterial_spot",
+  "healthy": false,
+  "symptoms_en": "Small water-soaked spots that turn brown with yellow halos; may ooze in humid weather.",
+  "symptoms_hi": "छोटे जल-भीगे धब्बे जो भूरे व पीले घेरे वाले हो जाते हैं; नमी में रिस सकते हैं।",
+  "management_en": [
+   "Spray copper + streptomycin.",
+   "Remove infected debris; avoid overhead irrigation.",
+   "Rotate crops and use clean seed."
+  ],
+  "management_hi": [
+   "कॉपर + स्ट्रेप्टोमाइसिन छिड़कें।",
+   "संक्रमित अवशेष हटाएँ; ऊपर से सिंचाई न करें।",
+   "फसल चक्र अपनाएँ व स्वच्छ बीज लें।"
+  ],
+  "pesticide_en": "Copper + Streptomycin",
+  "pesticide_hi": "कॉपर + स्ट्रेप्टोमाइसिन"
+ },
+ "D1I": {
+  "name_en": "Peach - Healthy",
+  "name_hi": "Peach - Healthy",
+  "crop": "peach",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D1J": {
+  "name_en": "Pepper - Bell Bacterial Spot",
+  "name_hi": "Pepper - Bell Bacterial Spot",
+  "crop": "pepper",
+  "condition": "bell_bacterial_spot",
+  "healthy": false,
+  "symptoms_en": "Small water-soaked spots that turn brown with yellow halos; may ooze in humid weather.",
+  "symptoms_hi": "छोटे जल-भीगे धब्बे जो भूरे व पीले घेरे वाले हो जाते हैं; नमी में रिस सकते हैं।",
+  "management_en": [
+   "Spray copper + streptomycin.",
+   "Remove infected debris; avoid overhead irrigation.",
+   "Rotate crops and use clean seed."
+  ],
+  "management_hi": [
+   "कॉपर + स्ट्रेप्टोमाइसिन छिड़कें।",
+   "संक्रमित अवशेष हटाएँ; ऊपर से सिंचाई न करें।",
+   "फसल चक्र अपनाएँ व स्वच्छ बीज लें।"
+  ],
+  "pesticide_en": "Copper + Streptomycin",
+  "pesticide_hi": "कॉपर + स्ट्रेप्टोमाइसिन"
+ },
+ "D1K": {
+  "name_en": "Pepper - Bell Healthy",
+  "name_hi": "Pepper - Bell Healthy",
+  "crop": "pepper",
+  "condition": "bell_healthy",
+  "healthy": false,
+  "symptoms_en": "Symptoms are unclear or overlap with several conditions.",
+  "symptoms_hi": "लक्षण अस्पष्ट हैं या कई रोगों से मिलते-जुलते हैं।",
+  "management_en": [
+   "Consult your local agricultural officer before treating.",
+   "Take clear close-up photos of affected leaves.",
+   "Avoid random pesticide use."
+  ],
+  "management_hi": [
+   "उपचार से पहले स्थानीय कृषि अधिकारी से परामर्श करें।",
+   "प्रभावित पत्तियों की स्पष्ट नज़दीकी फोटो लें।",
+   "बिना जाने दवा का प्रयोग न करें।"
+  ],
+  "pesticide_en": "Consult agricultural officer",
+  "pesticide_hi": "कृषि अधिकारी से परामर्श करें"
+ },
+ "D1L": {
+  "name_en": "Pomegranate - Diseased",
+  "name_hi": "Pomegranate - Diseased",
+  "crop": "pomegranate",
+  "condition": "diseased",
+  "healthy": false,
+  "symptoms_en": "Symptoms are unclear or overlap with several conditions.",
+  "symptoms_hi": "लक्षण अस्पष्ट हैं या कई रोगों से मिलते-जुलते हैं।",
+  "management_en": [
+   "Consult your local agricultural officer before treating.",
+   "Take clear close-up photos of affected leaves.",
+   "Avoid random pesticide use."
+  ],
+  "management_hi": [
+   "उपचार से पहले स्थानीय कृषि अधिकारी से परामर्श करें।",
+   "प्रभावित पत्तियों की स्पष्ट नज़दीकी फोटो लें।",
+   "बिना जाने दवा का प्रयोग न करें।"
+  ],
+  "pesticide_en": "Consult agricultural officer",
+  "pesticide_hi": "कृषि अधिकारी से परामर्श करें"
+ },
+ "D1M": {
+  "name_en": "Pomegranate - Healthy",
+  "name_hi": "Pomegranate - Healthy",
+  "crop": "pomegranate",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D1N": {
+  "name_en": "Pomegranate - Rotten",
+  "name_hi": "Pomegranate - Rotten",
+  "crop": "pomegranate",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D1O": {
+  "name_en": "Potato - Early Blight",
+  "name_hi": "Potato - Early Blight",
+  "crop": "potato",
+  "condition": "early_blight",
+  "healthy": false,
+  "symptoms_en": "Dark brown/black spreading patches on leaves, often with a pale halo; leaves collapse fast in humid weather.",
+  "symptoms_hi": "पत्तियों पर गहरे भूरे/काले फैलते धब्बे, अक्सर हल्के घेरे के साथ; नमी में पत्तियाँ तेज़ी से गिरती हैं।",
+  "management_en": [
+   "Spray mancozeb without delay.",
+   "Remove and destroy affected leaves.",
+   "Avoid evening irrigation; do not work in wet fields."
+  ],
+  "management_hi": [
+   "बिना देर मैंकोज़ेब छिड़कें।",
+   "प्रभावित पत्तियाँ हटाकर नष्ट करें।",
+   "शाम की सिंचाई न करें; गीले खेत में काम न करें।"
+  ],
+  "pesticide_en": "Mancozeb",
+  "pesticide_hi": "मैंकोज़ेब"
+ },
+ "D1P": {
+  "name_en": "Potato - Healthy",
+  "name_hi": "Potato - Healthy",
+  "crop": "potato",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D1Q": {
+  "name_en": "Potato - Late Blight",
+  "name_hi": "Potato - Late Blight",
+  "crop": "potato",
+  "condition": "late_blight",
+  "healthy": false,
+  "symptoms_en": "Dark brown/black spreading patches on leaves, often with a pale halo; leaves collapse fast in humid weather.",
+  "symptoms_hi": "पत्तियों पर गहरे भूरे/काले फैलते धब्बे, अक्सर हल्के घेरे के साथ; नमी में पत्तियाँ तेज़ी से गिरती हैं।",
+  "management_en": [
+   "Spray mancozeb without delay.",
+   "Remove and destroy affected leaves.",
+   "Avoid evening irrigation; do not work in wet fields."
+  ],
+  "management_hi": [
+   "बिना देर मैंकोज़ेब छिड़कें।",
+   "प्रभावित पत्तियाँ हटाकर नष्ट करें।",
+   "शाम की सिंचाई न करें; गीले खेत में काम न करें।"
+  ],
+  "pesticide_en": "Mancozeb",
+  "pesticide_hi": "मैंकोज़ेब"
+ },
+ "D1R": {
+  "name_en": "Potato - Rotten",
+  "name_hi": "Potato - Rotten",
+  "crop": "potato",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D1S": {
+  "name_en": "Rice - Brown Spot",
+  "name_hi": "Rice - Brown Spot",
+  "crop": "rice",
+  "condition": "brown_spot",
+  "healthy": false,
+  "symptoms_en": "Round brown/grey spots, often with darker margins or yellow halos, scattered across the leaf.",
+  "symptoms_hi": "पत्ती पर बिखरे गोल भूरे/धूसर धब्बे, अक्सर गहरे किनारे या पीले घेरे के साथ।",
+  "management_en": [
+   "Spray copper oxychloride.",
+   "Remove spotted leaves and debris.",
+   "Avoid wetting foliage; rotate crops."
+  ],
+  "management_hi": [
+   "कॉपर ऑक्सीक्लोराइड छिड़कें।",
+   "धब्बेदार पत्तियाँ व अवशेष हटाएँ।",
+   "पत्तियाँ भिगोने से बचें; फसल चक्र अपनाएँ।"
+  ],
+  "pesticide_en": "Copper Oxychloride",
+  "pesticide_hi": "कॉपर ऑक्सीक्लोराइड"
+ },
+ "D1T": {
+  "name_en": "Rice - Healthy",
+  "name_hi": "Rice - Healthy",
+  "crop": "rice",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D1U": {
+  "name_en": "Rice - Hispa",
+  "name_hi": "Rice - Hispa",
+  "crop": "rice",
+  "condition": "hispa",
+  "healthy": false,
+  "symptoms_en": "Chewed/holed leaves, visible insects or larvae, and sticky honeydew or sooty patches.",
+  "symptoms_hi": "कटी/छिद्रित पत्तियाँ, दिखते कीट या लार्वा, चिपचिपा मधुरस या काली परत।",
+  "management_en": [
+   "Spray a recommended insecticide (imidacloprid).",
+   "Set yellow sticky traps.",
+   "Remove weeds that host the pest."
+  ],
+  "management_hi": [
+   "अनुशंसित कीटनाशक (इमिडाक्लोप्रिड) छिड़कें।",
+   "पीले चिपचिपे ट्रैप लगाएँ।",
+   "कीट को पनाह देने वाले खरपतवार हटाएँ।"
+  ],
+  "pesticide_en": "Imidacloprid (insecticide)",
+  "pesticide_hi": "इमिडाक्लोप्रिड (कीटनाशक)"
+ },
+ "D1V": {
+  "name_en": "Rice - Leaf Blast",
+  "name_hi": "Rice - Leaf Blast",
+  "crop": "rice",
+  "condition": "leaf_blast",
+  "healthy": false,
+  "symptoms_en": "Spindle-shaped grey lesions with brown borders on leaves; dark rotting at the neck of the panicle.",
+  "symptoms_hi": "पत्तियों पर भूरे किनारे वाले धुरी-आकार के धूसर घाव; बाली की गर्दन पर काला सड़न।",
+  "management_en": [
+   "Spray tricyclazole at early symptoms.",
+   "Avoid excess nitrogen fertilizer.",
+   "Drain the field periodically; use resistant varieties."
+  ],
+  "management_hi": [
+   "शुरुआती लक्षण पर ट्राइसाइक्लाज़ोल छिड़कें।",
+   "अधिक नाइट्रोजन खाद से बचें।",
+   "खेत समय-समय पर सुखाएँ; प्रतिरोधी किस्में लें।"
+  ],
+  "pesticide_en": "Tricyclazole",
+  "pesticide_hi": "ट्राइसाइक्लाज़ोल"
+ },
+ "D1W": {
+  "name_en": "Rice - Neck Blast",
+  "name_hi": "Rice - Neck Blast",
+  "crop": "rice",
+  "condition": "neck_blast",
+  "healthy": false,
+  "symptoms_en": "Spindle-shaped grey lesions with brown borders on leaves; dark rotting at the neck of the panicle.",
+  "symptoms_hi": "पत्तियों पर भूरे किनारे वाले धुरी-आकार के धूसर घाव; बाली की गर्दन पर काला सड़न।",
+  "management_en": [
+   "Spray tricyclazole at early symptoms.",
+   "Avoid excess nitrogen fertilizer.",
+   "Drain the field periodically; use resistant varieties."
+  ],
+  "management_hi": [
+   "शुरुआती लक्षण पर ट्राइसाइक्लाज़ोल छिड़कें।",
+   "अधिक नाइट्रोजन खाद से बचें।",
+   "खेत समय-समय पर सुखाएँ; प्रतिरोधी किस्में लें।"
+  ],
+  "pesticide_en": "Tricyclazole",
+  "pesticide_hi": "ट्राइसाइक्लाज़ोल"
+ },
+ "D1X": {
+  "name_en": "Soybean - Bacterial Blight",
+  "name_hi": "Soybean - Bacterial Blight",
+  "crop": "soybean",
+  "condition": "bacterial_blight",
+  "healthy": false,
+  "symptoms_en": "Small water-soaked spots that turn brown with yellow halos; may ooze in humid weather.",
+  "symptoms_hi": "छोटे जल-भीगे धब्बे जो भूरे व पीले घेरे वाले हो जाते हैं; नमी में रिस सकते हैं।",
+  "management_en": [
+   "Spray copper + streptomycin.",
+   "Remove infected debris; avoid overhead irrigation.",
+   "Rotate crops and use clean seed."
+  ],
+  "management_hi": [
+   "कॉपर + स्ट्रेप्टोमाइसिन छिड़कें।",
+   "संक्रमित अवशेष हटाएँ; ऊपर से सिंचाई न करें।",
+   "फसल चक्र अपनाएँ व स्वच्छ बीज लें।"
+  ],
+  "pesticide_en": "Copper + Streptomycin",
+  "pesticide_hi": "कॉपर + स्ट्रेप्टोमाइसिन"
+ },
+ "D1Y": {
+  "name_en": "Soybean - Caterpillar",
+  "name_hi": "Soybean - Caterpillar",
+  "crop": "soybean",
+  "condition": "caterpillar",
+  "healthy": false,
+  "symptoms_en": "Chewed/holed leaves, visible insects or larvae, and sticky honeydew or sooty patches.",
+  "symptoms_hi": "कटी/छिद्रित पत्तियाँ, दिखते कीट या लार्वा, चिपचिपा मधुरस या काली परत।",
+  "management_en": [
+   "Spray a recommended insecticide (imidacloprid).",
+   "Set yellow sticky traps.",
+   "Remove weeds that host the pest."
+  ],
+  "management_hi": [
+   "अनुशंसित कीटनाशक (इमिडाक्लोप्रिड) छिड़कें।",
+   "पीले चिपचिपे ट्रैप लगाएँ।",
+   "कीट को पनाह देने वाले खरपतवार हटाएँ।"
+  ],
+  "pesticide_en": "Imidacloprid (insecticide)",
+  "pesticide_hi": "इमिडाक्लोप्रिड (कीटनाशक)"
+ },
+ "D1Z": {
+  "name_en": "Soybean - Diabrotica Speciosa",
+  "name_hi": "Soybean - Diabrotica Speciosa",
+  "crop": "soybean",
+  "condition": "diabrotica_speciosa",
+  "healthy": false,
+  "symptoms_en": "Chewed/holed leaves, visible insects or larvae, and sticky honeydew or sooty patches.",
+  "symptoms_hi": "कटी/छिद्रित पत्तियाँ, दिखते कीट या लार्वा, चिपचिपा मधुरस या काली परत।",
+  "management_en": [
+   "Spray a recommended insecticide (imidacloprid).",
+   "Set yellow sticky traps.",
+   "Remove weeds that host the pest."
+  ],
+  "management_hi": [
+   "अनुशंसित कीटनाशक (इमिडाक्लोप्रिड) छिड़कें।",
+   "पीले चिपचिपे ट्रैप लगाएँ।",
+   "कीट को पनाह देने वाले खरपतवार हटाएँ।"
+  ],
+  "pesticide_en": "Imidacloprid (insecticide)",
+  "pesticide_hi": "इमिडाक्लोप्रिड (कीटनाशक)"
+ },
+ "D20": {
+  "name_en": "Soybean - Downy Mildew",
+  "name_hi": "Soybean - Downy Mildew",
+  "crop": "soybean",
+  "condition": "downy_mildew",
+  "healthy": false,
+  "symptoms_en": "Pale/yellow patches on top of leaves with greyish fuzzy growth underneath.",
+  "symptoms_hi": "पत्तियों के ऊपर पीले धब्बे और नीचे धूसर रोएँदार वृद्धि।",
+  "management_en": [
+   "Spray mancozeb.",
+   "Reduce leaf wetness; water at the base early in the day.",
+   "Space plants for good airflow."
+  ],
+  "management_hi": [
+   "मैंकोज़ेब छिड़कें।",
+   "पत्ती की नमी घटाएँ; दिन में जल्दी जड़ पर सिंचाई करें।",
+   "अच्छी हवा हेतु पौधों में दूरी रखें।"
+  ],
+  "pesticide_en": "Mancozeb",
+  "pesticide_hi": "मैंकोज़ेब"
+ },
+ "D21": {
+  "name_en": "Soybean - Healthy",
+  "name_hi": "Soybean - Healthy",
+  "crop": "soybean",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D22": {
+  "name_en": "Soybean - Mosaic Virus",
+  "name_hi": "Soybean - Mosaic Virus",
+  "crop": "soybean",
+  "condition": "mosaic_virus",
+  "healthy": false,
+  "symptoms_en": "Mottled, curled, yellow-streaked or distorted leaves; stunted growth. Spread by insects (whitefly/aphids).",
+  "symptoms_hi": "चितकबरी, मुड़ी, पीली धारीदार या विकृत पत्तियाँ; बौना विकास। कीटों (सफेद मक्खी/माहू) से फैलता है।",
+  "management_en": [
+   "No chemical cure — remove and destroy infected plants.",
+   "Control the insect vector (whitefly/aphid).",
+   "Use virus-free seed and resistant varieties."
+  ],
+  "management_hi": [
+   "कोई रासायनिक इलाज नहीं — संक्रमित पौधे हटाकर नष्ट करें।",
+   "वाहक कीट (सफेद मक्खी/माहू) नियंत्रित करें।",
+   "वायरस-मुक्त बीज व प्रतिरोधी किस्में उपयोग करें।"
+  ],
+  "pesticide_en": "No cure — remove plants & control insect vector",
+  "pesticide_hi": "कोई इलाज नहीं — पौधे हटाएँ व वाहक कीट नियंत्रित करें"
+ },
+ "D23": {
+  "name_en": "Soybean - Powdery Mildew",
+  "name_hi": "Soybean - Powdery Mildew",
+  "crop": "soybean",
+  "condition": "powdery_mildew",
+  "healthy": false,
+  "symptoms_en": "White to grey powdery coating on the upper leaf surface; leaves may yellow and dry.",
+  "symptoms_hi": "ऊपरी पत्ती सतह पर सफेद-धूसर चूर्णी परत; पत्तियाँ पीली होकर सूख सकती हैं।",
+  "management_en": [
+   "Dust or spray wettable sulfur.",
+   "Improve air flow; avoid dense canopy.",
+   "Remove affected leaves early."
+  ],
+  "management_hi": [
+   "वेटेबल गंधक छिड़कें या भुरकें।",
+   "हवा का प्रवाह बढ़ाएँ; घनी छतरी से बचें।",
+   "प्रभावित पत्तियाँ जल्दी हटाएँ।"
+  ],
+  "pesticide_en": "Sulfur (wettable)",
+  "pesticide_hi": "गंधक (वेटेबल)"
+ },
+ "D24": {
+  "name_en": "Soybean - Rust",
+  "name_hi": "Soybean - Rust",
+  "crop": "soybean",
+  "condition": "rust",
+  "healthy": false,
+  "symptoms_en": "Reddish-brown to orange powdery pustules on the leaf surface that rub off onto fingers.",
+  "symptoms_hi": "पत्ती की सतह पर लाल-भूरे से नारंगी चूर्णी दाने जो उँगली पर लग जाते हैं।",
+  "management_en": [
+   "Spray propiconazole.",
+   "Remove and destroy infected leaves.",
+   "Avoid overhead watering; grow resistant varieties."
+  ],
+  "management_hi": [
+   "प्रोपिकोनाज़ोल छिड़कें।",
+   "संक्रमित पत्तियाँ हटाकर नष्ट करें।",
+   "ऊपर से सिंचाई न करें; प्रतिरोधी किस्में लगाएँ।"
+  ],
+  "pesticide_en": "Propiconazole",
+  "pesticide_hi": "प्रोपिकोनाज़ोल"
+ },
+ "D25": {
+  "name_en": "Soybean - Southern Blight",
+  "name_hi": "Soybean - Southern Blight",
+  "crop": "soybean",
+  "condition": "southern_blight",
+  "healthy": false,
+  "symptoms_en": "Dark brown/black spreading patches on leaves, often with a pale halo; leaves collapse fast in humid weather.",
+  "symptoms_hi": "पत्तियों पर गहरे भूरे/काले फैलते धब्बे, अक्सर हल्के घेरे के साथ; नमी में पत्तियाँ तेज़ी से गिरती हैं।",
+  "management_en": [
+   "Spray mancozeb without delay.",
+   "Remove and destroy affected leaves.",
+   "Avoid evening irrigation; do not work in wet fields."
+  ],
+  "management_hi": [
+   "बिना देर मैंकोज़ेब छिड़कें।",
+   "प्रभावित पत्तियाँ हटाकर नष्ट करें।",
+   "शाम की सिंचाई न करें; गीले खेत में काम न करें।"
+  ],
+  "pesticide_en": "Mancozeb",
+  "pesticide_hi": "मैंकोज़ेब"
+ },
+ "D26": {
+  "name_en": "Strawberry - Healthy",
+  "name_hi": "Strawberry - Healthy",
+  "crop": "strawberry",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D27": {
+  "name_en": "Strawberry - Leaf Scorch",
+  "name_hi": "Strawberry - Leaf Scorch",
+  "crop": "strawberry",
+  "condition": "leaf_scorch",
+  "healthy": false,
+  "symptoms_en": "Round brown/grey spots, often with darker margins or yellow halos, scattered across the leaf.",
+  "symptoms_hi": "पत्ती पर बिखरे गोल भूरे/धूसर धब्बे, अक्सर गहरे किनारे या पीले घेरे के साथ।",
+  "management_en": [
+   "Spray copper oxychloride.",
+   "Remove spotted leaves and debris.",
+   "Avoid wetting foliage; rotate crops."
+  ],
+  "management_hi": [
+   "कॉपर ऑक्सीक्लोराइड छिड़कें।",
+   "धब्बेदार पत्तियाँ व अवशेष हटाएँ।",
+   "पत्तियाँ भिगोने से बचें; फसल चक्र अपनाएँ।"
+  ],
+  "pesticide_en": "Copper Oxychloride",
+  "pesticide_hi": "कॉपर ऑक्सीक्लोराइड"
+ },
+ "D28": {
+  "name_en": "Strawberry - Rotten",
+  "name_hi": "Strawberry - Rotten",
+  "crop": "strawberry",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D29": {
+  "name_en": "Sugarcane - Bacterial Blight",
+  "name_hi": "Sugarcane - Bacterial Blight",
+  "crop": "sugarcane",
+  "condition": "bacterial_blight",
+  "healthy": false,
+  "symptoms_en": "Small water-soaked spots that turn brown with yellow halos; may ooze in humid weather.",
+  "symptoms_hi": "छोटे जल-भीगे धब्बे जो भूरे व पीले घेरे वाले हो जाते हैं; नमी में रिस सकते हैं।",
+  "management_en": [
+   "Spray copper + streptomycin.",
+   "Remove infected debris; avoid overhead irrigation.",
+   "Rotate crops and use clean seed."
+  ],
+  "management_hi": [
+   "कॉपर + स्ट्रेप्टोमाइसिन छिड़कें।",
+   "संक्रमित अवशेष हटाएँ; ऊपर से सिंचाई न करें।",
+   "फसल चक्र अपनाएँ व स्वच्छ बीज लें।"
+  ],
+  "pesticide_en": "Copper + Streptomycin",
+  "pesticide_hi": "कॉपर + स्ट्रेप्टोमाइसिन"
+ },
+ "D2A": {
+  "name_en": "Sugarcane - Healthy",
+  "name_hi": "Sugarcane - Healthy",
+  "crop": "sugarcane",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D2B": {
+  "name_en": "Sugarcane - Red Rot",
+  "name_hi": "Sugarcane - Red Rot",
+  "crop": "sugarcane",
+  "condition": "red_rot",
+  "healthy": false,
+  "symptoms_en": "Dark firm rot on leaves/fruit/stem; tissue shrivels and may show tiny black dots.",
+  "symptoms_hi": "पत्ती/फल/तने पर गहरा कठोर सड़न; ऊतक सिकुड़ता व छोटे काले बिंदु दिख सकते हैं।",
+  "management_en": [
+   "Spray copper fungicide.",
+   "Prune and destroy infected parts.",
+   "Improve drainage and airflow."
+  ],
+  "management_hi": [
+   "ताम्र फफूंदनाशक छिड़कें।",
+   "संक्रमित भाग काटकर नष्ट करें।",
+   "जल निकास व हवा बेहतर करें।"
+  ],
+  "pesticide_en": "Copper Fungicide",
+  "pesticide_hi": "ताम्र फफूंदनाशक"
+ },
+ "D2C": {
+  "name_en": "Sugarcane - Red Stripe",
+  "name_hi": "Sugarcane - Red Stripe",
+  "crop": "sugarcane",
+  "condition": "red_stripe",
+  "healthy": false,
+  "symptoms_en": "Symptoms are unclear or overlap with several conditions.",
+  "symptoms_hi": "लक्षण अस्पष्ट हैं या कई रोगों से मिलते-जुलते हैं।",
+  "management_en": [
+   "Consult your local agricultural officer before treating.",
+   "Take clear close-up photos of affected leaves.",
+   "Avoid random pesticide use."
+  ],
+  "management_hi": [
+   "उपचार से पहले स्थानीय कृषि अधिकारी से परामर्श करें।",
+   "प्रभावित पत्तियों की स्पष्ट नज़दीकी फोटो लें।",
+   "बिना जाने दवा का प्रयोग न करें।"
+  ],
+  "pesticide_en": "Consult agricultural officer",
+  "pesticide_hi": "कृषि अधिकारी से परामर्श करें"
+ },
+ "D2D": {
+  "name_en": "Sugarcane - Rust",
+  "name_hi": "Sugarcane - Rust",
+  "crop": "sugarcane",
+  "condition": "rust",
+  "healthy": false,
+  "symptoms_en": "Reddish-brown to orange powdery pustules on the leaf surface that rub off onto fingers.",
+  "symptoms_hi": "पत्ती की सतह पर लाल-भूरे से नारंगी चूर्णी दाने जो उँगली पर लग जाते हैं।",
+  "management_en": [
+   "Spray propiconazole.",
+   "Remove and destroy infected leaves.",
+   "Avoid overhead watering; grow resistant varieties."
+  ],
+  "management_hi": [
+   "प्रोपिकोनाज़ोल छिड़कें।",
+   "संक्रमित पत्तियाँ हटाकर नष्ट करें।",
+   "ऊपर से सिंचाई न करें; प्रतिरोधी किस्में लगाएँ।"
+  ],
+  "pesticide_en": "Propiconazole",
+  "pesticide_hi": "प्रोपिकोनाज़ोल"
+ },
+ "D2E": {
+  "name_en": "Tea - Algal Leaf",
+  "name_hi": "Tea - Algal Leaf",
+  "crop": "tea",
+  "condition": "algal_leaf",
+  "healthy": false,
+  "symptoms_en": "Round brown/grey spots, often with darker margins or yellow halos, scattered across the leaf.",
+  "symptoms_hi": "पत्ती पर बिखरे गोल भूरे/धूसर धब्बे, अक्सर गहरे किनारे या पीले घेरे के साथ।",
+  "management_en": [
+   "Spray copper oxychloride.",
+   "Remove spotted leaves and debris.",
+   "Avoid wetting foliage; rotate crops."
+  ],
+  "management_hi": [
+   "कॉपर ऑक्सीक्लोराइड छिड़कें।",
+   "धब्बेदार पत्तियाँ व अवशेष हटाएँ।",
+   "पत्तियाँ भिगोने से बचें; फसल चक्र अपनाएँ।"
+  ],
+  "pesticide_en": "Copper Oxychloride",
+  "pesticide_hi": "कॉपर ऑक्सीक्लोराइड"
+ },
+ "D2F": {
+  "name_en": "Tea - Anthracnose",
+  "name_hi": "Tea - Anthracnose",
+  "crop": "tea",
+  "condition": "anthracnose",
+  "healthy": false,
+  "symptoms_en": "Sunken dark lesions with concentric rings on leaves, stems, or fruit.",
+  "symptoms_hi": "पत्ती, तने या फल पर संकेंद्रित छल्लों वाले धँसे गहरे घाव।",
+  "management_en": [
+   "Spray carbendazim.",
+   "Remove infected plant parts and debris.",
+   "Avoid overhead irrigation."
+  ],
+  "management_hi": [
+   "कार्बेन्डाज़िम छिड़कें।",
+   "संक्रमित भाग व अवशेष हटाएँ।",
+   "ऊपर से सिंचाई न करें।"
+  ],
+  "pesticide_en": "Carbendazim",
+  "pesticide_hi": "कार्बेन्डाज़िम"
+ },
+ "D2G": {
+  "name_en": "Tea - Bird Eye Spot",
+  "name_hi": "Tea - Bird Eye Spot",
+  "crop": "tea",
+  "condition": "bird_eye_spot",
+  "healthy": false,
+  "symptoms_en": "Round brown/grey spots, often with darker margins or yellow halos, scattered across the leaf.",
+  "symptoms_hi": "पत्ती पर बिखरे गोल भूरे/धूसर धब्बे, अक्सर गहरे किनारे या पीले घेरे के साथ।",
+  "management_en": [
+   "Spray copper oxychloride.",
+   "Remove spotted leaves and debris.",
+   "Avoid wetting foliage; rotate crops."
+  ],
+  "management_hi": [
+   "कॉपर ऑक्सीक्लोराइड छिड़कें।",
+   "धब्बेदार पत्तियाँ व अवशेष हटाएँ।",
+   "पत्तियाँ भिगोने से बचें; फसल चक्र अपनाएँ।"
+  ],
+  "pesticide_en": "Copper Oxychloride",
+  "pesticide_hi": "कॉपर ऑक्सीक्लोराइड"
+ },
+ "D2H": {
+  "name_en": "Tea - Brown Blight",
+  "name_hi": "Tea - Brown Blight",
+  "crop": "tea",
+  "condition": "brown_blight",
+  "healthy": false,
+  "symptoms_en": "Dark brown/black spreading patches on leaves, often with a pale halo; leaves collapse fast in humid weather.",
+  "symptoms_hi": "पत्तियों पर गहरे भूरे/काले फैलते धब्बे, अक्सर हल्के घेरे के साथ; नमी में पत्तियाँ तेज़ी से गिरती हैं।",
+  "management_en": [
+   "Spray mancozeb without delay.",
+   "Remove and destroy affected leaves.",
+   "Avoid evening irrigation; do not work in wet fields."
+  ],
+  "management_hi": [
+   "बिना देर मैंकोज़ेब छिड़कें।",
+   "प्रभावित पत्तियाँ हटाकर नष्ट करें।",
+   "शाम की सिंचाई न करें; गीले खेत में काम न करें।"
+  ],
+  "pesticide_en": "Mancozeb",
+  "pesticide_hi": "मैंकोज़ेब"
+ },
+ "D2I": {
+  "name_en": "Tea - Healthy",
+  "name_hi": "Tea - Healthy",
+  "crop": "tea",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D2J": {
+  "name_en": "Tea - Red Leaf Spot",
+  "name_hi": "Tea - Red Leaf Spot",
+  "crop": "tea",
+  "condition": "red_leaf_spot",
+  "healthy": false,
+  "symptoms_en": "Round brown/grey spots, often with darker margins or yellow halos, scattered across the leaf.",
+  "symptoms_hi": "पत्ती पर बिखरे गोल भूरे/धूसर धब्बे, अक्सर गहरे किनारे या पीले घेरे के साथ।",
+  "management_en": [
+   "Spray copper oxychloride.",
+   "Remove spotted leaves and debris.",
+   "Avoid wetting foliage; rotate crops."
+  ],
+  "management_hi": [
+   "कॉपर ऑक्सीक्लोराइड छिड़कें।",
+   "धब्बेदार पत्तियाँ व अवशेष हटाएँ।",
+   "पत्तियाँ भिगोने से बचें; फसल चक्र अपनाएँ।"
+  ],
+  "pesticide_en": "Copper Oxychloride",
+  "pesticide_hi": "कॉपर ऑक्सीक्लोराइड"
+ },
+ "D2K": {
+  "name_en": "Tomato - Bacterial Spot",
+  "name_hi": "Tomato - Bacterial Spot",
+  "crop": "tomato",
+  "condition": "bacterial_spot",
+  "healthy": false,
+  "symptoms_en": "Small water-soaked spots that turn brown with yellow halos; may ooze in humid weather.",
+  "symptoms_hi": "छोटे जल-भीगे धब्बे जो भूरे व पीले घेरे वाले हो जाते हैं; नमी में रिस सकते हैं।",
+  "management_en": [
+   "Spray copper + streptomycin.",
+   "Remove infected debris; avoid overhead irrigation.",
+   "Rotate crops and use clean seed."
+  ],
+  "management_hi": [
+   "कॉपर + स्ट्रेप्टोमाइसिन छिड़कें।",
+   "संक्रमित अवशेष हटाएँ; ऊपर से सिंचाई न करें।",
+   "फसल चक्र अपनाएँ व स्वच्छ बीज लें।"
+  ],
+  "pesticide_en": "Copper + Streptomycin",
+  "pesticide_hi": "कॉपर + स्ट्रेप्टोमाइसिन"
+ },
+ "D2L": {
+  "name_en": "Tomato - Early Blight",
+  "name_hi": "Tomato - Early Blight",
+  "crop": "tomato",
+  "condition": "early_blight",
+  "healthy": false,
+  "symptoms_en": "Dark brown/black spreading patches on leaves, often with a pale halo; leaves collapse fast in humid weather.",
+  "symptoms_hi": "पत्तियों पर गहरे भूरे/काले फैलते धब्बे, अक्सर हल्के घेरे के साथ; नमी में पत्तियाँ तेज़ी से गिरती हैं।",
+  "management_en": [
+   "Spray mancozeb without delay.",
+   "Remove and destroy affected leaves.",
+   "Avoid evening irrigation; do not work in wet fields."
+  ],
+  "management_hi": [
+   "बिना देर मैंकोज़ेब छिड़कें।",
+   "प्रभावित पत्तियाँ हटाकर नष्ट करें।",
+   "शाम की सिंचाई न करें; गीले खेत में काम न करें।"
+  ],
+  "pesticide_en": "Mancozeb",
+  "pesticide_hi": "मैंकोज़ेब"
+ },
+ "D2M": {
+  "name_en": "Tomato - Healthy",
+  "name_hi": "Tomato - Healthy",
+  "crop": "tomato",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D2N": {
+  "name_en": "Tomato - Late Blight",
+  "name_hi": "Tomato - Late Blight",
+  "crop": "tomato",
+  "condition": "late_blight",
+  "healthy": false,
+  "symptoms_en": "Dark brown/black spreading patches on leaves, often with a pale halo; leaves collapse fast in humid weather.",
+  "symptoms_hi": "पत्तियों पर गहरे भूरे/काले फैलते धब्बे, अक्सर हल्के घेरे के साथ; नमी में पत्तियाँ तेज़ी से गिरती हैं।",
+  "management_en": [
+   "Spray mancozeb without delay.",
+   "Remove and destroy affected leaves.",
+   "Avoid evening irrigation; do not work in wet fields."
+  ],
+  "management_hi": [
+   "बिना देर मैंकोज़ेब छिड़कें।",
+   "प्रभावित पत्तियाँ हटाकर नष्ट करें।",
+   "शाम की सिंचाई न करें; गीले खेत में काम न करें।"
+  ],
+  "pesticide_en": "Mancozeb",
+  "pesticide_hi": "मैंकोज़ेब"
+ },
+ "D2O": {
+  "name_en": "Tomato - Leaf Mold",
+  "name_hi": "Tomato - Leaf Mold",
+  "crop": "tomato",
+  "condition": "leaf_mold",
+  "healthy": false,
+  "symptoms_en": "Pale spots on top with velvety olive-green to brown mold on the underside of leaves.",
+  "symptoms_hi": "ऊपर हल्के धब्बे और पत्ती के नीचे मखमली जैतूनी-भूरा फफूंद।",
+  "management_en": [
+   "Spray chlorothalonil.",
+   "Lower humidity; increase ventilation.",
+   "Remove affected lower leaves."
+  ],
+  "management_hi": [
+   "क्लोरोथैलोनिल छिड़कें।",
+   "नमी घटाएँ; हवादारी बढ़ाएँ।",
+   "प्रभावित निचली पत्तियाँ हटाएँ।"
+  ],
+  "pesticide_en": "Chlorothalonil",
+  "pesticide_hi": "क्लोरोथैलोनिल"
+ },
+ "D2P": {
+  "name_en": "Tomato - Mosaic Virus",
+  "name_hi": "Tomato - Mosaic Virus",
+  "crop": "tomato",
+  "condition": "mosaic_virus",
+  "healthy": false,
+  "symptoms_en": "Mottled, curled, yellow-streaked or distorted leaves; stunted growth. Spread by insects (whitefly/aphids).",
+  "symptoms_hi": "चितकबरी, मुड़ी, पीली धारीदार या विकृत पत्तियाँ; बौना विकास। कीटों (सफेद मक्खी/माहू) से फैलता है।",
+  "management_en": [
+   "No chemical cure — remove and destroy infected plants.",
+   "Control the insect vector (whitefly/aphid).",
+   "Use virus-free seed and resistant varieties."
+  ],
+  "management_hi": [
+   "कोई रासायनिक इलाज नहीं — संक्रमित पौधे हटाकर नष्ट करें।",
+   "वाहक कीट (सफेद मक्खी/माहू) नियंत्रित करें।",
+   "वायरस-मुक्त बीज व प्रतिरोधी किस्में उपयोग करें।"
+  ],
+  "pesticide_en": "No cure — remove plants & control insect vector",
+  "pesticide_hi": "कोई इलाज नहीं — पौधे हटाएँ व वाहक कीट नियंत्रित करें"
+ },
+ "D2Q": {
+  "name_en": "Tomato - Rotten",
+  "name_hi": "Tomato - Rotten",
+  "crop": "tomato",
+  "condition": "rotten",
+  "healthy": false,
+  "symptoms_en": "Soft, discolored, decaying tissue — a post-harvest/storage rot, not a field leaf disease.",
+  "symptoms_hi": "नरम, बदरंग, सड़ता ऊतक — यह भंडारण की सड़न है, खेत का पत्ती रोग नहीं।",
+  "management_en": [
+   "Discard affected produce to stop spread.",
+   "Store in a cool, dry, ventilated place.",
+   "Do not mix rotten with healthy stock."
+  ],
+  "management_hi": [
+   "फैलाव रोकने हेतु प्रभावित उपज हटा दें।",
+   "ठंडी, सूखी, हवादार जगह भंडारण करें।",
+   "सड़ी उपज को स्वस्थ उपज से अलग रखें।"
+  ],
+  "pesticide_en": "Discard affected produce",
+  "pesticide_hi": "प्रभावित फल हटा दें"
+ },
+ "D2R": {
+  "name_en": "Tomato - Septoria Leaf Spot",
+  "name_hi": "Tomato - Septoria Leaf Spot",
+  "crop": "tomato",
+  "condition": "septoria_leaf_spot",
+  "healthy": false,
+  "symptoms_en": "Round brown/grey spots, often with darker margins or yellow halos, scattered across the leaf.",
+  "symptoms_hi": "पत्ती पर बिखरे गोल भूरे/धूसर धब्बे, अक्सर गहरे किनारे या पीले घेरे के साथ।",
+  "management_en": [
+   "Spray copper oxychloride.",
+   "Remove spotted leaves and debris.",
+   "Avoid wetting foliage; rotate crops."
+  ],
+  "management_hi": [
+   "कॉपर ऑक्सीक्लोराइड छिड़कें।",
+   "धब्बेदार पत्तियाँ व अवशेष हटाएँ।",
+   "पत्तियाँ भिगोने से बचें; फसल चक्र अपनाएँ।"
+  ],
+  "pesticide_en": "Copper Oxychloride",
+  "pesticide_hi": "कॉपर ऑक्सीक्लोराइड"
+ },
+ "D2S": {
+  "name_en": "Tomato - Spider Mites",
+  "name_hi": "Tomato - Spider Mites",
+  "crop": "tomato",
+  "condition": "spider_mites",
+  "healthy": false,
+  "symptoms_en": "Fine yellow stippling, tiny webbing, and bronzing on the underside of leaves.",
+  "symptoms_hi": "पत्तियों की निचली सतह पर बारीक पीले बिंदु, महीन जाला व कांस्य रंगत।",
+  "management_en": [
+   "Spray a miticide (abamectin).",
+   "Wash undersides with water; raise humidity.",
+   "Remove heavily infested leaves."
+  ],
+  "management_hi": [
+   "माइटसाइड (एबामेक्टिन) छिड़कें।",
+   "निचली सतह पानी से धोएँ; नमी बढ़ाएँ।",
+   "अधिक प्रभावित पत्तियाँ हटाएँ।"
+  ],
+  "pesticide_en": "Abamectin (miticide)",
+  "pesticide_hi": "एबामेक्टिन (माइटसाइड)"
+ },
+ "D2T": {
+  "name_en": "Tomato - Target Spot",
+  "name_hi": "Tomato - Target Spot",
+  "crop": "tomato",
+  "condition": "target_spot",
+  "healthy": false,
+  "symptoms_en": "Pale spots on top with velvety olive-green to brown mold on the underside of leaves.",
+  "symptoms_hi": "ऊपर हल्के धब्बे और पत्ती के नीचे मखमली जैतूनी-भूरा फफूंद।",
+  "management_en": [
+   "Spray chlorothalonil.",
+   "Lower humidity; increase ventilation.",
+   "Remove affected lower leaves."
+  ],
+  "management_hi": [
+   "क्लोरोथैलोनिल छिड़कें।",
+   "नमी घटाएँ; हवादारी बढ़ाएँ।",
+   "प्रभावित निचली पत्तियाँ हटाएँ।"
+  ],
+  "pesticide_en": "Chlorothalonil",
+  "pesticide_hi": "क्लोरोथैलोनिल"
+ },
+ "D2U": {
+  "name_en": "Tomato - Yellow Leaf Curl Virus",
+  "name_hi": "Tomato - Yellow Leaf Curl Virus",
+  "crop": "tomato",
+  "condition": "yellow_leaf_curl_virus",
+  "healthy": false,
+  "symptoms_en": "Mottled, curled, yellow-streaked or distorted leaves; stunted growth. Spread by insects (whitefly/aphids).",
+  "symptoms_hi": "चितकबरी, मुड़ी, पीली धारीदार या विकृत पत्तियाँ; बौना विकास। कीटों (सफेद मक्खी/माहू) से फैलता है।",
+  "management_en": [
+   "No chemical cure — remove and destroy infected plants.",
+   "Control the insect vector (whitefly/aphid).",
+   "Use virus-free seed and resistant varieties."
+  ],
+  "management_hi": [
+   "कोई रासायनिक इलाज नहीं — संक्रमित पौधे हटाकर नष्ट करें।",
+   "वाहक कीट (सफेद मक्खी/माहू) नियंत्रित करें।",
+   "वायरस-मुक्त बीज व प्रतिरोधी किस्में उपयोग करें।"
+  ],
+  "pesticide_en": "No cure — remove plants & control insect vector",
+  "pesticide_hi": "कोई इलाज नहीं — पौधे हटाएँ व वाहक कीट नियंत्रित करें"
+ },
+ "D2V": {
+  "name_en": "Wheat - Brown Rust",
+  "name_hi": "Wheat - Brown Rust",
+  "crop": "wheat",
+  "condition": "brown_rust",
+  "healthy": false,
+  "symptoms_en": "Reddish-brown to orange powdery pustules on the leaf surface that rub off onto fingers.",
+  "symptoms_hi": "पत्ती की सतह पर लाल-भूरे से नारंगी चूर्णी दाने जो उँगली पर लग जाते हैं।",
+  "management_en": [
+   "Spray propiconazole.",
+   "Remove and destroy infected leaves.",
+   "Avoid overhead watering; grow resistant varieties."
+  ],
+  "management_hi": [
+   "प्रोपिकोनाज़ोल छिड़कें।",
+   "संक्रमित पत्तियाँ हटाकर नष्ट करें।",
+   "ऊपर से सिंचाई न करें; प्रतिरोधी किस्में लगाएँ।"
+  ],
+  "pesticide_en": "Propiconazole",
+  "pesticide_hi": "प्रोपिकोनाज़ोल"
+ },
+ "D2W": {
+  "name_en": "Wheat - Healthy",
+  "name_hi": "Wheat - Healthy",
+  "crop": "wheat",
+  "condition": "healthy",
+  "healthy": true,
+  "symptoms_en": "Uniform green leaves, no spots, wilting, or discoloration.",
+  "symptoms_hi": "एक समान हरी पत्तियाँ, कोई धब्बे, मुरझाना या रंग बदलना नहीं।",
+  "management_en": [
+   "No treatment needed.",
+   "Keep monitoring weekly.",
+   "Maintain field hygiene and balanced watering."
+  ],
+  "management_hi": [
+   "उपचार की आवश्यकता नहीं।",
+   "साप्ताहिक निगरानी करते रहें।",
+   "खेत की सफाई व संतुलित सिंचाई बनाए रखें।"
+  ],
+  "pesticide_en": "None needed",
+  "pesticide_hi": "कोई ज़रूरत नहीं"
+ },
+ "D2X": {
+  "name_en": "Wheat - Septoria",
+  "name_hi": "Wheat - Septoria",
+  "crop": "wheat",
+  "condition": "septoria",
+  "healthy": false,
+  "symptoms_en": "Round brown/grey spots, often with darker margins or yellow halos, scattered across the leaf.",
+  "symptoms_hi": "पत्ती पर बिखरे गोल भूरे/धूसर धब्बे, अक्सर गहरे किनारे या पीले घेरे के साथ।",
+  "management_en": [
+   "Spray copper oxychloride.",
+   "Remove spotted leaves and debris.",
+   "Avoid wetting foliage; rotate crops."
+  ],
+  "management_hi": [
+   "कॉपर ऑक्सीक्लोराइड छिड़कें।",
+   "धब्बेदार पत्तियाँ व अवशेष हटाएँ।",
+   "पत्तियाँ भिगोने से बचें; फसल चक्र अपनाएँ।"
+  ],
+  "pesticide_en": "Copper Oxychloride",
+  "pesticide_hi": "कॉपर ऑक्सीक्लोराइड"
+ },
+ "D2Y": {
+  "name_en": "Wheat - Yellow Rust",
+  "name_hi": "Wheat - Yellow Rust",
+  "crop": "wheat",
+  "condition": "yellow_rust",
+  "healthy": false,
+  "symptoms_en": "Reddish-brown to orange powdery pustules on the leaf surface that rub off onto fingers.",
+  "symptoms_hi": "पत्ती की सतह पर लाल-भूरे से नारंगी चूर्णी दाने जो उँगली पर लग जाते हैं।",
+  "management_en": [
+   "Spray propiconazole.",
+   "Remove and destroy infected leaves.",
+   "Avoid overhead watering; grow resistant varieties."
+  ],
+  "management_hi": [
+   "प्रोपिकोनाज़ोल छिड़कें।",
+   "संक्रमित पत्तियाँ हटाकर नष्ट करें।",
+   "ऊपर से सिंचाई न करें; प्रतिरोधी किस्में लगाएँ।"
+  ],
+  "pesticide_en": "Propiconazole",
+  "pesticide_hi": "प्रोपिकोनाज़ोल"
+ }
+}

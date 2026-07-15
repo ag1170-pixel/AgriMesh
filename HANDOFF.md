@@ -39,16 +39,22 @@ Run the tests: `node backend/test.js` → should print `all pass`.
 |---|---|---|
 | **AI model** | ✅ | MobileNetV2, 107 crop/disease classes, **90.2% val / 91.2% unseen**. Committed at `frontend/models/model.json` (+ shards). |
 | **Image → diagnosis** | ✅ | Runs in-browser (TensorFlow.js, WebGL), offline after first load. |
-| **Confidence gate** | ✅ | Below **0.85** → "consult officer" instead of a risky wrong answer. |
+| **Confidence gate** | ✅ | Below **0.70** → "consult officer" instead of a risky wrong answer. |
+| **Invalid-capture guard** | ✅ | Heuristic: conf < 0.40 or (conf < 0.55 ∧ margin < 0.12) → "Couldn't detect a leaf." Background class added to retrain notebook for next model version. |
+| **Visible confidence %** | ✅ | Raw confidence shown to 1 decimal (e.g. "Peach Bacterial Spot — 98.8% confident"). |
 | **Top-3 candidates** | ✅ | When uncertain, shows ranked possibilities (useful for hard classes like rice). |
 | **Leaf damage %** | ✅ | Canvas color analysis → severity band + "how much to cut" advice (EN/HI). |
+| **Damage tuning (admin)** | ✅ | Sliders in `admin.html` for green hue, saturation, min-leaf thresholds. "Copy tuned URL" button generates a calibrated link for field staff. Farmer flow uses sane defaults. |
+| **Disease details** | ✅ | `diseases.json` (107 entries, EN/HI symptoms + management + pesticide). `/api/disease/:code` + detail panel rendered after confident diagnosis. |
+| **Disease library** | ✅ | `frontend/library.html` — browse/search all 107 diseases with crop filter chips, accordion detail cards. Reuses the detail component. |
+| **Camera / gallery** | ✅ | Two explicit buttons: "📷 Take Photo" (`capture=environment`) and "🖼️ Choose from Gallery" (plain file input). Both feed the same handler. |
 | **SMS payload** | ✅ | `D<code> <geohash>` = 11 bytes, 1 SMS. Phone# = sender header (not sent). |
 | **Routing** | ✅ | Stock-aware Dijkstra (min-heap). Empty centers are skipped automatically. |
 | **Backend API** | ✅ | Express, in-memory store, serves the frontend. See §5 for endpoints. |
-| **Admin panel** | ✅ | Login, live inventory edit, "Simulate SMS" (full round-trip), reports table. |
+| **Admin panel** | ✅ | Login, live inventory edit, "Simulate SMS" (full round-trip), reports table, damage-tuning sliders. |
 | **SMS gateway layer** | ✅ | TextBee / Fast2SMS / logged-mock, switch by env var. Inbound webhook works. |
 | **Tests** | ✅ | `backend/test.js` (routing + SMS mock). Integration verified in-browser. |
-| **Bilingual** | ⚠️ partial | Core UI + SMS + damage advice are EN/HI. Some strings still English-only. |
+| **Bilingual** | ✅ | All UI, SMS, damage advice, detail cards, library page — EN/HI parity. |
 
 ---
 
@@ -114,17 +120,20 @@ backend/
   core.js        payload parse · geohash decode · stock-aware Dijkstra · SMS reply text
   sms.js         sendSMS(phone,text): TextBee / Fast2SMS / mock (env-driven)
   graph.js       hardcoded 15-node road graph + inventory (the demo district)
+  diseases.json  107-entry disease encyclopedia (name/symptoms/management/pesticide, EN+HI)
   test.js        `node backend/test.js` — routing + SMS unit checks
   .env.example   copy to .env for real SMS keys (.env is gitignored)
 frontend/
-  index.html     the farmer app
-  app.js         classify · confidence gate · top-3 · leaf-damage · route · map (no build step)
-  admin.html     admin panel (inventory, simulate SMS, reports)
-  style.css      styles       translations.js  EN/HI strings
+  index.html     the farmer app (camera/gallery buttons, result card, route)
+  app.js         classify · invalid-capture guard · confidence gate · top-3 · leaf-damage · details · route · map
+  admin.html     admin panel (inventory, simulate SMS, reports, damage-tuning sliders)
+  library.html   browse/search all 107 diseases — symptoms, management, crop filter
+  style.css      styles       translations.js  EN/HI strings (bilingual parity)
   models/        model.json + *.bin (trained model, COMMITTED) + labels.json (the contract)
 model/
   agrimesh_train.ipynb  the training notebook (Kaggle or Colab) — regenerated from build_notebook.py
   build_notebook.py     generator for the .ipynb (edit HERE, then re-run to rebuild the notebook)
+  gen_diseases.py       generates diseases.json from labels.json (run once to regenerate)
   normalize.py          134 folders → 107 classes logic (also inlined in the notebook)
   class_map.csv          folder → canonical class → D-code
   labels.json            model output index → disease + D-code (MUST match frontend/models/labels.json)
@@ -136,6 +145,8 @@ payload_demo.py   proof the SMS byte math fits (11 bytes in, 1-segment reply out
 - `GET  /api/health` — liveness
 - `POST /api/route` — `{payload, key}` → route result (web app uses this)
 - `POST /api/sms/inbound` — `{from, message, key}` → route + sends reply SMS (real gateway / simulate)
+- `GET  /api/disease/:code` — disease detail (name, symptoms, management, EN/HI)
+- `GET  /api/diseases` — all 107 diseases (library page uses this)
 - `POST /api/admin/login` — `{password}` → `{token}`
 - `GET  /api/admin/reports` — (Bearer) all reports
 - `GET/PUT /api/admin/inventory` — (Bearer) read / edit stock
@@ -195,8 +206,9 @@ in sync or your next regenerate will overwrite your changes.
   needs env vars + an Android phone (P4).
 - **Leaf-damage % is a heuristic**, not a measurement — accurate on clean-background
   leaf photos, approximate on field/soil backgrounds. Framed as "approximate" in the UI.
-- **Confidence gate is 0.85** (`CONF_MIN` in `app.js`) — deliberately conservative so
-  we never confidently misadvise a pesticide.
+- **Confidence gate is 0.70** (`CONF_MIN` in `app.js`) — deliberately conservative so
+  we never confidently misadvise a pesticide. Below 0.40 or uncertain-plus-low-margin
+  triggers the "couldn't detect a leaf" guard.
 
 ---
 

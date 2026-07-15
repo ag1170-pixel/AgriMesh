@@ -19,10 +19,13 @@
     <!-- 1. Upload -->
     <section id="uploadCard" class="card">
       <p class="hint" data-t="uploadHint">Upload a leaf photo to detect crop disease</p>
-      <label id="drop" class="drop">
-        <input type="file" id="file" accept="image/*" hidden />
-        <span data-t="uploadTitle">📷 Tap to upload / drag a photo</span>
-      </label>
+      <div id="drop" class="drop">
+        <span data-t="uploadTitle">📷 Drag a leaf photo here, or:</span>
+        <div class="uploadbtns">
+          <label class="upbtn"><input type="file" class="filein" accept="image/*" capture="environment" hidden /><span data-t="takePhoto">📷 Take Photo</span></label>
+          <label class="upbtn"><input type="file" class="filein" accept="image/*" hidden /><span data-t="chooseGallery">🖼️ Choose from Gallery</span></label>
+        </div>
+      </div>
       <div class="demorow">
         <span class="demolabel" data-t="tryDemo">Or try a sample:</span>
         <button class="demo" data-img="corn_rust">🌽 Corn Rust</button>
@@ -37,6 +40,7 @@
     <!-- 2. Result -->
     <section id="resultCard" class="card" hidden>
       <div id="result"></div>
+      <div id="details"></div>
       <div id="locBox" hidden>
         <label data-t="selectVillage">Your location</label>
         <button id="gps" class="gpsbtn" data-t="useGps">📍 Use my location</button>
@@ -53,7 +57,7 @@
       <div id="routeInfo"></div>
     </section>
 
-    <p class="admin"><a href="admin.html">Admin →</a></p>
+    <p class="admin"><a href="library.html" data-t="libraryLink">📖 Disease library</a> · <a href="admin.html">Admin →</a></p>
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

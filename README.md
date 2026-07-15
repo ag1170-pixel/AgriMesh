@@ -23,12 +23,18 @@ Tests: `node backend/test.js`.
 ## What works today
 
 - **On-device AI** — MobileNetV2, 107 crop/disease classes, **90.2% val / 91.2% unseen**, runs in-browser (TensorFlow.js).
-- **Confidence gate (0.85)** — low confidence → "consult officer", never a risky wrong answer.
+- **Invalid-capture guard** — heuristic detects non-leaf photos ("Couldn't detect a leaf — recenter"); background class added for next retrain.
+- **Confidence gate (0.70)** + **visible confidence %** — low confidence → "consult officer"; raw % shown to 1 decimal on every diagnosis.
 - **Top-3 candidates** when uncertain (useful for look-alike classes like rice).
+- **Disease details panel** — 107-entry `diseases.json` (symptoms + management, EN/HI). Auto-shown after confident diagnosis.
+- **Disease library** — `library.html`: browse/search all 107 diseases with crop filter chips, expandable detail cards.
+- **Camera vs. gallery** — two explicit buttons: "📷 Take Photo" and "🖼️ Choose from Gallery."
 - **Leaf-damage %** + "how much to cut" advice (canvas color analysis, EN/HI).
+- **Damage tuning (admin)** — admin sliders for HSV thresholds; "Copy tuned URL" for field staff.
 - **Stock-aware Dijkstra routing** — skips empty centers automatically; live re-route in the admin panel.
 - **SMS layer** — TextBee / Fast2SMS / logged-mock (env-switch) + inbound webhook.
-- **Admin panel** — inventory edit, "Simulate SMS" full round-trip, reports.
+- **Admin panel** — inventory edit, "Simulate SMS" full round-trip, reports, damage-tuning sliders.
+- **Bilingual EN/HI** — full parity across all UI, SMS, details, library.
 
 ## Repo map
 
@@ -36,22 +42,24 @@ Tests: `node backend/test.js`.
 |---|---|
 | `backend/server.js` | Express API + serves the frontend (in-memory store) |
 | `backend/core.js` | payload parse · geohash · **stock-aware Dijkstra** · SMS reply |
+| `backend/diseases.json` | 107-entry disease encyclopedia (name/symptoms/management/pesticide, EN+HI) |
 | `backend/sms.js` | `sendSMS()` — TextBee / Fast2SMS / mock |
 | `backend/test.js` | `node backend/test.js` → runnable proof |
-| `frontend/` | app + admin panel, no build step; `models/` holds the trained model |
+| `frontend/` | app + admin + library, no build step; `models/` holds the trained model |
 | `model/agrimesh_train.ipynb` | training notebook (**Kaggle** or Colab) |
 | `model/build_notebook.py` | generates the notebook — **edit here**, not the .ipynb |
 | `payload_demo.py` | proof the SMS math fits (11 bytes in, 1-segment reply out) |
 
 ## What's next
 
-See **[HANDOFF.md §4](HANDOFF.md)** — prioritized: deploy (Railway) · pesticide
-mapping · DB persistence · real SMS · PWA offline. Retraining is optional; the
-model is already solid.
+See **[HANDOFF.md §4](HANDOFF.md)** — prioritized: deploy (Railway) · DB persistence ·
+real SMS · PWA offline. Retraining is optional; the model is already solid.
 
 ## Demo script for judges
 
-1. Upload a leaf → disease + confidence + **damage % and cut advice** (offline, on-device).
-2. Pick a village → **map draws the route** to the nearest center *with stock*.
-3. `/admin.html` → set that center's stock to 0 → re-run → **Dijkstra reroutes**. Live, not hardcoded.
-4. Show `SMS → R:1Q C:A D:5.5`: 11 bytes in, one SMS out. No image ever sent.
+1. Upload a leaf → disease + **confidence %** + **symptoms & management** + **damage % and cut advice** (offline, on-device).
+2. Browse the **📖 Disease Library** — search/filter all 107 diseases.
+3. Pick a village → **map draws the route** to the nearest center *with stock*.
+4. `/admin.html` → set that center's stock to 0 → re-run → **Dijkstra reroutes**. Live, not hardcoded.
+5. **Damage tuning sliders** (admin) → "Copy tuned URL" for field staff calibration.
+6. Show `SMS → R:1Q C:A D:5.5`: 11 bytes in, one SMS out. No image ever sent.
