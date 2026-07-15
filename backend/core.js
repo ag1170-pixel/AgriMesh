@@ -1,7 +1,19 @@
 // AgriMesh backend core: decode the ~11-byte SMS payload -> route to nearest
-// stocked center. No image, no DFT ever reaches here — only the decision.
+// stocked center. No image, no GPS ever reaches here as anything more than a
+// lat/lng pair — only the decision (code + location) crosses the network.
 
 const { NODES, ADJ, INVENTORY } = require("./graph");
+
+// The demo road graph covers a single fictional pilot district; every node in
+// it sits within ~6 km of every other (see graph.js). Real device GPS can
+// report a location anywhere on Earth, so blindly snapping to "whichever demo
+// node happens to be nearest" — with no distance check — silently produces a
+// confident-looking route for someone who is, say, 500 km away and nowhere
+// near this pilot district. That is worse than an error: it *looks* correct.
+// This cap makes the honest failure mode explicit instead of hallucinating a
+// plausible route. Generous relative to the ~6 km graph span, so genuine
+// GPS drift near the district's edge still passes.
+const SERVICE_AREA_MAX_KM = 15;
 
 // ---- geohash decode (matches model/payload_demo.py encoder) ----
 const B32 = "0123456789bcdefghjkmnpqrstuvwxyz";
@@ -37,13 +49,15 @@ function km(a, b) {
   const s = Math.sin(dLat/2)**2 + Math.cos(toR(a.lat))*Math.cos(toR(b.lat))*Math.sin(dLng/2)**2;
   return 2 * R * Math.asin(Math.sqrt(s));
 }
+// Returns the nearest node name AND how far away it actually is, so callers
+// can decide whether that snap is meaningful rather than assuming it always is.
 function snap({ lat, lng }) {
   let best, bd = Infinity;
   for (const [name, n] of Object.entries(NODES)) {
     const d = km({ lat, lng }, n);
     if (d < bd) { bd = d; best = name; }
   }
-  return best;
+  return { name: best, distanceKm: bd };
 }
 
 // ---- binary min-heap (avoids O(V^2) array scan; real Dijkstra speed) ----
@@ -86,7 +100,18 @@ function nearestStockedCenter(start, code) {
 // ---- one call: raw SMS text -> full routing result ----
 function route(raw, senderPhone = "unknown") {
   const { code, lat, lng } = parsePayload(raw);
-  const start = snap({ lat, lng });
+  const { name: start, distanceKm: snapKm } = snap({ lat, lng });
+
+  // Honest failure instead of a fabricated route: if the reported location is
+  // nowhere near this pilot district's road graph, say so explicitly rather
+  // than silently returning "nearest" node #1 out of 15 as if it were valid.
+  if (snapKm > SERVICE_AREA_MAX_KM) {
+    return {
+      ok: false, error: "OUT_OF_SERVICE_AREA", code,
+      nearestVillage: start, nearestVillageKm: +snapKm.toFixed(1),
+    };
+  }
+
   const r = nearestStockedCenter(start, code);
   if (!r) return { ok: false, error: "NO_STOCK", code, start };
   return {
@@ -97,4 +122,4 @@ function route(raw, senderPhone = "unknown") {
   };
 }
 
-module.exports = { parsePayload, geohashDecode, snap, nearestStockedCenter, route };
+module.exports = { parsePayload, geohashDecode, snap, nearestStockedCenter, route, SERVICE_AREA_MAX_KM };

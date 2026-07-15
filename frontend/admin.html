@@ -4,44 +4,39 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AgriMesh Admin</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <div class="header-brand">
-      <img src="logo.png" alt="AgriMesh Logo" class="header-logo" />
-      <h1>AgriMesh Admin</h1>
-    </div>
-    <a href="index.html" class="ghost" style="text-decoration:none">&larr; App</a>
-  </header>
+  <header><h1>AgriMesh Admin</h1><a href="index.html" class="ghost" style="text-decoration:none">&larr; App</a></header>
   <main>
-    <section id="loginCard" class="card">
+    <section id="loginCard" class="card reveal">
       <label>Password</label>
-      <input id="pw" type="password" placeholder="admin123" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:8px 0 12px" />
+      <input id="pw" type="password" placeholder="Enter admin password" autocomplete="current-password" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:8px 0 12px" />
       <button id="loginBtn" class="primary">Login</button>
       <p id="loginErr" class="hint" style="color:#c0392b"></p>
     </section>
 
     <div id="panel" hidden>
-      <section class="card">
-        <h3>Inventory <small class="hint">(edit stock &rarr; watch routing change)</small></h3>
+      <section class="card reveal">
+        <h3>Inventory <small class="hint">(edit stock, watch routing change)</small></h3>
         <div id="inv"></div>
       </section>
-      <section class="card">
+      <section class="card reveal">
         <h3>Simulate SMS <small class="hint">(TextBee fallback)</small></h3>
         <input id="simPayload" value="D1O ttnfu8r" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:8px 0" />
         <input id="simFrom" value="+919812345678" placeholder="Farmer phone (reply goes here)" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:0 0 8px" />
         <button id="simBtn" class="primary">Run</button>
         <pre id="simOut" class="sms" style="white-space:pre-wrap"></pre>
       </section>
-      <section class="card">
+      <section class="card reveal">
         <h3>Reports</h3>
         <table id="reports"><thead><tr><th>Time</th><th>Disease</th><th>From</th><th>Center</th><th>km</th></tr></thead><tbody></tbody></table>
       </section>
 
-      <section class="card">
+      <section class="card reveal">
         <h3>Damage Analysis Tuning <small class="hint">(leaf-damage color thresholds)</small></h3>
-        <p class="hint" style="margin:0 0 10px">Adjust the hue/saturation thresholds used by the leaf-damage estimate. Changes are reflected in the "Copy tuned URL" link &mdash; share it with field staff for calibrated diagnostics.</p>
+        <p class="hint" style="margin:0 0 10px">Adjust the hue/saturation thresholds used by the leaf-damage estimate. Changes are reflected in the "Copy tuned URL" link, share it with field staff for calibrated diagnostics.</p>
         <div class="slider-group">
           <label>Green hue low <span id="vGreenLo">55</span>&deg;</label>
           <input type="range" id="sGreenLo" min="30" max="100" value="55" />
@@ -72,22 +67,39 @@
     const $ = (s) => document.querySelector(s);
     let token = "";
     const H = () => ({ authorization: "Bearer " + token, "content-type": "application/json" });
+    // small helper: swap `hidden` for a class so CSS can animate the reveal
+    // instead of the element just popping into existence.
+    function reveal(el) { el.hidden = false; el.classList.remove("reveal"); void el.offsetWidth; el.classList.add("reveal"); }
 
     $("#loginBtn").onclick = async () => {
-      const r = await fetch("/api/admin/login", { method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ password: $("#pw").value }) }).then((r) => r.json());
-      if (!r.ok) return ($("#loginErr").textContent = "Wrong password");
-      token = r.token; $("#loginCard").hidden = true; $("#panel").hidden = false; refresh();
+      $("#loginBtn").disabled = true;
+      try {
+        const r = await fetch("/api/admin/login", { method: "POST", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ password: $("#pw").value }) }).then((r) => r.json());
+        if (!r.ok) { $("#loginErr").textContent = "Wrong password"; return; }
+        token = r.token; // random, expiring session token — never a static shared secret
+        $("#loginCard").hidden = true; $("#panel").hidden = false;
+        document.querySelectorAll("#panel .card").forEach((c, i) => { c.style.animationDelay = (i * 0.06) + "s"; reveal(c); });
+        refresh();
+      } finally {
+        $("#loginBtn").disabled = false;
+      }
     };
+
+    // basic client-side escaping — server data here is trusted, but this keeps
+    // the panel safe even if a report/inventory field is ever user-influenced.
+    function esc(s) {
+      return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
 
     async function refresh() {
       const inv = await fetch("/api/admin/inventory", { headers: H() }).then((r) => r.json());
       $("#inv").innerHTML = Object.entries(inv.inventory).map(([c, stock]) =>
         Object.entries(stock).map(([code, kg]) => `
           <div class="row-edit" style="margin:6px 0">
-            <b style="width:90px">${c.replace("_", " ")}</b>
-            <span style="flex:1">${inv.labels[code] || code}</span>
-            <input type="number" min="0" value="${kg}" data-c="${c}" data-code="${code}" />
+            <b style="width:90px">${esc(c.replace("_", " "))}</b>
+            <span style="flex:1">${esc(inv.labels[code] || code)}</span>
+            <input type="number" min="0" value="${Number(kg)}" data-c="${esc(c)}" data-code="${esc(code)}" />
             <span>kg</span>
           </div>`).join("")).join("");
       $("#inv").querySelectorAll("input").forEach((i) => i.onchange = async () => {
@@ -96,17 +108,22 @@
       });
       const rep = await fetch("/api/admin/reports", { headers: H() }).then((r) => r.json());
       $("#reports tbody").innerHTML = rep.reports.map((x) =>
-        `<tr><td>${x.ts.slice(11, 19)}</td><td>${x.label}</td><td>${x.farmer}</td><td>${x.center.replace("_", " ")}</td><td>${x.distanceKm}</td></tr>`).join("");
+        `<tr><td>${esc(x.ts.slice(11, 19))}</td><td>${esc(x.label)}</td><td>${esc(x.farmer)}</td><td>${esc(x.center.replace("_", " "))}</td><td>${esc(x.distanceKm)}</td></tr>`).join("");
     }
 
     $("#simBtn").onclick = async () => {
-      const r = await fetch("/api/admin/simulate", { method: "POST", headers: H(),
-        body: JSON.stringify({ payload: $("#simPayload").value, from: $("#simFrom").value }) }).then((r) => r.json());
-      $("#simOut").textContent = JSON.stringify(r, null, 2);
-      refresh();
+      $("#simBtn").disabled = true;
+      try {
+        const r = await fetch("/api/admin/simulate", { method: "POST", headers: H(),
+          body: JSON.stringify({ payload: $("#simPayload").value, from: $("#simFrom").value }) }).then((r) => r.json());
+        $("#simOut").textContent = JSON.stringify(r, null, 2);
+        refresh();
+      } finally {
+        $("#simBtn").disabled = false;
+      }
     };
 
-    // ---- damage-tuning sliders (feature 5) ----
+    // ---- damage-tuning sliders ----
     const sliders = [
       { id: "sGreenLo",   display: "vGreenLo",   param: "greenLo",   fmt: (v) => v + "°" },
       { id: "sGreenHi",   display: "vGreenHi",   param: "greenHi",   fmt: (v) => v + "°" },
@@ -122,17 +139,15 @@
       const params = new URLSearchParams();
       sliders.forEach(({ id, param }) => {
         const v = +$(`#${id}`).value;
-        // bgSat, lesionSat, minLeaf are 0-1 floats, stored as /100 in sliders
         const val = ["bgSat","lesionSat","minLeaf"].includes(param) ? (v / 100).toFixed(2) : v;
         params.set(param, val);
       });
       const url = `${location.origin}/index.html?${params}`;
       navigator.clipboard.writeText(url).then(
-        () => ($("#copyStatus").textContent = "✅ Copied: " + url),
+        () => ($("#copyStatus").textContent = "Copied: " + url),
         () => ($("#copyStatus").textContent = url)   // fallback: show the URL to copy manually
       );
     };
   </script>
 </body>
 </html>
-

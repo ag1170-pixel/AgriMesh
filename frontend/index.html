@@ -3,20 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <title>AgriMesh — Crop Disease Detection</title>
-  <meta name="description" content="Offline-first crop disease detection with AI. Diagnose leaf diseases, find nearby pesticide centers, get SMS routing — all from your phone." />
+  <title>AgriMesh</title>
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <meta name="theme-color" content="#1b7a3d" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' blob: data: https:; connect-src 'self' https://cdn.jsdelivr.net https://router.project-osrm.org" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Scoped CSP: only the origins the app actually talks to. NOTE: SRI hashes
+       for the Leaflet CDN assets are intentionally NOT set here — this repo has
+       no build step to pin/verify them safely, and a wrong hash silently breaks
+       the map for every user. Pin them (via `npm ls`/a small build step) before
+       relying on this in a high-stakes deployment; see SECURITY.md. -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' data: blob: https:; connect-src 'self' https://cdn.jsdelivr.net https://router.project-osrm.org https://*.tile.openstreetmap.org; script-src 'self' https://unpkg.com https://cdn.jsdelivr.net 'unsafe-inline'; style-src 'self' https://unpkg.com 'unsafe-inline';" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <div class="header-brand">
-      <img src="logo.png" alt="AgriMesh Logo" class="header-logo" />
-      <h1><span data-t="appTitle">AgriMesh</span></h1>
-    </div>
+    <h1><span data-t="appTitle">AgriMesh</span></h1>
     <button id="lang" class="ghost">हिंदी</button>
   </header>
 
@@ -28,7 +31,7 @@
         <span data-t="uploadTitle">Drag a leaf photo here, or:</span>
         <div class="uploadbtns">
           <label class="upbtn"><input type="file" class="filein" accept="image/*" capture="environment" hidden /><span data-t="takePhoto">Take Photo</span></label>
-          <label class="upbtn upbtn-secondary"><input type="file" class="filein" accept="image/*" hidden /><span data-t="chooseGallery">Choose from Gallery</span></label>
+          <label class="upbtn"><input type="file" class="filein" accept="image/*" hidden /><span data-t="chooseGallery">Choose from Gallery</span></label>
         </div>
       </div>
       <div class="demorow">
@@ -38,7 +41,7 @@
         <button class="demo" data-img="potato_early">Potato Blight</button>
       </div>
       <img id="preview" alt="" hidden />
-      <div id="modelStatus" class="status">Loading AI model…</div>
+      <div id="modelStatus" class="status loading">Loading AI model…</div>
       <button id="analyze" class="primary" disabled data-t="analyze">Analyze</button>
     </section>
 
@@ -47,14 +50,11 @@
       <div id="result"></div>
       <div id="details"></div>
       <div id="locBox" hidden>
-        <div class="loc-header">
-          <label data-t="selectVillage">Your location</label>
-        </div>
+        <label data-t="selectVillage">Your location</label>
         <button id="gps" class="gpsbtn" data-t="useGps">Use my location</button>
         <div id="gpsStatus" class="status"></div>
-        <div id="nearbyCenters" hidden></div>
         <select id="village"></select>
-        <input id="phone" type="tel" placeholder="Your phone (optional — receive SMS)" autocomplete="tel" inputmode="numeric" pattern="[0-9]*" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:8px 0" />
+        <input id="phone" type="tel" placeholder="Your phone (optional, get the SMS)" style="width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;margin:8px 0" />
         <button id="findRoute" class="primary" data-t="sendReport">Send Report &amp; Find Route</button>
       </div>
     </section>
@@ -63,16 +63,26 @@
     <section id="routeCard" class="card" hidden>
       <div id="map"></div>
       <div id="routeInfo"></div>
+
+      <div class="sms-box">
+        <label data-t="smsSectionTitle">Send this result by SMS</label>
+        <div class="notice" data-t="smsDisclaimer">
+          Real SMS delivery is still being connected — TextBee (the SMS gateway) is a paid service,
+          so this is running in demo mode for now. Your number is not stored or shared; this only
+          shows you what the SMS would say.
+        </div>
+        <input id="smsPhone" type="tel" inputmode="numeric" maxlength="10"
+               data-t-placeholder="smsPhonePh" placeholder="10-digit Indian mobile number" />
+        <button id="sendSmsBtn" class="primary" data-t="smsSendBtn">Send SMS</button>
+        <div id="smsStatus" class="sms-status"></div>
+      </div>
     </section>
 
-    <nav class="admin">
-      <a href="library.html" data-t="libraryLink">Disease Library</a>
-      <span class="admin-sep">·</span>
-      <a href="admin.html">Admin</a>
-    </nav>
+    <p class="admin"><a href="library.html" data-t="libraryLink">Disease library</a> &middot; <a href="admin.html">Admin &rarr;</a></p>
   </main>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+  <!-- TF.js loaded lazily only if a real model exists (see app.js) -->
   <script src="translations.js"></script>
   <script src="app.js"></script>
 </body>

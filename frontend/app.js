@@ -2,14 +2,20 @@
 // TensorFlow.js model is dropped in /models/model.json it uses that instead.
 const $ = (s) => document.querySelector(s);
 let lang = "en", labels = [], model = null, current = null, mapObj = null, nodes = {};
-// location state — GPS coords are held in-memory only, never logged or persisted client-side.
-let gpsCoords = null, gpsSnappedVillage = null;
 const DEMO_CODES = ["D1Q", "D1O", "D2N"]; // Potato Late/Early Blight, Tomato Late Blight — seeded in inventory
 // Below this confidence we escalate to "consult officer" (top-3 shown) instead of naming
 // one disease. 0.70 balances usability on real/field photos against misadvising. Clean
 // single-leaf shots score 90-100%; genuinely ambiguous ones (e.g. potato vs tomato late
 // blight — same pathogen) stay below and defer.
 const CONF_MIN = 0.70;
+
+// This key ships in client-side JS, so it is readable by anyone via view-source
+// — it is NOT a secret and provides no real access control. Its only purpose is
+// to filter out naive automated hits on the public API; actual abuse protection
+// is the server-side rate limiting (see backend/middleware.js). Must match the
+// backend's API_KEY default unless that env var has been overridden.
+const API_KEY = "public-demo-key";
+
 // Leaf-damage color thresholds — tunable via URL query params (admin sliders build the
 // link). The farmer flow ships no params, so it always uses these sane defaults.
 const Q = new URLSearchParams(location.search);
@@ -19,6 +25,26 @@ const DMG = {
   minLeaf: +(Q.get("minLeaf") ?? 0.12),
 };
 let lastDetailCode = null;
+let lastPayload = null; // set once a route has been found; reused by the Send SMS button
+
+// Escape any string before it goes into innerHTML. Everything here currently
+// comes from our own trusted model labels / diseases.json, but escaping is
+// cheap defense-in-depth against a future data source (or a compromised CDN
+// mirror) injecting markup.
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+// Swap `hidden` for a class toggle so CSS can animate the reveal (fade + slide)
+// instead of content just popping into view. Re-triggers the animation even if
+// the element was already visible, by removing then re-adding the class on the
+// next frame.
+function reveal(el) {
+  el.hidden = false;
+  el.classList.remove("reveal");
+  void el.offsetWidth; // force reflow so the class removal/add is seen as a change
+  el.classList.add("reveal");
+}
 
 // ---- geohash encode (matches backend/core.js decoder) ----
 const B32 = "0123456789bcdefghjkmnpqrstuvwxyz";
@@ -36,6 +62,7 @@ function geohash(lat, lng, p = 7) {
 function t(k) { return (window.T[lang][k]) ?? k; }
 function applyLang() {
   document.querySelectorAll("[data-t]").forEach((el) => (el.textContent = t(el.dataset.t)));
+  document.querySelectorAll("[data-t-placeholder]").forEach((el) => (el.placeholder = t(el.dataset.tPlaceholder)));
   $("#lang").textContent = t("langBtn");
   document.documentElement.lang = lang;
 }
@@ -49,16 +76,18 @@ async function loadModel() {
   try { const h = await fetch("models/model.json", { method: "HEAD" }); if (!h.ok) base = CDN_MODELS; }
   catch { base = CDN_MODELS; }
   labels = await fetch(base + "/labels.json").then((r) => r.json());
+  const statusEl = $("#modelStatus");
   try {
     await import("https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js");
     // accept either format the converter produces: LayersModel or GraphModel
     model = await tf.loadLayersModel(base + "/model.json")
       .catch(() => tf.loadGraphModel(base + "/model.json"));
-    $("#modelStatus").textContent = "AI model ready ✓";
+    statusEl.textContent = "AI model ready";
   } catch {
     model = "mock";
-    $("#modelStatus").textContent = "Demo model ready ✓";
+    statusEl.textContent = "Demo model ready";
   }
+  statusEl.classList.remove("loading");
   $("#analyze").disabled = true; // enabled after an image is chosen
 }
 
@@ -94,9 +123,8 @@ async function classify(imgEl, file) {
 }
 
 // ---- leaf-damage estimate: color analysis on canvas, runs offline, no model ----
-// This is the "high-pass / edge" image processing the pitch promised — used for
-// SEVERITY, not classification. Green = healthy leaf, brown/yellow = lesion.
-// ponytail: color-threshold heuristic; the HSV bands are the calibration knob.
+// Green = healthy leaf, brown/yellow = lesion. Used for SEVERITY, not classification.
+// Color-threshold heuristic; the HSV bands are the calibration knob (admin sliders).
 function rgb2hsv(r, g, b) {
   r /= 255; g /= 255; b /= 255;
   const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
@@ -143,10 +171,10 @@ function severity(p) {
 }
 function damageHTML(d) {
   const title = lang === "hi" ? "पत्ती क्षति" : "Leaf damage";
-  return `<div class="dmg">
-    <div class="conf">${title}: <b>${d.pct}%</b> &middot; <b style="color:${d.color}">${d.band[lang] || d.band.en}</b></div>
+  return `<div class="dmg reveal" style="margin-top:10px">
+    <div class="conf">${title}: <b>${d.pct}%</b> &middot; <b style="color:${d.color}">${esc(d.band[lang] || d.band.en)}</b></div>
     <div class="bar"><i style="width:${d.pct}%;background:${d.color}"></i></div>
-    <p style="margin:6px 0 0;font-size:.9rem">${d.action[lang] || d.action.en}</p>
+    <p style="margin:6px 0 0;font-size:.92rem">${esc(d.action[lang] || d.action.en)}</p>
   </div>`;
 }
 
@@ -155,7 +183,7 @@ let lastUrl = null;
 function showImage(file) {
   if (lastUrl) URL.revokeObjectURL(lastUrl);      // free the previous blob
   const url = URL.createObjectURL(file); lastUrl = url;
-  const img = $("#preview"); img.hidden = false;
+  const img = $("#preview"); reveal(img);
   img.onload = () => ($("#analyze").disabled = false);
   img.src = url;
   current = { file, img };
@@ -172,87 +200,19 @@ document.querySelectorAll(".demo").forEach((b) => b.addEventListener("click", as
   showImage(new File([blob], b.dataset.img + ".jpg", { type: "image/jpeg" }));
 }));
 
-// ---- GPS + location helpers ----
-// haversine distance (km) for client-side nearest-node matching
-function haversineKm(a, b) {
-  const R = 6371, toR = (d) => (d * Math.PI) / 180;
-  const dLat = toR(b.lat - a.lat), dLng = toR(b.lng - a.lng);
-  const s = Math.sin(dLat / 2) ** 2 + Math.cos(toR(a.lat)) * Math.cos(toR(b.lat)) * Math.sin(dLng / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(s));
-}
-// snap GPS to nearest graph node (village) — same algorithm as backend core.js
-function snapToVillage(coords) {
-  let best = null, bd = Infinity;
-  for (const [name, n] of Object.entries(nodes)) {
-    const d = haversineKm(coords, n);
-    if (d < bd) { bd = d; best = name; }
-  }
-  return { village: best, distKm: +bd.toFixed(1) };
-}
-// sort village dropdown by distance from a point (closest first)
-function sortVillagesByDistance(coords) {
-  const sel = $("#village");
-  const villages = Object.entries(nodes).filter(([, n]) => !n.center)
-    .map(([name, n]) => ({ name, dist: haversineKm(coords, n) }))
-    .sort((a, b) => a.dist - b.dist);
-  sel.innerHTML = villages.map((v) =>
-    `<option value="${v.name}">${v.name.replace(/_/g, " ")} (${v.dist.toFixed(1)} km)</option>`).join("");
-}
-// build nearby-center preview after GPS or village selection
-function showNearbyCenters(coords, diseaseCode) {
-  const centers = Object.entries(nodes).filter(([, n]) => n.center)
-    .map(([name, n]) => ({ name, dist: haversineKm(coords, n) }))
-    .sort((a, b) => a.dist - b.dist);
-  const html = centers.map((c) => {
-    const label = c.name.replace(/_/g, " ");
-    return `<div class="center-chip"><span class="center-name">🏪 ${label}</span><span class="center-dist">${c.dist.toFixed(1)} km</span></div>`;
-  }).join("");
-  $("#nearbyCenters").innerHTML = `<p class="hint" style="margin:0 0 6px;font-size:.85rem">${t("nearbyCenters")}</p>${html}`;
-  $("#nearbyCenters").hidden = false;
-}
-
-// request GPS — called automatically after a positive diagnosis and on manual click.
-// Location is held in memory only — never written to localStorage, cookies, or sent
-// anywhere except the route API (as a geohash, not raw coords).
-function requestGPS() {
+// real GPS: find the farmer's actual location; backend snaps it to the nearest node
+let gpsCoords = null;
+$("#gps").addEventListener("click", () => {
   const st = $("#gpsStatus");
-  if (!navigator.geolocation) {
-    st.textContent = t("gpsUnavailable");
-    st.className = "status gps-fail";
-    return;
-  }
-  st.textContent = t("gpsLocating");
-  st.className = "status gps-pulse";
+  if (!navigator.geolocation) return void (st.textContent = "GPS not available on this device.");
+  st.textContent = lang === "hi" ? "स्थान खोज रहे हैं…" : "Locating…";
   navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      gpsCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      const { village, distKm } = snapToVillage(gpsCoords);
-      gpsSnappedVillage = village;
-      // show the nearest village name — NEVER raw lat/lng (privacy: farmer sees
-      // their village, not coordinates that could be scraped from a screenshot).
-      st.textContent = `${village.replace(/_/g, " ")} ${t("gpsNear")} (${distKm} km)`;
-      st.className = "status gps-ok";
-      // auto-select the nearest village and sort the dropdown
-      sortVillagesByDistance(gpsCoords);
-      $("#village").value = village;
-      // show nearby centers preview
-      if (current?.label) showNearbyCenters(gpsCoords, current.label.code);
-    },
-    (err) => {
-      st.className = "status gps-fail";
-      if (err.code === 1) st.textContent = t("gpsDenied");
-      else st.textContent = t("gpsFailed");
-    },
-    { enableHighAccuracy: true, timeout: 10000 }
+    (pos) => { gpsCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      st.textContent = `${gpsCoords.lat.toFixed(4)}, ${gpsCoords.lng.toFixed(4)} ${lang === "hi" ? "(आपका स्थान)" : "(your location)"}`; },
+    () => { st.textContent = lang === "hi" ? "स्थान नहीं मिला — नीचे गाँव चुनें।" : "Couldn't get location — pick a village below."; },
+    { enableHighAccuracy: true, timeout: 8000 }
   );
-}
-$("#gps").addEventListener("click", requestGPS);
-// when village dropdown changes (manual pick), update the nearby centers
-$("#village").addEventListener("change", () => {
-  const v = $("#village").value;
-  if (v && nodes[v] && current?.label) showNearbyCenters(nodes[v], current.label.code);
 });
-
 const drop = $("#drop");
 ["dragover", "dragenter"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
 ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove("over")));
@@ -263,7 +223,7 @@ $("#analyze").addEventListener("click", async () => {
   $("#analyze").disabled = true; $("#analyze").textContent = t("analyzing");
   const { label, conf, top3 } = await classify(current.img, current.file);
   $("#analyze").textContent = t("analyze");
-  const rc = $("#resultCard"); rc.hidden = false;
+  const rc = $("#resultCard"); reveal(rc);
   $("#details").innerHTML = ""; $("#locBox").hidden = true; lastDetailCode = null;
   const pct1 = (conf * 100).toFixed(1);
   const margin = conf - (top3[1]?.conf || 0);
@@ -272,40 +232,27 @@ $("#analyze").addEventListener("click", async () => {
   //    near-random top-1 with no clear winner = probably not a leaf. The heuristic is
   //    the approximation until the background class ships (see model/build_notebook.py).
   if (label.condition === "background" || conf < 0.40 || (conf < 0.55 && margin < 0.12)) {
-    $("#result").innerHTML = `<div class="uncertain">${t("noLeaf")}</div>`;
+    $("#result").innerHTML = `<div class="uncertain reveal">${esc(t("noLeaf"))}</div>`;
     return;
   }
   // 2. Plausible but not sure: ranked candidates for the officer to confirm.
   if (conf < CONF_MIN) {
-    const cands = top3.map((c) => `${c.label.label} (${(c.conf * 100).toFixed(1)}%)`).join(" &middot; ");
-    $("#result").innerHTML = `<div class="uncertain">${t("uncertain")}<br><small>${lang === "hi" ? "संभावित" : "Possible"}: ${cands}</small></div>`;
+    const cands = top3.map((c) => `${esc(c.label.label)} (${(c.conf * 100).toFixed(1)}%)`).join(" &middot; ");
+    $("#result").innerHTML = `<div class="uncertain reveal">${esc(t("uncertain"))}<br><small>${lang === "hi" ? "संभावित" : "Possible"}: ${cands}</small></div>`;
     return;
   }
   // 3. Confident diagnosis — name + exact confidence + symptoms/management details.
   const healthy = label.healthy || label.condition === "rotten";
   $("#result").innerHTML = `
-    <div class="diag"><span class="status-icon ${healthy ? 'healthy' : 'diseased'}">${healthy ? '✓' : '!'}</span>
-      <div><h2>${label.label}</h2><div class="conf"><b>${pct1}%</b> ${lang === "hi" ? "विश्वास" : "confident"}</div></div></div>
+    <div class="diag reveal"><span class="status-dot ${healthy ? "is-healthy" : "is-disease"}"></span>
+      <div><h2>${esc(label.label)}</h2><div class="conf"><b>${pct1}%</b> ${lang === "hi" ? "विश्वास" : "confident"}</div></div></div>
     <div class="bar"><i style="width:${pct1}%"></i></div>`;
   showDetails(label.code);
-  if (healthy) { $("#result").innerHTML += `<p>${t("healthy")}</p>`; }
+  if (healthy) { $("#result").innerHTML += `<p>${esc(t("healthy"))}</p>`; }
   else {
     $("#locBox").hidden = false; current.label = label;
-    $("#nearbyCenters").hidden = true;
     const dmg = estimateDamage(current.img);        // how much of the leaf is affected + cut advice
     if (dmg) $("#result").innerHTML += damageHTML(dmg);
-    // auto-request GPS after a positive diagnosis — no manual click needed.
-    // the browser will show its own permission dialog if not yet granted.
-    if (!gpsCoords) requestGPS();
-    else {
-      // GPS already obtained — auto-populate village + centers
-      const { village } = snapToVillage(gpsCoords);
-      $("#gpsStatus").textContent = `${village.replace(/_/g, " ")} ${t("gpsNear")}`;
-      $("#gpsStatus").className = "status gps-ok";
-      sortVillagesByDistance(gpsCoords);
-      $("#village").value = village;
-      showNearbyCenters(gpsCoords, label.code);
-    }
   }
   rc.scrollIntoView({ behavior: "smooth" });
 });
@@ -314,53 +261,51 @@ $("#analyze").addEventListener("click", async () => {
 async function showDetails(code) {
   lastDetailCode = code;
   try {
-    const d = await fetch(`/api/disease/${code}`).then((r) => r.json());
+    const d = await fetch(`/api/disease/${encodeURIComponent(code)}`).then((r) => r.json());
     if (!d.ok) return;
     const sym = lang === "hi" ? d.symptoms_hi : d.symptoms_en;
     const mgmt = (lang === "hi" ? d.management_hi : d.management_en) || [];
     $("#details").innerHTML = `
-      <div class="detail">
-        <h3>${t("symptoms")}</h3><p>${sym}</p>
-        <h3>${t("management")}</h3>
-        <ul>${mgmt.map((m) => `<li>${m}</li>`).join("")}</ul>
+      <div class="detail reveal">
+        <h3>${esc(t("symptoms"))}</h3><p>${esc(sym)}</p>
+        <h3>${esc(t("management"))}</h3>
+        <ul>${mgmt.map((m) => `<li>${esc(m)}</li>`).join("")}</ul>
       </div>`;
   } catch { /* offline / not found — silently skip the details panel */ }
 }
 
 // ---- find route ----
-// sanitize phone: strip non-digits, enforce 10-13 digit length (Indian mobiles = 10).
-// If invalid, silently drop it — SMS won't send but routing still works.
-function sanitizePhone(raw) {
-  const digits = raw.replace(/\D/g, "");
-  if (digits.length < 10 || digits.length > 13) return "";
-  return digits.startsWith("91") ? "+" + digits : "+91" + digits;
-}
 $("#findRoute").addEventListener("click", async () => {
-  const villageNode = $("#village").value;
-  const n = gpsCoords || nodes[villageNode];   // real GPS if located, else the chosen village
-  if (!n) return;
+  const n = gpsCoords || nodes[$("#village").value];   // real GPS if located, else the chosen village
   const payload = `${current.label.code} ${geohash(n.lat, n.lng)}`;
-  const phone = sanitizePhone($("#phone").value);
-  $("#findRoute").disabled = true; $("#findRoute").textContent = t("routeFinding");
+  lastPayload = payload; // reused by the dedicated "Send SMS" button below
+  const phone = $("#phone").value.trim();
   const res = await fetch("/api/route", {
     method: "POST", headers: { "content-type": "application/json" },
-    body: JSON.stringify({ payload, from: "web", phone: phone || undefined, key: "agrimesh-demo-2026" }),
+    body: JSON.stringify({ payload, from: "web", phone: phone || undefined, key: API_KEY }),
   }).then((r) => r.json());
-  $("#findRoute").disabled = false; $("#findRoute").textContent = t("sendReport");
 
-  const card = $("#routeCard"); card.hidden = false;
+  const card = $("#routeCard"); reveal(card);
+  $("#smsStatus").textContent = ""; $("#smsStatus").className = "sms-status";
+  if (!res.ok && res.error === "OUT_OF_SERVICE_AREA") {
+    // Honest failure: real GPS was too far from this pilot district's road
+    // graph to route meaningfully — say so instead of faking a route.
+    $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("outOfArea"))}</div>`;
+    drawMap(res.nearestVillage || $("#village").value, null, []);
+    return;
+  }
   const startNode = res.start || $("#village").value;   // backend's nearest-node snap of the GPS
-  if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain">${t("noStock")}</div>`; drawMap(startNode, null, []); return; }
+  if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("noStock"))}</div>`; drawMap(startNode, null, []); return; }
   const hindi = expandReply(res);
   const pest = res.pesticide ? (res.pesticide[lang] || res.pesticide.en) : "";
   const sent = !res.sms ? "" : res.sms.provider === "mock"
     ? "Demo mode — add TextBee keys to send a real SMS"
-    : `Sent to ${phone} successfully`;
+    : `Sent to ${esc(phone)}`;
   $("#routeInfo").innerHTML = `
-    <p class="pest"><b>${lang === "hi" ? "दवा" : "Pesticide"}:</b> ${pest}</p>
-    <div class="route-line">${res.path.map((p) => `<span class="n">${p.replace(/_/g, " ")}</span>`).join(" &rarr; ")}</div>
-    <p><b>${t("nearest")}:</b> ${res.center.replace("_", " ")} &middot; <b>${t("distance")}:</b> ${res.distanceKm} km &middot; <b>${t("stock")}:</b> ${res.stockKg}kg</p>
-    <div class="sms"><b>SMS &rarr;</b> ${res.reply}<br><small>${hindi}</small>${sent ? `<br><small style="color:#8ef0a6">${sent}</small>` : ""}</div>`;
+    <p class="pest"><b>${lang === "hi" ? "दवा" : "Pesticide"}:</b> ${esc(pest)}</p>
+    <div class="route-line">${res.path.map((p) => `<span class="n">${esc(p.replace(/_/g, " "))}</span>`).join(" &rarr; ")}</div>
+    <p><b>${esc(t("nearest"))}:</b> ${esc(res.center.replace("_", " "))} &middot; <b>${esc(t("distance"))}:</b> ${res.distanceKm} km &middot; <b>${esc(t("stock"))}:</b> ${res.stockKg}kg</p>
+    <div class="sms reveal"><b>SMS &rarr;</b> ${esc(res.reply)}<br><small>${esc(hindi)}</small>${sent ? `<br><small style="color:#8ef0a6">${esc(sent)}</small>` : ""}</div>`;
   drawMap(startNode, res.center, res.path);
   card.scrollIntoView({ behavior: "smooth" });
 });
@@ -376,14 +321,14 @@ function expandReply(res) {
 
 // ---- map ----
 function drawMap(startName, centerName, pathNames) {
-  if (!mapObj) { mapObj = L.map("map"); L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 17, attribution: "© OSM" }).addTo(mapObj); }
+  if (!mapObj) { mapObj = L.map("map"); L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 17, attribution: "&copy; OSM" }).addTo(mapObj); }
   mapObj.eachLayer((l) => l instanceof L.Marker || l instanceof L.Polyline ? mapObj.removeLayer(l) : 0);
   const pts = pathNames.map((p) => [nodes[p].lat, nodes[p].lng]);
   const s = nodes[startName];
-  L.marker([s.lat, s.lng]).addTo(mapObj).bindPopup("You: " + startName.replace(/_/g, " "));
+  L.marker([s.lat, s.lng]).addTo(mapObj).bindPopup(esc(startName) + " (you)");
   if (!centerName) return mapObj.setView([s.lat, s.lng], 13);
   const c = nodes[centerName];
-  L.marker([c.lat, c.lng]).addTo(mapObj).bindPopup("Center: " + centerName.replace(/_/g, " "));
+  L.marker([c.lat, c.lng]).addTo(mapObj).bindPopup(esc(centerName.replace("_", " ")) + " (supply center)");
   // Provisional straight line (instant, and the offline fallback). Snapped to real
   // roads by OSRM if online — the polyline then follows streets, not a diagonal.
   let line = L.polyline(pts, { color: "#1b7a3d", weight: 4, opacity: 0.45, dashArray: "6 6" }).addTo(mapObj);
@@ -410,6 +355,54 @@ async function followRoads(pathNames) {
   } catch { return null; }
 }
 
+// ---- dedicated "Send SMS" button (route card) ----
+// India-only number check: optional +91/91 prefix, then 10 digits starting
+// 6-9 (the valid leading-digit range for Indian mobile numbers).
+const INDIA_PHONE_RE = /^(?:\+?91)?([6-9]\d{9})$/;
+function normalizeIndianPhone(raw) {
+  const digits = raw.replace(/\s+/g, "");
+  const m = digits.match(INDIA_PHONE_RE);
+  return m ? "+91" + m[1] : null;
+}
+
+$("#sendSmsBtn").addEventListener("click", async () => {
+  const statusEl = $("#smsStatus");
+  const raw = $("#smsPhone").value.trim();
+  const phone = normalizeIndianPhone(raw);
+  if (!phone) {
+    statusEl.textContent = t("smsBadPhone");
+    statusEl.className = "sms-status error reveal";
+    return;
+  }
+  if (!lastPayload) return; // no route found yet — button shouldn't be reachable, but guard anyway
+
+  const btn = $("#sendSmsBtn");
+  btn.disabled = true; const original = btn.textContent; btn.textContent = t("smsSending");
+  try {
+    const res = await fetch("/api/route", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ payload: lastPayload, from: "web", phone, key: API_KEY }),
+    }).then((r) => r.json());
+
+    if (!res.ok) {
+      statusEl.textContent = res.error === "OUT_OF_SERVICE_AREA" ? t("outOfArea") : t("noStock");
+      statusEl.className = "sms-status error reveal";
+      return;
+    }
+    // TextBee/Fast2SMS aren't wired up for this deployment yet (see the
+    // disclaimer above the button) — the backend always answers with
+    // provider: "mock" until real credentials are configured. Show the
+    // farmer exactly what the message would contain either way.
+    statusEl.innerHTML = `${esc(t("smsSentOk"))} ${esc(phone)}<br><span class="sms">${esc(res.reply)}</span>`;
+    statusEl.className = "sms-status ok reveal";
+  } catch {
+    statusEl.textContent = t("smsBadPhone");
+    statusEl.className = "sms-status error reveal";
+  } finally {
+    btn.disabled = false; btn.textContent = original;
+  }
+});
+
 // ---- lang toggle ----
 $("#lang").addEventListener("click", () => { lang = lang === "en" ? "hi" : "en"; applyLang(); if (lastDetailCode) showDetails(lastDetailCode); });
 
@@ -418,10 +411,7 @@ $("#lang").addEventListener("click", () => { lang = lang === "en" ? "hi" : "en";
   applyLang();
   nodes = await fetch("/api/nodes").then((r) => r.json());
   const sel = $("#village");
-  // default sort: alphabetical. Once GPS is acquired, re-sorted by distance.
-  Object.entries(nodes).filter(([, n]) => !n.center)
-    .sort(([a], [b]) => a.localeCompare(b))
-    .forEach(([name]) =>
-      sel.insertAdjacentHTML("beforeend", `<option value="${name}">${name.replace(/_/g, " ")}</option>`));
+  Object.entries(nodes).filter(([, n]) => !n.center).forEach(([name]) =>
+    sel.insertAdjacentHTML("beforeend", `<option value="${esc(name)}">${esc(name)}</option>`));
   await loadModel();
 })();

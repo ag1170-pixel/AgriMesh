@@ -6,16 +6,13 @@
   <title>AgriMesh — Disease Library</title>
   <meta name="description" content="Browse all 107 crop diseases: symptoms, management, and treatment info. AgriMesh offline-first crop-disease encyclopedia." />
   <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
   <meta name="theme-color" content="#1b7a3d" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https:; connect-src 'self' https://cdn.jsdelivr.net" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
-    <div class="header-brand">
-      <img src="logo.png" alt="AgriMesh Logo" class="header-logo" />
-      <h1><span data-t="libraryTitle">Disease Library</span></h1>
-    </div>
+    <h1><span data-t="libraryTitle">Disease Library</span></h1>
     <div style="display:flex;gap:8px;align-items:center">
       <button id="lang" class="ghost">हिंदी</button>
       <a href="index.html" class="ghost" style="text-decoration:none;font-size:.85rem">&larr; App</a>
@@ -25,7 +22,7 @@
   <main>
     <section class="card">
       <input id="search" type="search" placeholder="Search diseases, crops, symptoms…"
-             style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:var(--radius);font:inherit;margin-bottom:12px" />
+             style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:inherit;margin-bottom:12px" />
       <div id="filterRow" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px"></div>
       <p id="count" class="hint"></p>
     </section>
@@ -38,7 +35,6 @@
     const $ = (s) => document.querySelector(s);
     let lang = "en", diseases = {}, activeFilter = null;
 
-    // translations for this page
     const LT = {
       en: { libraryTitle: "Disease Library", searchPh: "Search diseases, crops, symptoms…",
             showing: "Showing", of: "of", diseases: "diseases", all: "All",
@@ -48,6 +44,12 @@
             symptoms: "लक्षण", management: "प्रबंधन", noMatch: "कोई रोग आपकी खोज से मेल नहीं खाता।" },
     };
     function t(k) { return LT[lang]?.[k] ?? window.T?.[lang]?.[k] ?? k; }
+
+    // defense in depth: this data is our own trusted diseases.json, but escape
+    // anyway so a future data source can never inject markup via innerHTML.
+    function esc(s) {
+      return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    }
 
     function applyLang() {
       document.querySelectorAll("[data-t]").forEach((el) => {
@@ -59,12 +61,11 @@
       render();
     }
 
-    // extract unique crops for filter chips
     function buildFilters() {
-      const crops = [...new Set(Object.values(diseases).map((d) => d.crop || d.name_en.split(" ")[0]))].sort();
+      const crops = [...new Set(Object.values(diseases).map((d) => d.crop || (d.name_en || "").split(" ")[0]))].filter(Boolean).sort();
       const row = $("#filterRow");
-      row.innerHTML = `<button class="chip active" data-crop="">${t("all")}</button>` +
-        crops.map((c) => `<button class="chip" data-crop="${c}">${c}</button>`).join("");
+      row.innerHTML = `<button class="chip active" data-crop="">${esc(t("all"))}</button>` +
+        crops.map((c) => `<button class="chip" data-crop="${esc(c)}">${esc(c)}</button>`).join("");
       row.querySelectorAll(".chip").forEach((b) => b.addEventListener("click", () => {
         row.querySelectorAll(".chip").forEach((x) => x.classList.remove("active"));
         b.classList.add("active");
@@ -76,8 +77,9 @@
     function render() {
       const q = $("#search").value.toLowerCase().trim();
       const entries = Object.entries(diseases).filter(([code, d]) => {
+        if (code.startsWith("_")) return false; // skip internal/marker entries
         if (activeFilter) {
-          const crop = (d.crop || d.name_en.split(" ")[0]).toLowerCase();
+          const crop = (d.crop || (d.name_en || "").split(" ")[0]).toLowerCase();
           if (crop !== activeFilter.toLowerCase()) return false;
         }
         if (!q) return true;
@@ -88,27 +90,28 @@
       $("#count").textContent = `${t("showing")} ${entries.length} ${t("of")} ${Object.keys(diseases).length} ${t("diseases")}`;
 
       if (!entries.length) {
-        $("#list").innerHTML = `<div class="card" style="text-align:center;color:var(--muted);padding:32px">${t("noMatch")}</div>`;
+        $("#list").innerHTML = `<div class="card" style="text-align:center;color:var(--muted);padding:32px">${esc(t("noMatch"))}</div>`;
         return;
       }
 
-      $("#list").innerHTML = entries.map(([code, d]) => {
+      $("#list").innerHTML = entries.map(([code, d], i) => {
         const name = lang === "hi" ? (d.name_hi || d.name_en) : d.name_en;
         const sym = lang === "hi" ? (d.symptoms_hi || d.symptoms_en) : d.symptoms_en;
         const mgmt = lang === "hi" ? (d.management_hi || d.management_en) : d.management_en;
         const mgmtList = Array.isArray(mgmt) ? mgmt : [mgmt];
-        const healthy = d.name_en.toLowerCase().includes("healthy");
+        const healthy = (d.name_en || "").toLowerCase().includes("healthy");
+        const delay = Math.min(i, 14) * 0.03;
         return `
-          <details class="card lib-entry">
+          <details class="card lib-entry" style="animation-delay:${delay}s">
             <summary>
-              <span class="lib-icon ${healthy ? 'healthy' : 'diseased'}">${healthy ? '✓' : '!'}</span>
-              <span class="lib-name">${name}</span>
-              <span class="lib-code">${code}</span>
+              <span class="lib-badge ${healthy ? "is-healthy" : "is-disease"}">${healthy ? "Healthy" : "Disease"}</span>
+              <span class="lib-name">${esc(name)}</span>
+              <span class="lib-code">${esc(code)}</span>
             </summary>
             <div class="detail">
-              <h3>${t("symptoms")}</h3><p>${sym || "—"}</p>
-              <h3>${t("management")}</h3>
-              <ul>${mgmtList.map((m) => `<li>${m}</li>`).join("")}</ul>
+              <h3>${esc(t("symptoms"))}</h3><p>${esc(sym) || "&mdash;"}</p>
+              <h3>${esc(t("management"))}</h3>
+              <ul>${mgmtList.map((m) => `<li>${esc(m)}</li>`).join("")}</ul>
             </div>
           </details>`;
       }).join("");
