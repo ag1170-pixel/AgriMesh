@@ -3,9 +3,11 @@
 const $ = (s) => document.querySelector(s);
 let lang = "en", labels = [], model = null, current = null, mapObj = null, nodes = {};
 const DEMO_CODES = ["D1Q", "D1O", "D2N"]; // Potato Late/Early Blight, Tomato Late Blight — seeded in inventory
-// Below this confidence we escalate to "consult officer" instead of naming a disease.
-// 0.85 (not 0.80) because rice sub-classes confuse at ~0.83; better to defer than misadvise.
-const CONF_MIN = 0.85;
+// Below this confidence we escalate to "consult officer" (top-3 shown) instead of naming
+// one disease. 0.70 balances usability on real/field photos against misadvising. Clean
+// single-leaf shots score 90-100%; genuinely ambiguous ones (e.g. potato vs tomato late
+// blight — same pathogen) stay below and defer.
+const CONF_MIN = 0.70;
 
 // ---- geohash encode (matches backend/core.js decoder) ----
 const B32 = "0123456789bcdefghjkmnpqrstuvwxyz";
@@ -52,7 +54,20 @@ async function loadModel() {
 async function classify(imgEl, file) {
   if (model && model !== "mock") {
     const tf = window.tf;
-    const x = tf.tidy(() => tf.browser.fromPixels(imgEl).resizeBilinear([224, 224]).toFloat().expandDims());
+    // Read at NATURAL resolution. The on-screen <img> is CSS-scaled (width:100%,
+    // object-fit), so tf.browser.fromPixels(imgEl) would grab that distorted layout
+    // size — silently classifying every photo at the wrong aspect ratio. Drawing to an
+    // offscreen canvas at naturalW×naturalH fixes it. Then center-crop to a square so
+    // the (usually centered) leaf fills the frame and side background is dropped.
+    const nw = imgEl.naturalWidth || imgEl.width, nh = imgEl.naturalHeight || imgEl.height;
+    const cnv = document.createElement("canvas"); cnv.width = nw; cnv.height = nh;
+    cnv.getContext("2d").drawImage(imgEl, 0, 0, nw, nh);
+    const x = tf.tidy(() => {
+      const px = tf.browser.fromPixels(cnv);
+      const [h, w] = px.shape;
+      const s = Math.min(h, w), top = (h - s) >> 1, left = (w - s) >> 1;
+      return px.slice([top, left, 0], [s, s, 3]).resizeBilinear([224, 224]).toFloat().expandDims();
+    });
     const logits = model.predict(x);
     const probs = await logits.data();
     tf.dispose([x, logits]);      // dispose BOTH — the output tensor leaked GPU memory each run
@@ -137,6 +152,26 @@ function showImage(file) {
 }
 // reset value after each pick so re-selecting the SAME file still fires change
 $("#file").addEventListener("change", (e) => { const f = e.target.files[0]; if (f) showImage(f); e.target.value = ""; });
+
+// demo sample buttons — guaranteed clean, high-confidence images for the live demo
+document.querySelectorAll(".demo").forEach((b) => b.addEventListener("click", async () => {
+  const blob = await fetch(`demo/${b.dataset.img}.jpg`).then((r) => r.blob());
+  showImage(new File([blob], b.dataset.img + ".jpg", { type: "image/jpeg" }));
+}));
+
+// real GPS: find the farmer's actual location; backend snaps it to the nearest node
+let gpsCoords = null;
+$("#gps").addEventListener("click", () => {
+  const st = $("#gpsStatus");
+  if (!navigator.geolocation) return void (st.textContent = "GPS not available on this device.");
+  st.textContent = lang === "hi" ? "स्थान खोज रहे हैं…" : "Locating…";
+  navigator.geolocation.getCurrentPosition(
+    (pos) => { gpsCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      st.textContent = `📍 ${gpsCoords.lat.toFixed(4)}, ${gpsCoords.lng.toFixed(4)} ${lang === "hi" ? "(आपका स्थान)" : "(your location)"}`; },
+    () => { st.textContent = lang === "hi" ? "स्थान नहीं मिला — नीचे गाँव चुनें।" : "Couldn't get location — pick a village below."; },
+    { enableHighAccuracy: true, timeout: 8000 }
+  );
+});
 const drop = $("#drop");
 ["dragover", "dragenter"].forEach((ev) => drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add("over"); }));
 ["dragleave", "drop"].forEach((ev) => drop.addEventListener(ev, () => drop.classList.remove("over")));
@@ -173,7 +208,7 @@ $("#analyze").addEventListener("click", async () => {
 
 // ---- find route ----
 $("#findRoute").addEventListener("click", async () => {
-  const v = $("#village").value, n = nodes[v];
+  const n = gpsCoords || nodes[$("#village").value];   // real GPS if located, else the chosen village
   const payload = `${current.label.code} ${geohash(n.lat, n.lng)}`;
   const res = await fetch("/api/route", {
     method: "POST", headers: { "content-type": "application/json" },
@@ -181,7 +216,8 @@ $("#findRoute").addEventListener("click", async () => {
   }).then((r) => r.json());
 
   const card = $("#routeCard"); card.hidden = false;
-  if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain">${t("noStock")}</div>`; drawMap(v, null, []); return; }
+  const startNode = res.start || $("#village").value;   // backend's nearest-node snap of the GPS
+  if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain">${t("noStock")}</div>`; drawMap(startNode, null, []); return; }
   const hindi = expandReply(res);
   const pest = res.pesticide ? (res.pesticide[lang] || res.pesticide.en) : "";
   $("#routeInfo").innerHTML = `
@@ -189,7 +225,7 @@ $("#findRoute").addEventListener("click", async () => {
     <div class="route-line">${res.path.map((p) => `<span class="n">${p.replace(/_/g, " ")}</span>`).join(" → ")}</div>
     <p><b>${t("nearest")}:</b> ${res.center.replace("_", " ")} · <b>${t("distance")}:</b> ${res.distanceKm} km · <b>${t("stock")}:</b> ${res.stockKg}kg</p>
     <div class="sms"><b>SMS →</b> ${res.reply}<br><small>${hindi}</small></div>`;
-  drawMap(v, res.center, res.path);
+  drawMap(startNode, res.center, res.path);
   card.scrollIntoView({ behavior: "smooth" });
 });
 

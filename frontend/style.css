@@ -29,6 +29,12 @@ label { font-weight:600; font-size:.9rem; }
 #map { height:280px; border-radius:12px; margin-bottom:12px; }
 .route-line { display:flex; flex-wrap:wrap; gap:6px; align-items:center; color:var(--muted); font-size:.9rem; }
 .route-line .n { background:#eef6ea; color:var(--green-d); padding:3px 9px; border-radius:20px; font-weight:600; }
+.demorow { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:10px 0 0; }
+.demolabel { color:var(--muted); font-size:.82rem; margin-right:2px; }
+.demo { background:#eef6ea; color:var(--green-d); font-weight:600; font-size:.82rem; padding:7px 11px; border:1px solid #cfe6c6; }
+.demo:hover { background:#e0efd8; }
+.gpsbtn { background:#eef6ea; color:var(--green-d); font-weight:600; width:100%; border:1px solid #cfe6c6; margin:6px 0; }
+.gpsbtn:hover { background:#e0efd8; }
 .admin { text-align:center; }
 .admin a { color:var(--muted); text-decoration:none; font-size:.85rem; }
 table { width:100%; border-collapse:collapse; font-size:.88rem; }

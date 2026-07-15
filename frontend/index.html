@@ -20,9 +20,15 @@
     <section id="uploadCard" class="card">
       <p class="hint" data-t="uploadHint">Upload a leaf photo to detect crop disease</p>
       <label id="drop" class="drop">
-        <input type="file" id="file" accept="image/*" capture="environment" hidden />
+        <input type="file" id="file" accept="image/*" hidden />
         <span data-t="uploadTitle">📷 Tap to upload / drag a photo</span>
       </label>
+      <div class="demorow">
+        <span class="demolabel" data-t="tryDemo">Or try a sample:</span>
+        <button class="demo" data-img="corn_rust">🌽 Corn Rust</button>
+        <button class="demo" data-img="grape_blackrot">🍇 Grape Black Rot</button>
+        <button class="demo" data-img="potato_early">🥔 Potato Blight</button>
+      </div>
       <img id="preview" alt="" hidden />
       <div id="modelStatus" class="status">Loading AI model…</div>
       <button id="analyze" class="primary" disabled data-t="analyze">Analyze</button>
@@ -32,7 +38,9 @@
     <section id="resultCard" class="card" hidden>
       <div id="result"></div>
       <div id="locBox" hidden>
-        <label data-t="selectVillage">Location</label>
+        <label data-t="selectVillage">Your location</label>
+        <button id="gps" class="gpsbtn" data-t="useGps">📍 Use my location</button>
+        <div id="gpsStatus" class="status"></div>
         <select id="village"></select>
         <button id="findRoute" class="primary" data-t="sendReport">Send Report &amp; Find Route</button>
       </div>
