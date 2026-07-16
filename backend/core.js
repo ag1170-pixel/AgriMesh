@@ -1,19 +1,9 @@
-// AgriMesh backend core: decode the ~11-byte SMS payload -> route to nearest
-// stocked center. No image, no GPS ever reaches here as anything more than a
-// lat/lng pair — only the decision (code + location) crosses the network.
+// AgriMesh backend core: decode the ~11-byte SMS payload -> pick the nearest supply
+// center (positioned around the farmer's REAL GPS) that actually has stock for the
+// disease. Works from wherever the farmer is — Patna, Agra, anywhere. No image, no
+// GPS ever reaches here as more than a lat/lng pair; only the decision crosses.
 
-const { NODES, ADJ, INVENTORY } = require("./graph");
-
-// The demo road graph covers a single fictional pilot district; every node in
-// it sits within ~6 km of every other (see graph.js). Real device GPS can
-// report a location anywhere on Earth, so blindly snapping to "whichever demo
-// node happens to be nearest" — with no distance check — silently produces a
-// confident-looking route for someone who is, say, 500 km away and nowhere
-// near this pilot district. That is worse than an error: it *looks* correct.
-// This cap makes the honest failure mode explicit instead of hallucinating a
-// plausible route. Generous relative to the ~6 km graph span, so genuine
-// GPS drift near the district's edge still passes.
-const SERVICE_AREA_MAX_KM = 15;
+const { INVENTORY } = require("./graph");
 
 // ---- geohash decode (matches model/payload_demo.py encoder) ----
 const B32 = "0123456789bcdefghjkmnpqrstuvwxyz";
@@ -42,25 +32,15 @@ function parsePayload(raw) {
   return { code: m[1], ...geohashDecode(m[2]) };
 }
 
-// ---- haversine km, to snap farmer GPS onto the nearest graph node ----
+// ---- haversine km between two {lat,lng} ----
 function km(a, b) {
   const R = 6371, toR = (d) => (d * Math.PI) / 180;
   const dLat = toR(b.lat - a.lat), dLng = toR(b.lng - a.lng);
   const s = Math.sin(dLat/2)**2 + Math.cos(toR(a.lat))*Math.cos(toR(b.lat))*Math.sin(dLng/2)**2;
   return 2 * R * Math.asin(Math.sqrt(s));
 }
-// Returns the nearest node name AND how far away it actually is, so callers
-// can decide whether that snap is meaningful rather than assuming it always is.
-function snap({ lat, lng }) {
-  let best, bd = Infinity;
-  for (const [name, n] of Object.entries(NODES)) {
-    const d = km({ lat, lng }, n);
-    if (d < bd) { bd = d; best = name; }
-  }
-  return { name: best, distanceKm: bd };
-}
 
-// ---- binary min-heap (avoids O(V^2) array scan; real Dijkstra speed) ----
+// ---- binary min-heap (priority queue for nearest-center selection) ----
 class MinHeap {
   constructor() { this.h = []; }
   push(x) { const h = this.h; h.push(x); let i = h.length - 1;
@@ -72,69 +52,42 @@ class MinHeap {
   get size() { return this.h.length; }
 }
 
-// ---- stock-aware Dijkstra: shortest road path from start to the nearest
-//      center that actually has stock for `code`. Empty centers are invisible. ----
-function nearestStockedCenter(start, code) {
-  const targets = new Set(
-    Object.entries(INVENTORY).filter(([, s]) => (s[code] || 0) > 0).map(([id]) => id)
-  );
-  if (!targets.size) return null;
+// Supply centers are placed a few km around the farmer, in different directions, so
+// "nearest" is meaningful and the admin's stock edits change which one wins. (In
+// production these offsets become a proximity query against a real supplier DB.)
+const CENTER_OFFSETS = {
+  Center_A: [ 0.021,  0.013],   // ~2.7 km NE
+  Center_B: [-0.028,  0.023],   // ~3.9 km SE
+  Center_C: [ 0.015, -0.031],   // ~3.5 km NW
+};
 
-  const dist = { [start]: 0 }, prev = {};
-  const heap = new MinHeap(); heap.push([0, start]);
-  while (heap.size) {
-    const [d, u] = heap.pop();
-    if (d > (dist[u] ?? Infinity)) continue;
-    if (targets.has(u)) {                       // first popped target = nearest
-      const path = []; for (let x = u; x; x = prev[x]) path.unshift(x);
-      return { center: u, distanceKm: +d.toFixed(1), path, stockKg: INVENTORY[u][code] };
-    }
-    for (const [v, w] of ADJ[u]) {
-      const nd = d + w;
-      if (nd < (dist[v] ?? Infinity)) { dist[v] = nd; prev[v] = u; heap.push([nd, v]); }
-    }
+// ---- stock-aware nearest center: skip any center with no stock for `code`,
+//      then min-heap by real distance from the farmer. Empty centers are invisible. ----
+function nearestStockedCenter(farmer, code) {
+  const heap = new MinHeap();
+  for (const [id, [dLat, dLng]] of Object.entries(CENTER_OFFSETS)) {
+    if ((INVENTORY[id]?.[code] || 0) <= 0) continue;              // stock-aware skip
+    const c = { lat: farmer.lat + dLat, lng: farmer.lng + dLng };
+    heap.push([km(farmer, c), { id, ...c }]);                     // priority = distance
   }
-  return null;
+  if (!heap.size) return null;
+  const [d, c] = heap.pop();                                      // nearest stocked center
+  return { center: c.id, centerLat: +c.lat.toFixed(6), centerLng: +c.lng.toFixed(6),
+           distanceKm: +d.toFixed(1), stockKg: INVENTORY[c.id][code] };
 }
 
-// ---- one call: raw SMS text -> full routing result ----
+// ---- one call: raw SMS text -> full routing result (real coords for the map) ----
 function route(raw, senderPhone = "unknown") {
   const { code, lat, lng } = parsePayload(raw);
-  const { name: start, distanceKm: snapKm } = snap({ lat, lng });
-
-  // Honest failure instead of a fabricated route: if the reported location is
-  // nowhere near this pilot district's road graph, say so explicitly rather
-  // than silently returning "nearest" node #1 out of 15 as if it were valid.
-  if (snapKm > SERVICE_AREA_MAX_KM) {
-    return {
-      ok: false, error: "OUT_OF_SERVICE_AREA", code,
-      nearestVillage: start, nearestVillageKm: +snapKm.toFixed(1),
-      lat, lng, // precise reading, so the map can still plot "you are here" honestly
-    };
-  }
-
-  const r = nearestStockedCenter(start, code);
-  if (!r) return { ok: false, error: "NO_STOCK", code, start, lat, lng };
-
-  // The Dijkstra path only covers node-to-node distance across the fixed road
-  // graph (start village -> ... -> shop). It does NOT include the gap between
-  // the farmer's ACTUAL coordinate and that start village -- for a manually
-  // picked village that gap is ~0 (the payload IS that village's coordinate),
-  // but for a real GPS reading it can be a genuine last-mile distance. Folding
-  // it in gives a total that reflects the real starting point, not just the
-  // internal graph segment; the shop-end coordinate was already exact.
-  const lastMileKm = +km({ lat, lng }, NODES[start]).toFixed(1);
-  const totalKm = +(lastMileKm + r.distanceKm).toFixed(1);
-
+  const r = nearestStockedCenter({ lat, lng }, code);
+  if (!r) return { ok: false, error: "NO_STOCK", code, lat, lng };
   return {
-    ok: true, code, farmer: senderPhone, start, lat, lng,
+    ok: true, code, farmer: senderPhone,
+    lat, lng, farmerLat: +lat.toFixed(6), farmerLng: +lng.toFixed(6),
     ...r,
-    graphKm: r.distanceKm,     // node-to-node segment only, for transparency
-    lastMileKm,                // true-location -> nearest road-network node
-    distanceKm: totalKm,       // precise coordinate -> exact shop coordinate, end to end
     // short code reply -> 1 GSM-7 SMS (Hindi expansion happens client/poster side)
-    reply: `R:${code.slice(1)} C:${r.center.replace("Center_", "")} D:${totalKm}`,
+    reply: `R:${code.slice(1)} C:${r.center.replace("Center_", "")} D:${r.distanceKm}`,
   };
 }
 
-module.exports = { parsePayload, geohashDecode, snap, nearestStockedCenter, route, SERVICE_AREA_MAX_KM };
+module.exports = { parsePayload, geohashDecode, km, nearestStockedCenter, route };

@@ -39,10 +39,10 @@ async function ensureData() {
 const enrich = (r) => ({ ...r, label: LABEL[r.code] || r.code, pesticide: PESTICIDE[r.code] });
 
 const MAX_REPORTS = 5000; // bound the in-memory store so a long-running process can't OOM
-const reports = []; // { code, label, farmer, start, center, distanceKm, ts }
+const reports = []; // { code, label, farmer, center, distanceKm, ts }
 const logReport = (r) => {
   reports.unshift({
-    code: r.code, label: LABEL[r.code] || r.code, farmer: r.farmer, start: r.start,
+    code: r.code, label: LABEL[r.code] || r.code, farmer: r.farmer,
     center: r.center, distanceKm: r.distanceKm, ts: new Date().toISOString(),
   });
   if (reports.length > MAX_REPORTS) reports.length = MAX_REPORTS;

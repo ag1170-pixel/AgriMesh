@@ -240,7 +240,7 @@ $("#gps").addEventListener("click", () => {
 function previewLocation() {
   const card = $("#routeCard"); reveal(card);
   $("#routeInfo").innerHTML = "";
-  drawMap(null, null, [], gpsCoords, gpsAccuracyM, true);
+  drawMap(gpsCoords, null, gpsAccuracyM, true);
 }
 
 // Manually picking a village is a deliberate override of GPS — e.g. GPS put you
@@ -333,8 +333,9 @@ async function showDetails(code) {
 
 // ---- find route ----
 $("#findRoute").addEventListener("click", async () => {
-  const n = gpsCoords || nodes[$("#village").value];   // real GPS if located, else the chosen village
-  const payload = `${current.label.code} ${geohash(n.lat, n.lng)}`;
+  const farmer = gpsCoords || nodes[$("#village").value];   // real GPS if located, else the chosen city
+  if (!farmer) { $("#gps").click(); return; }               // no location yet -> prompt for GPS
+  const payload = `${current.label.code} ${geohash(farmer.lat, farmer.lng)}`;
   lastPayload = payload; // reused by the dedicated "Send SMS" button below
   const phone = $("#phone").value.trim();
   const res = await fetch("/api/route", {
@@ -344,42 +345,23 @@ $("#findRoute").addEventListener("click", async () => {
 
   const card = $("#routeCard"); reveal(card);
   $("#smsStatus").textContent = ""; $("#smsStatus").className = "sms-status";
-  // Only offer "Send SMS" when there's an actual route to send — otherwise the
-  // button just looks broken (visible + clickable, but every send silently
-  // fails the same out-of-area/no-stock check the original request just hit).
+  // Only offer "Send SMS" when there's an actual route to send.
   $("#smsBox").hidden = !res.ok;
   if (!res.ok) lastPayload = null;
-  // The precise coordinate actually sent (real GPS if located, else the exact
-  // stored coordinate of the picked village) — used to plot "you are here" at
-  // the true point rather than at whichever graph node it snapped to.
-  const preciseYou = (res.lat != null && res.lng != null) ? { lat: res.lat, lng: res.lng } : n;
-  if (!res.ok && res.error === "OUT_OF_SERVICE_AREA") {
-    // Honest failure: real GPS was too far from this pilot district's road
-    // graph to route meaningfully — say so instead of faking a route, but
-    // still show the true location so it's clear WHY it's out of range. This
-    // demo's road/inventory data covers exactly one fictional pilot district —
-    // no real GPS location outside it (anywhere else in India included) will
-    // ever route, regardless of how accurate that GPS reading is.
-    $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("outOfArea"))}${res.nearestVillageKm ? `<br><small>${lang === "hi" ? "पायलट क्षेत्र से दूरी" : "Distance from the pilot area"}: ~${res.nearestVillageKm} km</small>` : ""}</div>`;
-    drawMap(res.nearestVillage || $("#village").value, null, [], preciseYou, gpsCoords === n ? gpsAccuracyM : null, !!gpsCoords);
-    return;
-  }
-  const startNode = res.start || $("#village").value;   // backend's nearest-node snap of the GPS
-  if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("noStock"))}</div>`; drawMap(startNode, null, [], preciseYou, gpsCoords === n ? gpsAccuracyM : null); return; }
+  const acc = gpsCoords === farmer ? gpsAccuracyM : null;   // accuracy circle only for a real GPS fix
+  if (!res.ok) { $("#routeInfo").innerHTML = `<div class="uncertain reveal">${esc(t("noStock"))}</div>`; drawMap(farmer, null, acc, false); return; }
   const hindi = expandReply(res);
   const pest = res.pesticide ? (res.pesticide[lang] || res.pesticide.en) : "";
+  const centerName = res.center.replace("Center_", lang === "hi" ? "केंद्र " : "Center ");
   const sent = !res.sms ? "" : res.sms.provider === "mock"
     ? "Demo mode — add TextBee keys to send a real SMS"
     : `Sent to ${esc(phone)}`;
-  // distanceKm is now precise-coordinate -> exact shop coordinate, end to end
-  // (last-mile from your real point to the road network + the road-network
-  // distance to the shop) rather than just the internal graph segment.
   $("#routeInfo").innerHTML = `
     <p class="pest"><b>${lang === "hi" ? "दवा" : "Pesticide"}:</b> ${esc(pest)}</p>
-    <div class="route-line">${res.path.map((p) => `<span class="n">${esc(p.replace(/_/g, " "))}</span>`).join(" &rarr; ")}</div>
-    <p><b>${esc(t("nearest"))}:</b> ${esc(res.center.replace("_", " "))} &middot; <b>${esc(t("distance"))}:</b> ${res.distanceKm} km &middot; <b>${esc(t("stock"))}:</b> ${res.stockKg}kg</p>
+    <div class="route-line"><span class="n">${esc(t("youAreHere"))}</span> &rarr; <span class="n">${esc(centerName)}</span></div>
+    <p><b>${esc(t("nearest"))}:</b> ${esc(centerName)} &middot; <b>${esc(t("distance"))}:</b> ${res.distanceKm} km &middot; <b>${esc(t("stock"))}:</b> ${res.stockKg}kg</p>
     <div class="sms reveal"><b>SMS &rarr;</b> ${esc(res.reply)}<br><small>${esc(hindi)}</small>${sent ? `<br><small style="color:#8ef0a6">${esc(sent)}</small>` : ""}</div>`;
-  drawMap(startNode, res.center, res.path, preciseYou, gpsCoords === n ? gpsAccuracyM : null);
+  drawMap(farmer, { lat: res.centerLat, lng: res.centerLng, name: centerName }, acc, false);
   card.scrollIntoView({ behavior: "smooth" });
 });
 
@@ -403,69 +385,52 @@ function expandReply(res) {
 // desktop/WiFi-based positioning often can't actually deliver. `draggable`
 // lets the farmer manually correct the pin if the auto-detected fix is off —
 // standard practice in any serious location-based app, not just a nicety.
-function drawMap(startName, centerName, pathNames, precise, accuracyM, draggable) {
-  if (!mapObj) { mapObj = L.map("map"); L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 17, attribution: "&copy; OSM" }).addTo(mapObj); }
+// `farmer` = the real location {lat,lng} (device GPS or a picked city). `center` =
+// {lat,lng,name} of the chosen supply shop, or null for a location-only preview.
+// `accuracyM` (meters) draws an honest uncertainty circle for WiFi/IP fixes.
+// `draggable` lets the farmer correct the pin before routing off of it.
+function drawMap(farmer, center, accuracyM, draggable) {
+  if (!mapObj) { mapObj = L.map("map"); L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 18, attribution: "&copy; OSM" }).addTo(mapObj); }
   mapObj.eachLayer((l) => (l instanceof L.Marker || l instanceof L.Polyline || l instanceof L.Circle || l instanceof L.CircleMarker) ? mapObj.removeLayer(l) : 0);
-  const pts = pathNames.map((p) => [nodes[p].lat, nodes[p].lng]);
-  const node = startName ? nodes[startName] : null;
-  const you = precise || node; // fall back to the node only if no precise reading exists at all
-  const allBounds = [[you.lat, you.lng]];
 
-  const youMarker = L.marker([you.lat, you.lng], { draggable: !!draggable })
-    .addTo(mapObj).bindPopup(lang === "hi" ? "आपका सटीक स्थान" : "Your precise location");
-
-  // Honest uncertainty circle instead of a falsely-precise pin. A WiFi/IP-based
-  // fix can easily be off by hundreds of meters to a few km — showing that
-  // range is what a trustworthy map does; hiding it is what creates the "the
-  // app got my location wrong" surprise.
+  const youMarker = L.marker([farmer.lat, farmer.lng], { draggable: !!draggable })
+    .addTo(mapObj).bindPopup(lang === "hi" ? "आपका स्थान" : "Your location");
   if (accuracyM) {
-    L.circle([you.lat, you.lng], { radius: accuracyM, color: "#2E86AB", weight: 1, fillOpacity: 0.08 }).addTo(mapObj);
+    L.circle([farmer.lat, farmer.lng], { radius: accuracyM, color: "#2E86AB", weight: 1, fillOpacity: 0.08 }).addTo(mapObj);
   }
-
   if (draggable) {
     youMarker.on("dragend", (e) => {
       const { lat, lng } = e.target.getLatLng();
       gpsCoords = { lat, lng };
-      gpsAccuracyM = null; // a manual correction is more trustworthy than the device's own estimate
+      gpsAccuracyM = null; // a manual correction beats the device's own estimate
       updateGpsStatus();
-      drawMap(startName, centerName, pathNames, gpsCoords, null, true);
+      drawMap(gpsCoords, null, null, true); // location-only; re-run Find Route for a fresh nearby shop
     });
   }
 
-  // Preview-only call (no route requested yet) — just show the point, nothing to route to.
-  if (!node) return mapObj.setView([you.lat, you.lng], 13);
+  // Preview-only call (no route yet) — just show where you are.
+  if (!center) return mapObj.setView([farmer.lat, farmer.lng], 13);
 
-  // If the precise point differs meaningfully from the snapped node, show the
-  // "last mile" honestly as a distinct short segment rather than silently
-  // treating the node as if it were where you actually are standing.
-  const lastMile = precise && (Math.abs(precise.lat - node.lat) > 0.0005 || Math.abs(precise.lng - node.lng) > 0.0005);
-  if (lastMile) {
-    L.polyline([[you.lat, you.lng], [node.lat, node.lng]], { color: "#6b7a63", weight: 3, opacity: 0.7, dashArray: "2 8" }).addTo(mapObj);
-    L.circleMarker([node.lat, node.lng], { radius: 4, color: "#6b7a63", fillOpacity: 1 })
-      .addTo(mapObj).bindPopup((lang === "hi" ? "निकटतम सड़क बिंदु: " : "Nearest road-network point: ") + esc(startName));
-  }
-
-  if (!centerName) return mapObj.setView([you.lat, you.lng], 13);
-  const c = nodes[centerName];
-  allBounds.push([c.lat, c.lng]);
-  L.marker([c.lat, c.lng]).addTo(mapObj).bindPopup(esc(centerName.replace("_", " ")) + (lang === "hi" ? " (आपूर्ति केंद्र, सटीक)" : " (supply center, exact coordinate)"));
+  L.marker([center.lat, center.lng]).addTo(mapObj)
+    .bindPopup(esc(center.name || "Center") + (lang === "hi" ? " (आपूर्ति केंद्र)" : " (supply center)"));
+  const pts = [[farmer.lat, farmer.lng], [center.lat, center.lng]];
   // Provisional straight line (instant, and the offline fallback). Snapped to real
   // roads by OSRM if online — the polyline then follows streets, not a diagonal.
   let line = L.polyline(pts, { color: "#1b7a3d", weight: 4, opacity: 0.45, dashArray: "6 6" }).addTo(mapObj);
-  mapObj.fitBounds([...allBounds, ...pts], { padding: [30, 30] });
-  followRoads(pathNames).then((road) => {
+  mapObj.fitBounds(pts, { padding: [45, 45] });
+  followRoads([farmer, center]).then((road) => {
     if (!road) return;                       // offline / OSRM down -> keep the straight line
     mapObj.removeLayer(line);
     line = L.polyline(road, { color: "#1b7a3d", weight: 5 }).addTo(mapObj);
-    mapObj.fitBounds([...allBounds, ...road], { padding: [30, 30] });
+    mapObj.fitBounds(road, { padding: [45, 45] });
   });
 }
 
-// Snap the node waypoints to real roads via OSRM, return road geometry as [lat,lng][].
+// Route two {lat,lng} points along real roads via OSRM, return geometry as [lat,lng][].
 // Returns null on any failure so the caller keeps the straight-line fallback.
-async function followRoads(pathNames) {
+async function followRoads(points) {
   try {
-    const coords = pathNames.map((p) => `${nodes[p].lng},${nodes[p].lat}`).join(";");
+    const coords = points.map((p) => `${p.lng},${p.lat}`).join(";");
     const url = `https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`;
     const ctrl = new AbortController(); const timer = setTimeout(() => ctrl.abort(), 4000);
     const r = await fetch(url, { signal: ctrl.signal }); clearTimeout(timer);
